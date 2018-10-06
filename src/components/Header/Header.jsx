@@ -11,7 +11,7 @@ import Hidden from "@material-ui/core/Hidden";
 import Menu from "@material-ui/icons/Menu";
 // core components
 import Button from "components/CustomButtons/Button.jsx";
-import Dashboard from "./../../layouts/Dashboard/Dashboard"
+import Login from "./../../views/Login/Login";
 import { createBrowserHistory } from "history";
 import headerStyle from "assets/jss/material-dashboard-react/components/headerStyle.jsx";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
@@ -36,20 +36,17 @@ function Header({ ...props }) {
   });
 
   return (
-   <Router history={hist}>
-      <AppBar className={classes.appBar + appBarClasses}>
-        <Toolbar className={classes.container}>
-          <div className={classes.flex}>
-            {/* Here we create navbar brand, based on route name */}
-            <Button color="transparent" href="#" className={classes.title}>
-              {makeBrand()}
-            </Button>
-          </div>
-          <Link to='/dashboard' >Đăng nhập</Link>
-          <Route path='/dashboard' component={Dashboard}/>
-        </Toolbar>
-      </AppBar>
-    </Router>
+    <AppBar className={classes.appBar + appBarClasses}>
+      <Toolbar className={classes.container}>
+        <div className={classes.flex}>
+          {/* Here we create navbar brand, based on route name */}
+          <Button color="transparent" href="#" className={classes.title}>
+            {makeBrand()}
+          </Button>
+        </div>
+        <p>Header </p>
+      </Toolbar>
+    </AppBar>
   );
 }
 
