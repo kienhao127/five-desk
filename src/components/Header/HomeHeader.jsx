@@ -11,7 +11,7 @@ import Hidden from "@material-ui/core/Hidden";
 import Menu from "@material-ui/icons/Menu";
 // core components
 import Button from "components/CustomButtons/Button.jsx";
-import Login from "./../../views/Login/Login";
+import Login from "../../views/Login/Login";
 import { createBrowserHistory } from "history";
 import headerStyle from "assets/jss/material-dashboard-react/components/headerStyle.jsx";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
@@ -20,20 +20,11 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 const hist = createBrowserHistory();
 
 function Header({ ...props }) {
-  function makeBrand() {
-    var name;
-    props.routes.map((prop, key) => {
-      if (prop.path === props.location.pathname) {
-        name = prop.navbarName;
-      }
-      return null;
-    });
-    return name;
-  }
   const { classes, color } = props;
   const appBarClasses = classNames({
     [" " + classes[color]]: color
   });
+
 
   return (
     <AppBar className={classes.appBar + appBarClasses}>
@@ -41,10 +32,12 @@ function Header({ ...props }) {
         <div className={classes.flex}>
           {/* Here we create navbar brand, based on route name */}
           <Button color="transparent" href="#" className={classes.title}>
-            {makeBrand()}
+            {/* {makeBrand()} */}
           </Button>
         </div>
-        <p>Header </p>
+        <Link to="/home">Trang chủ </Link>
+        <Link to="/login">Đăng nhập </Link>
+        <Link to="/register">Đăng ký </Link>
       </Toolbar>
     </AppBar>
   );

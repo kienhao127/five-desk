@@ -13,10 +13,16 @@ class MailTicket extends React.Component {
     };
   
   }
+
+  componentDidMount(){
+    document.title = "Mail Ticket"
+  }
+
+
   render() {
     return (
       <div>
-        
+        <p>Mail ticket</p>
       </div>
     );
   }

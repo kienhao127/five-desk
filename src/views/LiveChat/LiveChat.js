@@ -13,10 +13,14 @@ class LiveChat extends React.Component {
     };
   }
 
+  componentDidMount(){
+    document.title = "Live Chat"
+  }
+
   render() {
     return (
       <div>
-        
+        <p>Live chat</p>
       </div>
     );
   }

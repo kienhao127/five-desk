@@ -1,21 +1,18 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import { createBrowserHistory } from "history";
-import { Router, Route, Switch } from "react-router-dom";
+import {render} from "react-dom";
+import App from './App/App';
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
+import configureStore from "./store/configureStore";
+import { createBrowserHistory } from 'history';
 
-import "assets/css/material-dashboard-react.css?v=1.5.0";
+const history = createBrowserHistory();
 
-import indexRoutes from "routes";
-
-const hist = createBrowserHistory();
-
-ReactDOM.render(
-  <Router history={hist}>
-    <Switch>
-      {indexRoutes.map((prop, key) => {
-        return <Route path={prop.path} component={prop.component} key={key} />;
-      })}
-    </Switch>
-  </Router>,
+render(
+  <Provider store={configureStore}>
+    <BrowserRouter history={history}>
+      <App />
+    </BrowserRouter>
+  </Provider>,
   document.getElementById("root")
 );

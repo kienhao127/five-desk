@@ -3,8 +3,6 @@ import PropTypes from "prop-types";
 // @material-ui/core
 import withStyles from "@material-ui/core/styles/withStyles";
 
-import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.jsx";
-
 class Reporting extends React.Component {
   
   constructor(props) {
@@ -15,10 +13,15 @@ class Reporting extends React.Component {
     };
   
   }
+
+  componentDidMount(){
+    document.title = "Báo cáo"
+  }
+
   render() {
     return (
       <div>
-        
+        <p>Báo cáo</p>
       </div>
     );
   }
