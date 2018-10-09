@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+<<<<<<< HEAD
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -17,6 +18,11 @@ import Divider from '@material-ui/core/Divider';
 const drawerWidth = 240;
 
 const styles = theme => ({
+=======
+//const hist = createBrowserHistory();
+
+const styles = {
+>>>>>>> cb4227dc0b5718de42ae2d78033bf379ea1dfbc5
   root: {
     flexGrow: 1,
   },
@@ -80,6 +86,10 @@ class Header extends React.Component {
     this.setState(state => ({ mobileOpen: !state.mobileOpen }));
   };
 
+<<<<<<< HEAD
+=======
+class Header extends React.Component {
+>>>>>>> cb4227dc0b5718de42ae2d78033bf379ea1dfbc5
   render() {
     const { classes, theme } = this.props;
     const drawer = (
