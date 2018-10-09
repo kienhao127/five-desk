@@ -73,7 +73,10 @@ const headerStyle = theme => ({
     backgroundColor: dangerColor,
     color: "#FFFFFF",
     ...defaultBoxShadow
-  }
+  },
+  indicator: {
+    backgroundColor: infoColor,
+  },
 });
 
 export default headerStyle;

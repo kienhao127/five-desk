@@ -7,8 +7,10 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
+import Checkbox from '@material-ui/core/Checkbox';
 // core components
 import tableStyle from "assets/jss/material-dashboard-react/components/tableStyle.jsx";
+import StatusLabel from "../StatusLabel/StatusLabel";
 
 function CustomTable({ ...props }) {
   const { classes, tableHead, tableData, tableHeaderColor } = props;
@@ -18,6 +20,12 @@ function CustomTable({ ...props }) {
         {tableHead !== undefined ? (
           <TableHead className={classes[tableHeaderColor + "TableHeader"]}>
             <TableRow>
+                <TableCell className={classes.tableCellCheckbox}>
+                  <Checkbox
+                    value="checkedB"
+                    color="primary"
+                  />
+                </TableCell>
               {tableHead.map((prop, key) => {
                 return (
                   <TableCell
@@ -34,8 +42,17 @@ function CustomTable({ ...props }) {
         <TableBody>
           {tableData.map((prop, key) => {
             return (
-              <TableRow key={key}>
-                {prop.map((prop, key) => {
+              <TableRow hover key={key} className={classes.tableRow}>
+                <TableCell className={classes.tableCellCheckbox} >
+                  <Checkbox
+                    value="checkedB"
+                    color="primary"
+                  />
+                </TableCell>
+                <TableCell className={classes.tableCellStatus}>
+                  <StatusLabel status={prop.status}/>
+                </TableCell>
+                {prop.content.map((prop, key) => {
                   return (
                     <TableCell className={classes.tableCell} key={key}>
                       {prop}

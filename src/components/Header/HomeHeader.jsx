@@ -16,9 +16,6 @@ import Login from "../../views/Login/Login";
 import { createBrowserHistory } from "history";
 import headerStyle from "assets/jss/material-dashboard-react/components/headerStyle.jsx";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-//font Roboto
-import "./../../assets/fonts/fonts.css";
-
 //const hist = createBrowserHistory();
 
 const styles = {
@@ -47,7 +44,7 @@ const styles = {
   },
 };
 
-class Header extends Component {
+class Header extends React.Component {
   render() {
     const {classes} = this.props;
     return (

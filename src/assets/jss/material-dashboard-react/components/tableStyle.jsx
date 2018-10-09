@@ -39,6 +39,18 @@ const tableStyle = theme => ({
     borderSpacing: "0",
     borderCollapse: "collapse"
   },
+  tableRow:{
+    cursor: "pointer",
+  },
+  tableCellCheckbox:{
+    ...defaultFont,
+    lineHeight: "1.42857143",
+    padding: 0,
+    verticalAlign: "middle"
+  },
+  tableCellStatus:{
+    padding: 0
+  },
   tableHeadCell: {
     color: "inherit",
     ...defaultFont,
