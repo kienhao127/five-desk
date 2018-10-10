@@ -11,9 +11,9 @@ class Register extends React.Component {
         super(props);
 
         this.state = {
-            username: "hello",
-            password: "it's me",
-            email: "superb@email.ishere",
+            username: "",
+            password: "",
+            email: "",
             lastName: "",
             firstName: "",
             phoneNumber: "",
@@ -55,7 +55,6 @@ class Register extends React.Component {
     render() {
         const { classes } = this.props;
         return (
-
             <div className={classes.registerDiv}>
                 <h4>ĐĂNG KÝ TÀI KHOẢN</h4>
                 <h4>Tên tài khoản:<h4 className={classes.requiredAsterisk}>*</h4></h4>
@@ -65,13 +64,13 @@ class Register extends React.Component {
                 <h4>Email:<h4 className={classes.requiredAsterisk}>*</h4></h4>
                 <TextField id="txtEmail" value={this.state.email} onChange={this.onValueChange}></TextField>
                 <h4>THÔNG TIN CÁ NHÂN</h4>
-                <p>Họ:</p>
+                <h4>Họ:</h4>
                 <TextField id="txtLastName" value={this.state.lastName} onChange={this.onValueChange}></TextField>
-                <p>Tên:</p>
+                <h4>Tên:</h4>
                 <TextField id="txtFirstName" value={this.state.firstName} onChange={this.onValueChange}></TextField>
-                <p>Số điện thoại:</p>
+                <h4>Số điện thoại:</h4>
                 <TextField id="txtPhoneNumber" value={this.state.phoneNumber} onChange={this.onValueChange}></TextField>
-                <p>Tên công ty:</p>
+                <h4>Tên công ty:</h4>
                 <TextField id="txtCompanyName" value={this.state.companyName} onChange={this.onValueChange}></TextField>
                 <br /><br />
                 <Button variant="outlined">Đăng Ký</Button>
@@ -82,13 +81,10 @@ class Register extends React.Component {
 
 const styles = {
     registerDiv: {
-        paddingLeft: "30px",
+        paddingLeft: "700px",
     },
     requiredAsterisk: {
         color: "red",
-        display: "inline",
-    },
-    inline: {
         display: "inline",
     }
 }
