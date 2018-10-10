@@ -29,7 +29,7 @@ const switchRoutes = (
   </Switch>
 );
 
-class Dashboard extends React.Component {
+class Agent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -91,8 +91,8 @@ class Dashboard extends React.Component {
   }
 }
 
-Dashboard.propTypes = {
+Agent.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(dashboardStyle)(Dashboard);
+export default withStyles(dashboardStyle)(Agent);

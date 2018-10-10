@@ -11,6 +11,8 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Icon from "@material-ui/core/Icon";
+
+import Logout from "@material-ui/icons/ExitToApp";
 // core components
 import HeaderLinks from "components/Header/AgentHeaderLinks";
 
@@ -24,6 +26,16 @@ const Sidebar = ({ ...props }) => {
   const { classes, color, logo, image, logoText, routes } = props;
   var links = (
     <List className={classes.list}>
+      <ListItem button className={classes.itemLink + " " + classes.activePro}>
+          <ListItemIcon className={classes.itemIcon}>
+            <Logout/>
+          </ListItemIcon>
+          <ListItemText
+            primary="Đăng xuất"
+            className={classes.itemText}
+            disableTypography={true}
+          />
+        </ListItem>
       {routes.map((prop, key) => {
         if (prop.redirect) return null;
         var activePro = " ";

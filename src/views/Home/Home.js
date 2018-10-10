@@ -13,6 +13,10 @@ class Home extends React.Component {
         };
     }
 
+    componentDidMount(){
+        document.title = "FiveDesk"
+      }
+
     render() {
         return (
         <div>

@@ -30,7 +30,10 @@ const headerLinksStyle = theme => ({
     fontSize: "14px",
     margin: "0px"
   },
+  icons:{
+  },
   buttonLink: {
+    marginRight: 20,
     [theme.breakpoints.down("sm")]: {
       display: "flex",
       margin: "10px 15px 0",
@@ -56,6 +59,7 @@ const headerLinksStyle = theme => ({
     }
   },
   searchButton: {
+    marginRight: 20,
     [theme.breakpoints.down("sm")]: {
       top: "-50px !important",
       marginRight: "22px",
@@ -106,7 +110,45 @@ const headerLinksStyle = theme => ({
       margin: "10px 15px 0"
     },
     display: "inline-block"
-  }
+  },
+  avatar:{
+    [theme.breakpoints.down("sm")]: {
+      marginRight: '15px',
+      marginLeft: '-10px',
+      width: 35,
+      height: 35,
+    },
+    [theme.breakpoints.up("md")]: {
+      margin: '-10px',
+      width: 40,
+      height: 40,
+    }
+  },
+  row: {
+    display: 'flex',
+    justifyContent: 'center',
+    alginItems: 'center'
+  },
+  userInfoMenuItem:{
+    paddingLeft: 20,
+  },
+  userInfoName:{
+    fontFamily: 'roboto-medium',
+    fontSize: 20,
+    color: '#666',
+  },
+  userInfoSecondary: {
+    fontFamily: 'roboto',
+    fontSize: 14,
+    color: '#68737D',
+  },
+  logoutLabel:{
+    color: '#666',
+    fontSize: 20,
+  },
+  peperContainer:{
+    width: 300,
+  },
 });
 
 export default headerLinksStyle;

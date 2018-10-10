@@ -5,17 +5,40 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import Table from "components/Table/Table.jsx";
-import Card from "components/Card/Card.jsx";
-import CardHeader from "components/Card/CardHeader.jsx";
-import CardBody from "components/Card/CardBody.jsx";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { ListItemSecondaryAction, Typography } from "@material-ui/core";
 
-const menuItems = [ {path: '/yourunsolved', content: "Your unsolved tickets", number: 0}, 
-                    {path: '/unassigned', content: "Unassigned tickets", number: 2},
-                    {path: '/allunsolved', content: "All unsolved tickets", number: 5},]
+const menuItems = [ 
+  {path: '/yourunsolved', content: "Your unsolved tickets", number: 0}, 
+  {path: '/unassigned', content: "Unassigned tickets", number: 2},
+  {path: '/allunsolved', content: "All unsolved tickets", number: 5},
+];
+
+const tableHead = [
+  { id: 'status', lable: ''},
+  { id: 'subject', label: 'Chủ đề' },
+  { id: 'requester', label: 'Người yêu cầu' },
+  { id: 'requestTime', label: 'Thời gian' },
+  { id: 'type', label: 'Loại'},
+  { id: 'priority', label: 'Độ ưu tiên' },
+  { id: 'assignee', label: 'Chuyển nhượng' },
+];
+
+const tableData =[
+  {id: 1, status: 'new', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
+  {id: 2, status: 'pending', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
+  {id: 3, status: 'open', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
+  {id: 4, status: 'solved', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
+  {id: 5, status: 'new', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
+  {id: 6, status: 'pending', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
+  {id: 7, status: 'open', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
+  {id: 8, status: 'solved', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
+  {id: 9, status: 'new', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
+  {id: 10, status: 'pending', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
+  {id: 11, status: 'solved', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
+]
 
 class MailTicket extends React.Component {
   
@@ -23,7 +46,9 @@ class MailTicket extends React.Component {
     super(props);
 
     this.state = {
-      
+      selectedTicketFilterButton: 0,
+      tableTitle: menuItems[0].content,
+      tableTitleSecondary: menuItems[0].number + ' tickets',
     };
   
   }
@@ -32,11 +57,19 @@ class MailTicket extends React.Component {
     document.title = "Mail Ticket"
   }
 
+  onTicketFilterClick = (key, item) => {
+    this.setState({
+      selectedTicketFilterButton: key,
+      tableTitle: item.content,
+      tableTitleSecondary: item.number + ' tickets',
+    })
+  }
+
   render() {
     const {classes} = this.props;
     return (
-      <GridContainer>
-        <GridItem xs={3} sm={3} md={3} >
+      <GridContainer className={classes.gridContainer}>
+        <GridItem xs={12} sm={3} md={3} >
           <List dense={true}>
             {menuItems.map((item, key) => (
               <ListItem
@@ -44,7 +77,8 @@ class MailTicket extends React.Component {
                 role={undefined}
                 dense
                 button
-                selected={key==1?true:false}
+                selected={this.state.selectedTicketFilterButton === key ? true : false}
+                onClick={() => this.onTicketFilterClick(key, item)}
                 className={classes.listItem}>
                     <ListItemText
                       primary={item.content}
@@ -56,27 +90,13 @@ class MailTicket extends React.Component {
             ))}  
           </List>
         </GridItem>
-        <GridItem xs={9} sm={9} md={9}>
-          <Card>
-            <CardHeader color="info">
-              <h4 className={classes.cardTitleWhite}>Ticket chưa giải quyết</h4>
-              <p className={classes.cardCategoryWhite}>
-                1 tickets
-              </p>
-            </CardHeader>
-            <CardBody>
-              <Table
-                tableHeaderColor="info"
-                tableHead={["", "Chủ đề", "Người yêu cầu", "Ngày yêu cầu", "Loại", "Độ ưu tiên"]}
-                tableData={[
-                  {status: 'new', content: ["Tiêu đề của mail", "Tên người gửi", "01/01/2018", "Câu hỏi", "Bình thường"]},
-                  {status: 'open', content: ["Tiêu đề của mail", "Tên người gửi", "01/01/2018", "Câu hỏi", "Bình thường"]},
-                  {status: 'pending', content: ["Tiêu đề của mail", "Tên người gửi", "01/01/2018", "Câu hỏi", "Bình thường"]},
-                  {status: 'solved', content: ["Tiêu đề của mail", "Tên người gửi", "01/01/2018", "Câu hỏi", "Bình thường"]},
-                ]}
-              />
-            </CardBody>
-          </Card>
+        <GridItem xs={12} sm={9} md={9} className={classes.tableGridItem}>
+          <Table
+            tableTitle={this.state.tableTitle}
+            tableTitleSecondary={this.state.tableTitleSecondary}
+            tableHead={tableHead}
+            tableData={tableData}
+          />
         </GridItem>
     </GridContainer>
     );
@@ -84,40 +104,10 @@ class MailTicket extends React.Component {
 }
 
 const styles = {
-  girdContainer: {
-    backgroundColor: 'black'
-  },
-  cardCategoryWhite: {
-    fontFamily: 'Roboto',
-    "&,& a,& a:hover,& a:focus": {
-      color: "rgba(255,255,255,.80)",
-      margin: "0",
-      fontSize: "14px",
-      marginTop: "0",
-      marginBottom: "0"
-    },
-    "& a,& a:hover,& a:focus": {
-      color: "#FFFFFF"
-    }
-  },
-  cardTitleWhite: {
-    color: "#FFFFFF",
-    marginTop: "0px",
-    minHeight: "auto",
-    fontWeight: "300",
-    fontFamily: 'Roboto-Medium',
-    fontSize: '20px',
-    marginBottom: "3px",
-    textDecoration: "none",
-    "& small": {
-      color: "#777",
-      fontSize: "65%",
-      fontWeight: "400",
-      lineHeight: "1"
-    }
+  gridContainer:{
   },
   listItem: {
-    margin: '0px 0px 0px 15px',
+    margin: ' 0px 15px',
   },
 };
 
