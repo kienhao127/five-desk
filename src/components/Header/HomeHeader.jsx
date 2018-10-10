@@ -14,6 +14,16 @@ import "./../../assets/fonts/fonts.css";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import YouTube from 'react-youtube';
+import Grow from '@material-ui/core/Grow';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Grid from '@material-ui/core/Grid';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -67,17 +77,58 @@ const styles = theme => ({
     fontWeight: 700,
     fontSize: 15,
   },
+
+  paper: {
+    margin: 10,
+  },
+
+  button: {
+    marginLeft: 10,
+    marginRight: 10,
+    textTransform: 'none',
+
+  },
+
+  menu_dropdown: {
+    fontFamily: 'Roboto', 
+    fontSize:14,
+  },
+
+  colorPrimary: {
+    backgroundColor: '#B2DFDB',
+  },
+  barColorPrimary: {
+    backgroundColor: '#00695C',
+  },
+
 });
-
-
 
 class Header extends React.Component {
   state = {
     mobileOpen: false,
+    videoOpen: false,
+    openSolution: false,
+    openProducts: false,
   };
 
   handleDrawerToggle = () => {
     this.setState(state => ({ mobileOpen: !state.mobileOpen }));
+  };
+
+  handlevideoOpen = () => {
+    this.setState({videoOpen: true});
+  };
+
+  handlevideoClose = () => {
+    this.setState({videoOpen: false});
+  };
+
+  handleSolution = () => {
+    this.setState(state => ({openSolution: !state.openSolution}));
+  };
+
+  handleProducts = () => {
+    this.setState(state => ({openProducts: !state.openProducts}));
   };
 
   render() {
@@ -99,7 +150,11 @@ class Header extends React.Component {
       </List>
     </div>
     );
-    
+    const opts = {
+      playerVars: { 
+        autoplay: 1
+      }
+    };
     return (
       <div className={classes.root}>
         <Hidden mdUp>
@@ -129,7 +184,7 @@ class Header extends React.Component {
           >
           </Drawer>
           <div className={classes.top}>
-          <Link to="/login" style={{ textDecoration: 'none', color: 'black' }}>
+          <Link to="/login" style={{ textDecoration: 'none', color: 'black'}}>
           <Button size="large" className={classes.button}>
           <b className={classes.bfont}>Login</b>
           </Button>
@@ -148,15 +203,176 @@ class Header extends React.Component {
             </IconButton>
             </Link>
           <Typography variant="h6" color="inherit" className={classes.grow}>
-           <Button size="small" className={classes.button} color="inherit">
+          {/* Button Products */}
+          <Button size="small" className={classes.button} color="inherit" 
+           onMouseEnter={this.handleProducts} onMouseLeave={this.handleProducts}  
+           style={{marginLeft: 20, }}>
            <b className={classes.bfont}>Products</b>
            </Button>
-           <Button size="small" className={classes.button} color="inherit">
+           <Popper open={this.state.openProducts} transition disablePortal>
+            {({ TransitionProps, placement }) => (
+              <Grow
+                {...TransitionProps}
+                id="menu-list-grow"
+                style={{ transformOrigin: placement === 'bottom' ? 'top' : 'bottom',
+                         marginTop: 35,
+                         width: 800,
+                         height: 500,
+                         marginLeft: -300,
+                }}
+                onMouseLeave={this.handleProducts}
+                onMouseEnter={this.handleProducts}
+              >
+                <Paper className={classes.menu_dropdown}>
+                    <Grid container spacing={24}>
+                    <Grid item xs={12} sm={6}>
+                    <Typography component="p" className={classes.menu_dropdown} style={{marginLeft:53}}>
+                    <h3>
+                      ALL-IN-ONE
+                    </h3>
+                    </Typography>
+                    </Grid>
+                    
+                    <Grid item xs={12} sm={6}>
+                    <Typography component="p" className={classes.menu_dropdown} style={{marginLeft:53}}>
+                    <h3>
+                      PRODUCTS
+                    </h3>
+                    </Typography>
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                    <Button className={classes.button} variant="contained" style={{width:230}}>
+                    <Typography component="p"  className={classes.menu_dropdown}>
+                    <div style={{width:90, marginLeft:30}}>
+                    <LinearProgress/>
+                    <LinearProgress color="secondary" />
+                    <LinearProgress
+                    classes={{ colorPrimary: classes.colorPrimary, barColorPrimary: classes.barColorPrimary }}
+                    />
+                    </div>
+                    <h3>
+                    The Zendesk Suite
+                    </h3>
+                    <span style={{fontWeight: 100}}>
+                    Everything you need to be everywhere your customers are, wrapped up in one pretty package.
+                    </span>
+                    </Typography>
+                    </Button>
+                    </Grid>
+                    
+                    <Grid item xs={12} sm={6}>
+                    <MenuList>
+                      <MenuItem style={{height:80}}>
+                      <Typography>
+                      <h3>Support</h3>
+                      <span>Integrated customer support</span>
+                      </Typography>
+                      </MenuItem>
+                      <MenuItem style={{height:80}}>
+                      <Typography>
+                      <h3>Chat</h3>
+                      <span>Live chat and message</span>
+                      </Typography>
+                      </MenuItem>
+                      <MenuItem style={{height:80}}>
+                      <Typography>
+                      <h3>Explore</h3>
+                      <span>Analytics and reporting</span>
+                      </Typography>
+                      </MenuItem>                     
+                    </MenuList>
+                    </Grid>                   
+                    </Grid>
+                </Paper>
+              </Grow>
+            )}
+          </Popper>
+
+           {/* Button Demo */}
+           <Button size="small" className={classes.button} color="inherit"  
+           onClick= {this.handlevideoOpen}  style={{marginLeft: 20, }}>
            <b className={classes.bfont}>Demo</b>
            </Button>
-           <Button size="small" className={classes.button} color="inherit">
+           <Dialog 
+            open={this.state.videoOpen}
+            onClose={this.handlevideoClose}
+            aria-labelledby="form-dialog-title"
+            maxWidth="md"
+           >
+          <DialogActions>
+          <YouTube videoId="GSiQpIe5q-4" opts={opts}/>
+          </DialogActions>
+           </Dialog>
+           
+           {/* Button Solution */}
+           <Button size="small" className={classes.button} color="inherit" 
+           onMouseEnter={this.handleSolution} onMouseLeave={this.handleSolution}  
+           style={{marginLeft: 20, }}>
            <b className={classes.bfont}>Solutions</b>
            </Button>
+           <Popper open={this.state.openSolution} transition disablePortal>
+            {({ TransitionProps, placement }) => (
+              <Grow
+                {...TransitionProps}
+                id="menu-list-grow"
+                style={{ transformOrigin: placement === 'bottom' ? 'top' : 'bottom',
+                         marginTop: 25,
+                         width: 800,
+                         height: 200,
+                         marginLeft: -300,
+                }}
+                onMouseLeave={this.handleSolution}
+                onMouseEnter={this.handleSolution}
+              >
+                <Paper>
+                    <Grid container spacing={6}>
+                    <Grid item sm>
+                    <Typography component="p" className={classes.menu_dropdown} style={{marginLeft:53}}>
+                    <h2>
+                      Solution
+                    </h2>
+                    </Typography>
+                    </Grid>
+                    </Grid>
+                    <Grid container spacing={24}>
+                    <Grid item sm>
+                    <Button className={classes.button}>
+                    <Typography component="p" className={classes.menu_dropdown}>
+                    <h3>
+                    Omnichanel Support
+                    </h3>
+                    Seemless customer service aross all changels
+                    </Typography>
+                    </Button>
+                    </Grid>
+                    <Grid item sm>
+                    <Button className={classes.button}>
+                    <Typography component="p"  className={classes.menu_dropdown}>
+                    <h3>
+                    Sacle with self-service
+                    </h3>
+                    Improved resolution rates, lower support costs, and happier customers
+                    </Typography>
+                    </Button>
+                    </Grid>
+                    <Grid item sm>
+                    <Button className={classes.button}>
+                    <Typography component="p"  className={classes.menu_dropdown}>
+                    <h3>
+                    Zendesk for Enterprise
+                    </h3>
+                    An agile solution to scale your support operations
+                    </Typography>
+                    </Button>
+                    </Grid>
+                    </Grid>
+
+                </Paper>
+              </Grow>
+            )}
+          </Popper>
+
           </Typography>
           </Toolbar>
         </AppBar>
