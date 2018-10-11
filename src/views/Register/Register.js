@@ -55,37 +55,76 @@ class Register extends React.Component {
     render() {
         const { classes } = this.props;
         return (
-            <div className={classes.registerDiv}>
-                <h4>ĐĂNG KÝ TÀI KHOẢN</h4>
-                <h4>Tên tài khoản:<h4 className={classes.requiredAsterisk}>*</h4></h4>
-                <TextField id="txtUsername" value={this.state.username} onChange={this.onValueChange}></TextField>
-                <h4>Mật khẩu:<h4 className={classes.requiredAsterisk}>*</h4></h4>
-                <TextField id="txtPassword" type="password" value={this.state.password} onChange={this.onValueChange}></TextField>
-                <h4>Email:<h4 className={classes.requiredAsterisk}>*</h4></h4>
-                <TextField id="txtEmail" value={this.state.email} onChange={this.onValueChange}></TextField>
-                <h4>THÔNG TIN CÁ NHÂN</h4>
-                <h4>Họ:</h4>
-                <TextField id="txtLastName" value={this.state.lastName} onChange={this.onValueChange}></TextField>
-                <h4>Tên:</h4>
-                <TextField id="txtFirstName" value={this.state.firstName} onChange={this.onValueChange}></TextField>
-                <h4>Số điện thoại:</h4>
-                <TextField id="txtPhoneNumber" value={this.state.phoneNumber} onChange={this.onValueChange}></TextField>
-                <h4>Tên công ty:</h4>
-                <TextField id="txtCompanyName" value={this.state.companyName} onChange={this.onValueChange}></TextField>
-                <br /><br />
-                <Button variant="outlined">Đăng Ký</Button>
+            <div id="333" className={classes.container}>
+                <table className={classes.table}>
+                    <tr className={classes.tableRow}>
+                        <td>
+                            <TextField className={classes.txt} variant="outlined" label="Email"></TextField>
+                        </td>
+                        <td>
+                            <TextField className={classes.txt} variant="outlined" label="Số điện thoại"></TextField>
+                        </td>
+                    </tr>
+                    <tr className={classes.tableRow}>
+                        <td>
+                            <TextField className={classes.txt} variant="outlined" label="Password"></TextField>
+                        </td>
+                        <td>
+                            <TextField className={classes.txt} variant="outlined" label="Tên công ty"></TextField>
+                        </td>
+                    </tr>
+                    <tr className={classes.tableRow}>
+                        <td className={classes.cellHoTen}>
+                        <TextField className={classes.txtHo} variant="outlined" label="Họ"></TextField>
+                        <TextField className={classes.txtTen} variant="outlined" label="Tên"></TextField>
+                        </td>
+                        <td>
+                            <Button className={classes.txt + ' ' + classes.button} variant="outlined">Đăng ký</Button>
+                        </td>
+                    </tr>
+                </table>
             </div>
         );
     }
 }
 
 const styles = {
-    registerDiv: {
-        paddingLeft: "700px",
+    container: {
+        paddingLeft: "20%",
+        paddingRight: "20%",
+        height: "500px",
     },
-    requiredAsterisk: {
-        color: "red",
-        display: "inline",
+    table: {
+        position: "relative",
+        width: "100%",
+        height: "50%",
+    },
+    txt: {
+        width: "90%",
+        left: "5%",
+    },
+    tableRow: {
+        marginBottom: "15%",
+    },
+    button: {
+        height: "56px",
+        backgroundColor: "#47525e",
+        color: "#FFFFFF",
+        fontFamily: "'Times New Roman', Times, serif",
+        fontSize: "20px",
+    },
+    cellHoTen: {
+        width: "50%",
+    },
+    txtHo: {
+        width: "42.5%",
+        marginLeft: "5%",
+        marginRight: "2.5%",
+    },
+    txtTen: {
+        width: "42.5%",
+        marginLeft: "2.5%",
+        marginRight: "5%",
     }
 }
 

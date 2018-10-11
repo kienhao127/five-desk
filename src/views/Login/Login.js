@@ -54,7 +54,8 @@ class Login extends React.Component {
 
 const styles = {
     loginDiv: {
-        paddingLeft: "700px",
+        paddingLeft: "40%",
+        paddingRight: "30%",
     },
     infoDiv: {
         marginBottom: "10px",
