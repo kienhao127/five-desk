@@ -1,4 +1,5 @@
 import React from "react";
+import { Link, Route, Switch } from 'react-router-dom'
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 // core components
@@ -9,11 +10,17 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { ListItemSecondaryAction, Typography } from "@material-ui/core";
+import NewMailTicket from 'views/MailTicket/NewMailTicket';
 
 const menuItems = [ 
-  {path: '/yourunsolved', content: "Your unsolved tickets", number: 0}, 
-  {path: '/unassigned', content: "Unassigned tickets", number: 2},
-  {path: '/allunsolved', content: "All unsolved tickets", number: 5},
+  {path: '/yourunsolvedtickets', content: "Ticket chưa giải quyết của bạn", number: 0}, 
+  {path: '/unassignedtickets', content: "Ticket chưa chuyển nhượng", number: 2},
+  {path: '/allunsolvedtickets', content: "Tất cả ticket chưa giải quyết", number: 5},
+  {path: '/newtickets', content: "Ticket mới", number: 0}, 
+  {path: '/pendingtickets', content: "Ticket chờ duyệt", number: 2},
+  {path: '/solvedtickets', content: "Ticket đã hoàn tất", number: 5},
+  {path: '/unsolvedtickets', content: "Ticket chưa hoàn tất", number: 0}, 
+  {path: '/deletedtickets', content: "Ticket đã xóa", number: 2},
 ];
 
 const tableHead = [
@@ -31,13 +38,6 @@ const tableData =[
   {id: 2, status: 'pending', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
   {id: 3, status: 'open', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
   {id: 4, status: 'solved', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
-  {id: 5, status: 'new', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
-  {id: 6, status: 'pending', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
-  {id: 7, status: 'open', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
-  {id: 8, status: 'solved', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
-  {id: 9, status: 'new', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
-  {id: 10, status: 'pending', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
-  {id: 11, status: 'solved', subject: "Tiêu đề của mail", requester: "Tên người gửi", requestTime: "01/01/2018", type: "Câu hỏi", priority: "Bình thường", assignee: 'Lương Kiên Hào'},
 ]
 
 class MailTicket extends React.Component {
@@ -54,7 +54,6 @@ class MailTicket extends React.Component {
   }
 
   componentDidMount(){
-    document.title = "Mail Ticket"
   }
 
   onTicketFilterClick = (key, item) => {

@@ -15,7 +15,6 @@ class Reporting extends React.Component {
   }
 
   componentDidMount(){
-    document.title = "Báo cáo"
   }
 
   render() {

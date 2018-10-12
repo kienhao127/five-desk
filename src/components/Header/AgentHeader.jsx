@@ -1,14 +1,17 @@
 import React from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
+import { Link } from 'react-router-dom'
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Hidden from "@material-ui/core/Hidden";
+import Button from '@material-ui/core/Button';
 // @material-ui/icons
 import Menu from "@material-ui/icons/Menu";
+import Add from '@material-ui/icons/AddCircle';
 // core components
 import HeaderLinks from "./AgentHeaderLinks";
 
@@ -34,7 +37,10 @@ function Header({ ...props }) {
       <Toolbar className={classes.container}>
         <div className={classes.flex}>
           {/* Here we create navbar brand, based on route name */}
-          
+          <Button color="default" className={classes.button} component={Link} to="/agent/ticket/new/1">
+            Thêm
+            <Add className={classes.rightIcon} />
+          </Button>
         </div>
         <Hidden smDown implementation="css">
           <HeaderLinks />

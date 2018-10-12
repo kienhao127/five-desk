@@ -18,9 +18,11 @@ import dashboardStyle from "assets/jss/material-dashboard-react/layouts/dashboar
 
 import image from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/logo.png";
+import NewMailTicket from 'views/MailTicket/NewMailTicket';
 
 const switchRoutes = (
   <Switch>
+       <Route exact path={'/agent/ticket/new/:id'} component={NewMailTicket} />
       {agentRoutes.map((prop, key) => {
         if (prop.redirect)
           return <Redirect from={prop.path} to={prop.to} key={key} />;
@@ -46,6 +48,8 @@ class Agent extends React.Component {
     }
   }
   componentDidMount() {
+    document.title = "FiveDesk - Agent";
+
     if (navigator.platform.indexOf("Win") > -1) {
       const ps = new PerfectScrollbar(this.refs.mainPanel);
     }

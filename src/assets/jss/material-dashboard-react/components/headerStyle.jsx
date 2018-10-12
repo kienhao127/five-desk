@@ -20,7 +20,6 @@ const headerStyle = theme => ({
     paddingTop: "10px",
     zIndex: "1029",
     color: "#555555",
-    border: "0",
     borderRadius: "3px",
     padding: "10px 0",
     transition: "all 150ms ease 0s",
@@ -76,6 +75,9 @@ const headerStyle = theme => ({
   },
   indicator: {
     backgroundColor: infoColor,
+  },
+  rightIcon: {
+    marginLeft: theme.spacing.unit,
   },
 });
 
