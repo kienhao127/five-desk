@@ -37,10 +37,12 @@ function Header({ ...props }) {
       <Toolbar className={classes.container}>
         <div className={classes.flex}>
           {/* Here we create navbar brand, based on route name */}
+          {props.location.pathname === '/agent/ticket' ? 
           <Button color="default" className={classes.button} component={Link} to="/agent/ticket/new/1">
             Thêm
             <Add className={classes.rightIcon} />
           </Button>
+          : null}
         </div>
         <Hidden smDown implementation="css">
           <HeaderLinks />

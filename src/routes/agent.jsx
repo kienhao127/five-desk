@@ -8,6 +8,7 @@ import MailTicket from "views/MailTicket/MailTicket";
 import LiveChat from "views/LiveChat/LiveChat";
 import Reporting from "views/Reporting/Reporting";
 import NewTicket from 'views/MailTicket/NewMailTicket';
+import User from "../views/User/User";
 
 const agentRoutes = [
   {
@@ -29,7 +30,7 @@ const agentRoutes = [
     sidebarName: "Thành viên",
     navbarName: "Thành viên",
     icon: Member,
-    component: Reporting
+    component: User
   },
   {
     path: "/agent/reporting",
