@@ -18,7 +18,6 @@ class ThemeButton extends React.Component {
   }
 
   render() {
-    const {classes, width, color} = this.props;
     return (
         <MuiThemeProvider theme={theme}>
             <Button variant="contained" color='primary' style={{width: this.props.width,}}>

@@ -17,6 +17,8 @@ import HeaderLinks from "./AgentHeaderLinks";
 
 import headerStyle from "assets/jss/material-dashboard-react/components/headerStyle.jsx";
 
+import logo from "assets/img/logo.png";
+
 function Header({ ...props }) {
   function makeBrand() { 
     var name;
@@ -43,6 +45,9 @@ function Header({ ...props }) {
             <Add className={classes.rightIcon} />
           </Button>
           : null}
+          <Hidden mdUp implementation="css">
+            <img src={logo} alt="logo" style={{width:50}} />
+          </Hidden>
         </div>
         <Hidden smDown implementation="css">
           <HeaderLinks />

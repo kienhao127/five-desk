@@ -79,6 +79,10 @@ const headerStyle = theme => ({
   rightIcon: {
     marginLeft: theme.spacing.unit,
   },
+  logoimg:{
+    width: '50px',
+    height: '50px',
+  }
 });
 
 export default headerStyle;

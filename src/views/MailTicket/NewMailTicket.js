@@ -172,7 +172,8 @@ const theme = createMuiTheme({
 const styles = theme => ({
     line: {
         width: '98%',
-        float: 'left'
+        float: 'left',
+        marginLeft: '10px',
     },
     container: {
       display: 'flex',
@@ -181,17 +182,18 @@ const styles = theme => ({
     textField: {
       marginTop: '15px',
       marginLeft: '10px',
-      width: '100%'
+      width: '98%'
     },
     rightTextField: {
         width: '98%',
         marginTop: '15px',
+        marginLeft: '10px',
     },
     selectableTextFieldContainer:{
         marginTop: '50px',
         marginLeft: '10px',
         display: 'flex',
-        width: '100%'
+        width: '99%'
     },
     selectableTextFieldType:{
         width: '50%',
