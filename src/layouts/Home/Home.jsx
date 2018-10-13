@@ -9,13 +9,13 @@ import "perfect-scrollbar/css/perfect-scrollbar.css";
 import withStyles from "@material-ui/core/styles/withStyles";
 // core components
 import Header from "components/Header/HomeHeader.jsx";
-
+import Footer from "components/Footer/Footer.jsx";
 import dashboardStyle from "assets/jss/material-dashboard-react/layouts/dashboardStyle.jsx";
 
 import LoginView from "./../../views/Login/Login";
 import RegisterView from "./../../views/Register/Register";
 import HomeView from "./../../views/Home/Home";
-
+import logo from "assets/img/logo.png";
 const switchRoutes = (
   <Switch>
      <Route path="/home" component={HomeView}/>
@@ -53,11 +53,20 @@ class Home extends React.Component {
       <div className={classes.wrapper}>
          <Header
             handleDrawerToggle={this.handleDrawerToggle}
+            open={this.state.mobileOpen}
+            logo={logo}
+            logoText={"FiveDesk"}
             {...rest}
+            
           />
           <div className={classes.content}>
               <div className={classes.container}>{switchRoutes}</div>
           </div>
+
+          <Footer
+            logo={logo}
+            logoText={"FiveDesk"}
+          />
       </div>
     );
   }
