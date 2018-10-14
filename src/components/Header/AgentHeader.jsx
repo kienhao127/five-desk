@@ -39,15 +39,15 @@ function Header({ ...props }) {
       <Toolbar className={classes.container}>
         <div className={classes.flex}>
           {/* Here we create navbar brand, based on route name */}
+          <Hidden mdUp implementation="css">
+            <img src={logo} alt="logo" style={{width:50}} />
+          </Hidden>
           {props.location.pathname === '/agent/ticket' ? 
           <Button color="default" className={classes.button} component={Link} to="/agent/ticket/new/1">
             Thêm
             <Add className={classes.rightIcon} />
           </Button>
           : null}
-          <Hidden mdUp implementation="css">
-            <img src={logo} alt="logo" style={{width:50}} />
-          </Hidden>
         </div>
         <Hidden smDown implementation="css">
           <HeaderLinks />

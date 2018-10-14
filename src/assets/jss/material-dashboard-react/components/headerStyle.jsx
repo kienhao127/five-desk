@@ -32,6 +32,7 @@ const headerStyle = theme => ({
   },
   flex: {
     flex: 1,
+    display: 'flex',
   },
   title: {
     ...defaultFont,

@@ -1,56 +1,51 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {Link } from "react-router-dom";
 // @material-ui/core components
+import withStyles from "@material-ui/core/styles/withStyles";
+import ListItem from "@material-ui/core/ListItem";
+import List from "@material-ui/core/List";
 // core components
-import "./../../assets/css/Footer-with-button-logo.css";
-import "./../../assets/css/bootstrap.min.css";
+import footerStyle from "assets/jss/material-dashboard-react/components/footerStyle.jsx";
+
 function Footer({ ...props }) {
-  const { classes, logo, logoText } = props;
+  const { classes } = props;
   return (
-    <footer id="myFooter">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-3">
-                    <h2 class="logo"><a href="#"> FiveDesk </a></h2>
-                </div>
-                <div class="col-sm-2">
-                    <h5>Bắt đầu</h5>
-                    <ul>
-                        <li><a href="#">Trang chủ</a></li>
-                        <li><a href="/Login">Đăng nhập</a></li>
-                    </ul>
-                </div>
-                <div class="col-sm-2">
-                    <h5>Về chúng tôi</h5>
-                    <ul>
-                        <li><a href="#">Thông tin công ty</a></li>
-                        <li><a href="#">Đánh giá</a></li>
-                    </ul>
-                </div>
-                <div class="col-sm-2">
-                    <h5>Hộ trợ</h5>
-                    <ul>
-                        <li><a href="/Home">FAQ</a></li>
-                        <li><a href="/Home">Blog</a></li>
-                        <li><a href="/Home">Forums</a></li>
-                    </ul>
-                </div>
-                <div class="col-sm-3">
-                    <div class="social-networks">
-                        <a href="/Home" class="twitter"><i class="fa fa-twitter"></i></a>
-                        <a href="/Home" class="facebook"><i class="fa fa-facebook"></i></a>
-                        <a href="/Home" class="google"><i class="fa fa-google-plus"></i></a>
-                    </div>
-                    <button type="button" class="btn btn-default">Liên hệ</button>
-                </div>
-            </div>
+    <footer className={classes.footer}>
+      <div className={classes.container}>
+        <div className={classes.left}>
+          <List className={classes.list}>
+            <ListItem className={classes.inlineBlock}>
+              <a href="#home" className={classes.block}>
+                Home
+              </a>
+            </ListItem>
+            <ListItem className={classes.inlineBlock}>
+              <a href="#company" className={classes.block}>
+                Company
+              </a>
+            </ListItem>
+            <ListItem className={classes.inlineBlock}>
+              <a href="#portfolio" className={classes.block}>
+                Portfolio
+              </a>
+            </ListItem>
+            <ListItem className={classes.inlineBlock}>
+              <a href="#blog" className={classes.block}>
+                Blog
+              </a>
+            </ListItem>
+          </List>
         </div>
-        <div class="footer-copyright">
-            <p>&copy; {(new Date().getFullYear())} Nhóm 10 All Rights Reserved</p>
-        </div>
+        <p className={classes.right}>
+          <span>
+            &copy; {1900 + new Date().getYear()}{" "}
+            <a href="https://www.creative-tim.com" className={classes.a}>
+              Creative Tim
+            </a>, made with love for a better web
+          </span>
+        </p>
+      </div>
     </footer>
-    
   );
 }
 
@@ -58,4 +53,4 @@ Footer.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default (Footer);
+export default withStyles(footerStyle)(Footer);
