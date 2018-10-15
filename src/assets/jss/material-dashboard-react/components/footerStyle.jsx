@@ -1,53 +1,106 @@
 import {
-  defaultFont,
   container,
-  primaryColor
 } from "assets/jss/material-dashboard-react.jsx";
 
 const footerStyle = {
-  block: {
-    color: "inherit",
-    padding: "15px",
-    textTransform: "uppercase",
-    borderRadius: "3px",
-    textDecoration: "none",
-    position: "relative",
-    display: "block",
-    ...defaultFont,
-    fontWeight: "500",
-    fontSize: "12px"
-  },
-  left: {
-    float: "left!important",
-    display: "block"
-  },
-  right: {
-    padding: "15px 0",
-    margin: "0",
-    fontSize: "14px",
-    float: "right!important"
-  },
   footer: {
-    bottom: "0",
-    borderTop: "1px solid #e7e7e7",
-    padding: "15px 0",
-    ...defaultFont
+    fontFamily: 'Roboto',
+    backgroundColor: '#3c3d41',
+    color: 'White',
+    paddingTop: 30,
+    margin: 0 -8,
+	
   },
+  logo: {
+    fontSize: 50,
+    textAlign: 'center',
+    color: '#fff',
+    textDecoration: 'none',
+    display: 'flex',  
+    justifyContent:'center', 
+    alignItems:'center',
+  },
+  footerCopyright: {
+  backgroundColor: '#333333',
+    paddingTop: 3,
+    paddingBottom: 3,
+    textAlign: 'center',
+    marginTop: 20,
+    marginLeft: -13,
+    marginRight: -13,
+  },
+  social_networks: {
+    textAlign: 'center',
+    paddingTop: 30,
+    paddingBottom: 16,
+  
+  },
+  social_networks_twitter: {
+    fontSize: 32,
+    color: '#f9f9f9',
+    padding: 10,
+    transition: '0.2s',
+    '&:hover': {
+      color: '#00aced',
+    },   
+  },
+
+  social_networks_google: {
+    fontSize: 32,
+    color: '#f9f9f9',
+    padding: 10,
+    transition: '0.2s',
+    '&:hover': {
+      color: '#0077e2',
+      
+    },   
+  },
+
+  social_networks_facebook: {
+    fontSize: 32,
+    color: '#f9f9f9',
+    padding: 10,
+    transition: '0.2s',
+    '&:hover': {
+      color: '#ef1a1a',
+    },   
+  }, 
+
+  Button: {
+    display: 'block',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 10,
+    width: 150,
+  },
+
   container,
   a: {
-    color: primaryColor,
-    textDecoration: "none",
-    backgroundColor: "transparent"
+    textDecoration: 'none',
+    color: '#d2d1d1',
+    display: 'flex',  
+    justifyContent:'center', 
+    alignItems:'center',
+    '&:hover' : {
+      color: 'White'
+    },
   },
-  list: {
-    marginBottom: "0",
-    padding: "0",
-    marginTop: "0"
+  ul: {
+    listStyleType: 'none',
+    paddingLeft: 0,
+    lineHeight: 1.7,
+    marginTop: -15,
   },
-  inlineBlock: {
-    display: "inline-block",
-    padding: "0px",
-    width: "auto"
-  }
+  h5: {
+    fontSize: 20,
+    color: 'white',
+    fontWeight: 'bold',
+    marginTop: 30,
+    display: 'flex',  
+    justifyContent:'center', 
+    alignItems:'center',
+  },
+  
+  
 };
 export default footerStyle;
