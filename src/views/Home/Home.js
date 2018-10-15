@@ -128,29 +128,29 @@ const styles =  {
     },
 
     h1: {
+        fontFamily: 'roboto-medium',
         fontSize: 48,
         color: '#00bcd4',
-        fontWeight: 900,
     },
     p: {
+        fontFamily: 'roboto-light',
         fontSize: 20,
-        fontWeight: 500,
         lineHeight: 1.7,
     },
     h1_2: {
+        fontFamily: 'roboto-medium',
         color: '#016370',
         display: 'flex',
         justifyContent:'center', 
         alignItems:'center',
-        fontWeight: 700,
         fontSize: 50,
         margin: 60,
     },
 
     h1_3: {
+        fontFamily: 'roboto-medium',
         color: '#00bcd4',
         fontSize: 35,
-        fontWeight: 700,
     },
 
 };
