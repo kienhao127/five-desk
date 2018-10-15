@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import withStyles from "@material-ui/core/styles/withStyles";
 import { createBrowserHistory } from 'history';
+import { loginApi } from "../../api/AppApi";
 
 const history = createBrowserHistory();
 
@@ -31,6 +32,14 @@ class Login extends React.Component {
             })
     }
 
+    onLoginClick = (username, password) => {
+        let user = {
+            email: username,
+            pass: password,
+        }
+        loginApi(username, password).then(res => console.log(res.user))
+    }
+
     render() {
         const { classes } = this.props;
         return (
@@ -41,11 +50,11 @@ class Login extends React.Component {
                 </div>
                 <div className={classes.infoDiv}>
                     <h4 className={classes.h4 + ' ' + classes.inline}>MẬT KHẨU</h4>
-                    <TextField className={classes.textField + ' ' + classes.inline + ' ' + classes.passwordField} variant="outlined" id="txtPassword" value={this.state.username} onChange={this.onValueChange}></TextField>
+                    <TextField className={classes.textField + ' ' + classes.inline + ' ' + classes.passwordField} variant="outlined" id="txtPassword" value={this.state.password} onChange={this.onValueChange}></TextField>
                 </div>
                 {/*<Button variant="outlined" component={Link} to="/agent">go to agent</Button>}*/}
                 <div className={classes.infoDiv}>
-                    <Button className={classes.button} variant="outlined">Đăng Nhập</Button>
+                    <Button onClick={() => this.onLoginClick(this.state.username, this.state.password)} className={classes.button} variant="outlined">Đăng Nhập</Button>
                 </div>
             </div>
         );

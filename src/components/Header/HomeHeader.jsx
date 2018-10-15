@@ -7,7 +7,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Hidden from "@material-ui/core/Hidden";
 import Drawer from '@material-ui/core/Drawer';
 import MenuIcon from '@material-ui/icons/Menu';
-import "./../../assets/fonts/fonts.css";
 import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
