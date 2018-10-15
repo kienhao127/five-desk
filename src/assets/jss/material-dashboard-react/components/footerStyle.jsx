@@ -9,7 +9,7 @@ const footerStyle = {
     color: 'White',
     paddingTop: 30,
     margin: 0 -8,
-	
+    marginTop: 100
   },
   logo: {
     fontSize: 50,
@@ -55,6 +55,7 @@ const footerStyle = {
       
     },   
   },
+
 
   social_networks_facebook: {
     fontSize: 32,
