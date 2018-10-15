@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
 
 app.use('/user', userCtrl);
 
-var port = process.env.port || 8080;
+var port = process.env.port || 8888;
 app.listen(port, () => {
     console.log(`api running on port ${port}`);
 })

@@ -1,4 +1,4 @@
-var BASE_URL = 'http://localhost:8080/'
+var BASE_URL = 'http://localhost:8888/'
 
 function fetchApi(url, method, data){
     var path = BASE_URL + url;

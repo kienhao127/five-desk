@@ -14,8 +14,9 @@ router.post('/login', (req, res) => {
             console.log(value);
             res.statusCode = 201;
             res.json({
+                returnCode: 1,
+                message: 'success',
                 user: value,
-                msg: 'category added'
             })
         })
         .catch(err => {

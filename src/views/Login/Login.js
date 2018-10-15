@@ -37,7 +37,7 @@ class Login extends React.Component {
             email: username,
             pass: password,
         }
-        loginApi(username, password).then(res => console.log(res.user))
+        loginApi(username, password).then(res => console.log(res))
     }
 
     render() {
