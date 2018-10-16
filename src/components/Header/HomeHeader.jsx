@@ -37,14 +37,13 @@ const styles = theme => ({
     fontFamily: 'Roboto',
     color: '#00acc1',
     marginLeft: 40,
-	marginTop: 10,
+	  marginTop: 10,
   },
   LogoTxt: {
+    fontFamily: 'roboto-medium',
     color: 'black',
     fontSize: 26,
     display: 'inline-block',
-    marginLeft: -10,
-    fontWeight: 700,
   },
   
   top: {
@@ -93,65 +92,62 @@ class Header extends React.Component {
     const { classes, logo, logoText } = this.props;
     const drawer = (
       <Popper open={this.state.open} anchorEl={this.anchorEl} transition disablePortal>
-            {({ TransitionProps, placement }) => (
-              <Grow
-                {...TransitionProps}
-                id="menu-list-grow"
-                style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-              >
-                <Paper>
-                  <ClickAwayListener onClickAway={this.handleClose}>
-                    <MenuList>
-                    <Link to="/login" style={{ textDecoration: 'none'}}>
-                      <MenuItem onClick={this.handleClose} className={classes.Links}>Đăng nhập</MenuItem></Link>
-                    <Link to="/register" style={{ textDecoration: 'none'}}>
-                      <MenuItem onClick={this.handleClose} className={classes.Links}>Đăng Ký</MenuItem></Link>
-                    </MenuList>
-                  </ClickAwayListener>
-                </Paper>
-              </Grow>
-            )}
-          </Popper>
+        {({ TransitionProps, placement }) => (
+          <Grow
+            {...TransitionProps}
+            id="menu-list-grow"
+            style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+          >
+            <Paper>
+              <ClickAwayListener onClickAway={this.handleClose}>
+                <MenuList>
+                <Link to="/login" style={{ textDecoration: 'none'}}>
+                  <MenuItem onClick={this.handleClose} className={classes.Links}>Đăng nhập</MenuItem></Link>
+                <Link to="/register" style={{ textDecoration: 'none'}}>
+                  <MenuItem onClick={this.handleClose} className={classes.Links}>Đăng Ký</MenuItem></Link>
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
     );
     
     return (
       <div className={classes.root}>
         <Hidden smUp>
-        {drawer}
+          {drawer}
         </Hidden>
+
         <Hidden xsDown implementation="css">
-          <Drawer
-            variant="permanent"
-            open
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-          >
-          </Drawer>
           <div className={classes.root}>
-          <Link to="/Home">
-          <img src={logo} alt="logo" width='55' height='45'/>
-          <div className={classes.LogoTxt}>
-          {logoText}
-          </div>
-          </Link>
-          <div className={classes.top}>
-          <Link to="/login" style={{ textDecoration: 'none', color: 'black' }}>
-          <Button size="large" className={classes.Buttons}>Đăng nhập</Button>
-          </Link>
-          <Link to="/register" style={{ textDecoration: 'none', color: 'black' }}>
-          <Button size="large" className={classes.Buttons}>Đăng Ký</Button>
-          </Link>
-          </div>
+            <Link to="/Home">
+              <img src={logo} alt="logo" width='55' height='45'/>
+              <div className={classes.LogoTxt}>
+              {logoText}
+              </div>
+            </Link>
+            {this.props.location.pathname !== '/register' && this.props.location.pathname !== '/login' ? 
+              <div className={classes.top}>
+                <Link to="/login" style={{ textDecoration: 'none', color: 'black' }}>
+                  <Button size="large" className={classes.Buttons}>Đăng nhập</Button>
+                </Link>
+                <Link to="/register" style={{ textDecoration: 'none', color: 'black' }}>
+                  <Button size="large" className={classes.Buttons}>Đăng Ký</Button>
+                </Link>
+              </div>
+              : null}
           </div>
         </Hidden>
+
         <div className={classes.navIconHide}>
           <Link to="/Home">
-          <img src={logo} alt="logo" width='55' height='45'/>
-          <div className={classes.LogoTxt}>
-          {logoText}
-          </div>
+            <img src={logo} alt="logo" width='55' height='45'/>
+            <div className={classes.LogoTxt}>
+            {logoText}
+            </div>
           </Link>
+          {this.props.location.pathname !== '/register' && this.props.location.pathname !== '/login' ? 
           <IconButton
               buttonRef={node => {
                 this.anchorEl = node;
@@ -161,11 +157,11 @@ class Header extends React.Component {
               onClick={this.handleToggle}
               className={classes.navIconHide}
               style={{float:'right', marginTop: 13} }
-        >
-        <MenuIcon/>
-        </IconButton>
-        </div>
-        </div>
+          > 
+            <MenuIcon/>
+          </IconButton>: null}
+        </div> 
+      </div>
     );
   }
 }

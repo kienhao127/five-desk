@@ -4,6 +4,7 @@ import GridContainer from "./../../components/Grid/GridContainer";
 import GridItem from "./../../components/Grid/GridItem";
 // @material-ui/core
 import withStyles from "@material-ui/core/styles/withStyles";
+import Hidden from "@material-ui/core/Hidden";
 import YouTube from 'react-youtube';
 import contentImg from './../../assets/img/Content.jpg'
 class Home extends React.Component {
@@ -48,16 +49,6 @@ class Home extends React.Component {
                         Kết nối khách hàng
                     </h1>
                  </GridItem>
-
-                <GridItem xs={12} sm={12} md={6}>
-                <div className={classes.video}>
-                <YouTube className={classes.videoy}
-                videoId={video[0].ID}
-                opts={opts}
-                onReady={this._onReady}
-                />
-                </div>
-                </GridItem>
                 <GridItem xs={12} sm={12} md={6}>
                 <h1 className={classes.h1_3}>Mail Ticket</h1>
                 <p className={classes.p}>
@@ -70,6 +61,17 @@ class Home extends React.Component {
                 sẽ xác định kênh nào được bao gồm.
                 </p>
                 </GridItem>
+                
+                <GridItem xs={12} sm={12} md={6}>
+                    <div className={classes.video}>
+                    <YouTube className={classes.videoy}
+                    videoId={video[0].ID}
+                    opts={opts}
+                    onReady={this._onReady}
+                    />
+                    </div>
+                </GridItem>
+                
                 <GridItem xs={12} sm={12} md={6}>
                 <h1 className={classes.h1_3}>Live Chat</h1>
                 <p className={classes.p}>
@@ -94,7 +96,7 @@ class Home extends React.Component {
         );
     }
 }
-const styles =  {
+const styles = theme => ({
     root: {
         width: '95%', 
         marginLeft: 'auto', 
@@ -143,7 +145,7 @@ const styles =  {
         display: 'flex',
         justifyContent:'center', 
         alignItems:'center',
-        fontSize: 50,
+        fontSize: '5vw',
         margin: 60,
     },
 
@@ -152,6 +154,5 @@ const styles =  {
         color: '#00bcd4',
         fontSize: 35,
     },
-
-};
+});
 export default withStyles(styles)(Home);

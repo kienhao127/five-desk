@@ -61,7 +61,7 @@ class Register extends React.Component {
         return (
             <div style={{width: '50%', display: 'block', marginLeft: 'auto', marginRight: 'auto'}}>
                 <img src={RegisterImage} style={{width: '75%', display: 'block', marginLeft: 'auto', marginRight: 'auto'}}/>
-                <Typography style={{display: 'block', marginLeft: 'auto', marginRight: 'auto', fontSize: 40, fontFamily: 'Roboto-Medium', textAlign:'center'}}>Bắt đầu kết nối khách hàng!</Typography>
+                <Typography style={{display: 'block', marginLeft: 'auto', marginRight: 'auto', fontSize: '3.5vw', fontFamily: 'Roboto-Medium', textAlign:'center'}}>Bắt đầu kết nối khách hàng!</Typography>
                 <GridContainer>
                     <GridItem xs={12} sm={12} md={6} >
                         <div className={classes.selectableTextFieldContainer}>

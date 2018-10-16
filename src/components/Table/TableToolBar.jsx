@@ -35,6 +35,9 @@ const toolbarStyles = theme => ({
     button: {
       
     },
+    row: {
+      display: 'flex',
+    }
   });
   
   let TableToolbar = props => {
@@ -53,7 +56,7 @@ const toolbarStyles = theme => ({
         {props.children}
         <div className={classes.actions}>
           {numSelected > 0 ? (
-            <div>
+            <div className={classes.row}>
             <Tooltip title="Báo cáo spam">
               <IconButton className={classes.button}>
                 <ErrorIcon />
