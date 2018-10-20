@@ -9,7 +9,7 @@ import LiveChat from "views/LiveChat/LiveChat";
 import Reporting from "views/Reporting/Reporting";
 import NewTicket from 'views/MailTicket/NewMailTicket';
 import User from "../views/User/User";
-
+import EditUser from "../views/User/EditUser";
 const agentRoutes = [
   {
     path: "/agent/ticket",
@@ -30,7 +30,7 @@ const agentRoutes = [
     sidebarName: "Thành viên",
     navbarName: "Thành viên",
     icon: Member,
-    component: User
+    component: EditUser
   },
   {
     path: "/agent/reporting",

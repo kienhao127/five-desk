@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button'
-import IconButton from '@material-ui/core/IconButton';
 import Hidden from "@material-ui/core/Hidden";
-import Drawer from '@material-ui/core/Drawer';
+import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
@@ -19,13 +18,6 @@ const styles = theme => ({
   navIconHide: {
     [theme.breakpoints.up('sm')]: {
       display: 'none',
-    },
-  },
-
-  drawerPaper: {
-    width: drawerWidth,
-    [theme.breakpoints.up('sm')]: {
-      position: 'relative',
     },
   },
 
