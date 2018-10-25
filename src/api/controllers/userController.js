@@ -4,19 +4,32 @@ var userRepo = require('../repos/userRepo');
 var router = express.Router();
 
 router.post('/login', (req, res) => {
-    console.log(req);
+    // console.log(req);
     var u = {
         email: req.body.email,
         password: req.body.password
     }
     userRepo.login(u)
         .then(value => {
-            console.log(value);
+            var user = value[0];
+            var message = '';
+            var returnCode = 0;
+            if(user != null) {
+                message = 'login success';
+                returnCode = 1;
+
+                if(user.isActive == false) {
+                    message = 'inactive account';
+                    returnCode = 3;
+                }
+            } else {
+                message = 'login fail';
+            }
             res.statusCode = 201;
             res.json({
-                returnCode: 1,
-                message: 'success',
-                user: value,
+                returnCode: returnCode,
+                message: message,
+                user: user,
             })
         })
         .catch(err => {
