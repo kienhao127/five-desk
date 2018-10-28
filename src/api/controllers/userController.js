@@ -18,7 +18,7 @@ router.post('/login', (req, res) => {
                 message = 'login success';
                 returnCode = 1;
 
-                if(user.isActive == false) {
+                if(user.isActive == 0) {
                     message = 'inactive account';
                     returnCode = 3;
                 }
