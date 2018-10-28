@@ -39,4 +39,47 @@ router.post('/login', (req, res) => {
         })
 })
 
+router.post('/register', (req, res) => {
+    userRepo.insertCompany(req.body.company)
+        .then(value => {
+            var u = {
+                email: req.body.email,
+                password: req.body.password,
+                avatar: req.body.avatar,
+                firstname: req.body.firstname,
+                lastname: req.body.lastname,
+                phonenumber: req.body.phone,
+                company: value.insertId,
+                isdelete: 0,
+                type: 2,
+                isactive: 0
+            }
+            
+            userRepo.register(u)
+                .then(value => {
+                    var message = '';
+                    var returnCode = 0;
+                    if(value != null) {
+                        if(value.insertId > 0) {
+                            message = 'success';
+                            returnCode = 1;
+                        } else {
+                            message = 'fail';
+                        }
+                    }
+                    
+                    res.statusCode = 201;
+                    res.json({
+                        returnCode: returnCode,
+                        message: message
+                    })
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.statusCode = 500;
+                    res.end('View error log on server console');
+                })
+        })
+})
+
 module.exports = router;

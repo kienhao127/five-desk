@@ -2,8 +2,8 @@ var BASE_URL = 'http://localhost:8888/'
 
 function fetchApi(url, method, data){
     var path = BASE_URL + url;
-    console.log(path);
-    console.log(data)
+    // console.log(path);
+    // console.log(data)
     return fetch(path,
     {
         headers: {
@@ -21,4 +21,17 @@ export function loginApi(email, password) {
         password: password
     }
     return fetchApi('user/login', 'POST', body);
+}
+
+export function registerApi(email, password, avatar, firstname, lastname, phone, company) {
+    var body = {
+        email: email,
+        password: password,
+        avatar: avatar,
+        firstname: firstname,
+        lastname: lastname,
+        phonenumber: phone,
+        company: company
+    }
+    return fetchApi('user/register', 'POST', body);
 }
