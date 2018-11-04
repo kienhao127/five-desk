@@ -3,8 +3,11 @@ var chatRepo = require('../repos/chatRepo');
 
 var router = express.Router();
 
-router.get('/getListTopic', (req, res) => {
-    chatRepo.getListTopic()
+router.post('/getListTopic', (req, res) => {
+    var topic = {
+        id: req.body.companyID
+    }
+    chatRepo.getListTopic(topic)
         .then(value => {
             var listTopic = value;
             var message = '';
