@@ -43,7 +43,7 @@ function Header({ ...props }) {
             <img src={logo} alt="logo" style={{width:50}} />
           </Hidden>
           {props.location.pathname === '/agent/ticket' ? 
-          <Button color="default" className={classes.button} component={Link} to="/agent/ticket/new/1">
+          <Button color="default" className={classes.button} component={Link} to="/agent/ticket/new">
             Thêm
             <Add className={classes.rightIcon} />
           </Button>

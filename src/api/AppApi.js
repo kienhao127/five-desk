@@ -3,7 +3,7 @@ var BASE_URL = 'http://localhost:8888/'
 function fetchApi(url, method, data){
     var path = BASE_URL + url;
     // console.log(path);
-    // console.log(data)
+    console.log(data)
     return fetch(path,
     {
         headers: {
@@ -36,10 +36,16 @@ export function registerApi(email, password, avatar, firstname, lastname, phone,
     return fetchApi('user/register', 'POST', body);
 }
 
-export function getListTopicApi() {
+export function getListTopicApi(companyID) {
+    var body = {
+        companyID: companyID
+    }
     return fetchApi('chat/getListTopic', 'POST', body);
 }
 
-export function getTopicApi() {
+export function getTopicApi(topicID) {
+    var body = {
+        topicID: topicID
+    }
     return fetchApi('chat/getTopic', 'POST', body);
 }

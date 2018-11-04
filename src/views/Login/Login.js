@@ -12,7 +12,9 @@ import ThemeButton from './../../components/ThemeButton/ThemeButton';
 import {withStyles, createMuiTheme, MuiThemeProvider} from "@material-ui/core/styles";
 import { Button, Typography } from "@material-ui/core";
 import LoginImage from 'assets/img/login-image.png';
+import { connect } from "react-redux";
 import RegisterView from "./../../views/Register/Register";
+import { login } from "../../store/actions/user";
 const history = createBrowserHistory();
 
 class Login extends React.Component {
@@ -21,15 +23,15 @@ class Login extends React.Component {
         super(props);
 
         this.state = {
-            username: "",
-            password: "",
+            email: "hao@gmail.com",
+            password: "123456",
         };
     }
 
     onValueChange = (event) => {
         if (event.target.id == "txtUsername")
             this.setState({
-                username: event.target.value
+                email: event.target.value
             })
         else if (event.target.id == "txtPassword")
             this.setState({
@@ -37,12 +39,10 @@ class Login extends React.Component {
             })
     }
 
-    onLoginClick = (username, password) => {
-        let user = {
-            email: username,
-            pass: password,
-        }
-        loginApi(username, password).then(res => console.log(res))
+    onLoginClick = (email, password) => {
+        this.props.doLogin(email, password).then((resJson) => {
+           this.props.history.push('/agent/ticket')
+        })
     }
 
     render() {
@@ -72,7 +72,7 @@ class Login extends React.Component {
                                 name='txtPassword'
                                 className={classes.textField}
                                 variant="outlined"
-                                value={this.state.username} 
+                                value={this.state.password} 
                                 onChange={this.onValueChange}
                             />
                         
@@ -81,11 +81,11 @@ class Login extends React.Component {
 
                         <div className={classes.infoDiv}>
                             <MuiThemeProvider theme={theme}>
-                                <Button onClick={() => this.onLoginClick(this.state.username, this.state.password)}  variant="contained" color='primary' style={{width: '45%', height: '25%', marginTop: 15}}>
-                                    <Typography style={{color: '#FFF', fontSize: 20}}>Đăng Nhập</Typography>
+                                <Button onClick={() => this.onLoginClick(this.state.email, this.state.password)}  variant="contained" color='primary' style={{width: '45%', height: '25%', marginTop: 15}}>
+                                    <Typography style={{color: '#FFF', fontSize: 20, fontFamily: 'Roboto-Regular'}}>Đăng Nhập</Typography>
                                 </Button>
                                 <Button style={{width: '45%', height: '25%', marginLeft: 10, marginTop: 15}} className={classes.button} variant="contained">
-                                    <Typography style={{color: '#000', fontSize: 20}}>Đăng Ký</Typography>
+                                    <Typography style={{color: '#000', fontSize: 20, fontFamily: 'Roboto-Regular'}}>Đăng Ký</Typography>
                                 </Button>
 
                             </MuiThemeProvider>
@@ -140,4 +140,15 @@ const styles = {
     },
   });
 
-export default withStyles(styles)(Login);
+const mapStateToProps = state => {
+    return {
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        doLogin: (email, password) => dispatch(login(email, password))
+    };
+};
+
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Login));

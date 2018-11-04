@@ -20,6 +20,9 @@ import Hidden from "@material-ui/core/Hidden";
 import Drawer from '@material-ui/core/Drawer';
 import AccountIcon from '@material-ui/icons/AccountCircle';
 
+import { connect } from "react-redux";
+import { getListTopic, getTopic } from "../../store/actions/chat";
+
 const ListUser = [
   { imgSrc: avatar, name: "Hao Luong" },
   { imgSrc: avatar, name: "Hao Luong" },
@@ -45,32 +48,63 @@ class LiveChat extends React.Component {
 
     this.state = {
       right: false,
+      listTopic: [{CompanyID: 1,
+        IsDelete: 0,
+        LastMessageSendTime: 1541349185313,
+        ServicerID: 1,
+        TopicID: "127.0.0.3",
+        UnreadMessageCount: 0,
+        VisitorName: "User02"}],
+      listMessage: null,
     };
   }
+  
   componentDidMount() {
+    console.log(this.props.userProfile);
+  
     const ps = new PerfectScrollbar(this.refs.left);
     const ps2 = new PerfectScrollbar(this.refs.chat);
+
+    this.props.doGetListTopic(1)
+    .then((resJson) => {
+      console.log('resJson');
+      console.log(resJson);
+      this.setState({
+        listTopic: resJson.listTopic,
+      })
+    })
   }
+
   toggleDrawer = (side, open) => () => {
     this.setState({
       [side]: open,
     });
   };
+  
+  onTopicClick = (topicID) => {
+    console.log('TopicID: ' + topicID)
+    this.props.doGetTopic(topicID)
+    .then((resJson) => {
+      this.setState({
+        listMessage: resJson.topic,
+      })
+    })
+  }
+
   render() {
     const { classes } = this.props;
     const sideList = (
       <div className={classes.list}>
         <MenuList>
-                  {ListUser.map((item, key) => (
-                    <MenuItem className={classes.menuItem} key={key}>
-                      <Avatar className={classes.img}
-                        src={item.imgSrc} />
-                      <ListItemText classes={{ primary: classes.primary }}
-                        inset primary={item.name} />
-                    </MenuItem>
-                  ))}
-
-                </MenuList>
+          {this.state.listTopic && this.state.listTopic.map((item, key) => (
+            <MenuItem className={classes.menuItem} key={key} onClick={() => this.onTopicClick(item.TopicID)}>
+              <Avatar className={classes.img}
+                src={avatar} />
+              <ListItemText classes={{ primary: classes.primary }}
+                inset primary={item.VisitorName} />
+            </MenuItem>
+          ))}
+        </MenuList>
       </div>
     );
     return (
@@ -80,12 +114,12 @@ class LiveChat extends React.Component {
             <GridItem xs={12} sm={12} md={4}>
               <div className={classes.left} ref="left">
                 <MenuList>
-                  {ListUser.map((item, key) => (
-                    <MenuItem className={classes.menuItem} key={key}>
+                  {this.state.listTopic && this.state.listTopic.map((item, key) => (
+                    <MenuItem className={classes.menuItem} key={key} onClick={() => this.onTopicClick(item.TopicID)}>
                       <Avatar className={classes.img}
-                        src={item.imgSrc} />
+                        src={avatar} />
                       <ListItemText classes={{ primary: classes.primary }}
-                        inset primary={item.name} />
+                        inset primary={item.VisitorName} />
                     </MenuItem>
                   ))}
 
@@ -96,27 +130,31 @@ class LiveChat extends React.Component {
               <div className={classes.right}>
                 <div className={classes.top}>
                   To: Hello World
-        </div>
+              </div>
                 <div className={classes.chat} ref="chat">
-                  <div style={{ clear: 'both' }}>
-                    <Avatar src={img_me}
-                      className={classes.img_y} />
-                    <div className={classes.bubble_y}>
-                      <div className={classes.b_you}>
-                        Hello gahote ashsw dwisdn sad dwd
-                  </div>
+                {this.state.listMessage && this.state.listMessage.map((message, index) => {
+                  return(
+                    isNaN(message.SenderID)
+                  ?
+                    <div style={{ clear: 'both' }} key={index}>
+                      <Avatar src={img_me} className={classes.img_y} />
+                      <div className={classes.bubble_y}>
+                        <div className={classes.b_you}>
+                          {message.Content}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div style={{ clear: 'both' }}>
-
-                    <Avatar src={avatar}
-                      className={classes.img_m} />
+                  :
+                  <div style={{ clear: 'both' }} key={index}>
+                    <Avatar src={avatar} className={classes.img_m} />
                     <div className={classes.bubble_m}>
-                      <div className={classes.me}>
-                        Hello
-                </div>
+                      <div className={classes.me}>  
+                        {message.Content}
+                      </div>
                     </div>
                   </div>
+                  )}
+                )}
                 </div>
                 <div className={classes.write}>
                   <TextField
@@ -163,7 +201,7 @@ class LiveChat extends React.Component {
                   className={classes.img_y} />
                 <div className={classes.bubble_y}>
                   <div className={classes.b_you}>
-                    Hello gahote ashsw dwisdn sad dwd
+                    Hello gahote ashsw dwisdn sad dwddasdasdasdasdasdas d
                   </div>
                 </div>
               </div>
@@ -330,4 +368,18 @@ const styles = theme => ({
     width: '200px'
   }
 });
-export default withStyles(styles)(LiveChat);
+
+const mapStateToProps = state => {
+  return {
+    userProfile: state.user.profile,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+      doGetListTopic: (companyID) => dispatch(getListTopic(companyID)),
+      doGetTopic: (topicID) => dispatch(getTopic(topicID)),
+  };
+};
+
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(LiveChat));

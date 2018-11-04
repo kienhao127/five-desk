@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-// import productReducer from './productReducer';
+import userReducer from './user';
 // import floatCartReducer from './floatCartReducer';
 // import updateCartReducer from './updateCartReducer';
 // import filterReducer from './filterReducer';
@@ -7,7 +7,7 @@ import { combineReducers } from 'redux';
 
 
 export default combineReducers({
-//   products: productReducer,
+  user: userReducer,
 //   cartProducts: floatCartReducer,
 //   cartTotals: updateCartReducer,
 //   filters: filterReducer,

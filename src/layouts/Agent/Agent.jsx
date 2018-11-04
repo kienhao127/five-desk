@@ -21,7 +21,7 @@ import NewMailTicket from 'views/MailTicket/NewMailTicket';
 
 const switchRoutes = (
   <Switch>
-       <Route exact path={'/agent/ticket/new/:id'} component={NewMailTicket} />
+       <Route exact path={'/agent/ticket/new'} component={NewMailTicket} />
       {agentRoutes.map((prop, key) => {
         if (prop.redirect)
           return <Redirect from={prop.path} to={prop.to} key={key} />;

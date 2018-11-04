@@ -13,9 +13,11 @@ router.post('/getListTopic', (req, res) => {
             var message = '';
             var returnCode = 0;
             
+            console.log('listTopic.length');
+            console.log(listTopic.length);
             res.statusCode = 201; //tam thoi de 201
             res.json({
-                returnCode: returnCode,
+                returnCode: listTopic.length > 0 ? 1 : 0,
                 message: message,
                 listTopic: listTopic,
             })
@@ -39,7 +41,7 @@ router.post('/getTopic', (req, res) => {
             
             res.statusCode = 201; //tam thoi de 201
             res.json({
-                returnCode: returnCode,
+                returnCode: topic.length > 0 ? 1 : 0,
                 message: message,
                 topic: topic,
             })
