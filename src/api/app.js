@@ -2,6 +2,7 @@ var express = require('express'),
     morgan = require('morgan'),
     bodyParser = require('body-parser');
 var userCtrl = require('./controllers/userController');
+var chatCtrl = require('./controllers/chatController');
 
 var app = express();
 
@@ -33,6 +34,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/user', userCtrl);
+app.use('/chat', chatCtrl);
 
 var port = process.env.port || 8888;
 app.listen(port, () => {

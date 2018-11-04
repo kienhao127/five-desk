@@ -35,3 +35,7 @@ export function registerApi(email, password, avatar, firstname, lastname, phone,
     }
     return fetchApi('user/register', 'POST', body);
 }
+
+export function getListTopic() {
+    return fetchApi('chat/getListTopic', 'GET');
+}
