@@ -9,7 +9,7 @@ import GridContainer from "./../../components/Grid/GridContainer";
 import GridItem from "./../../components/Grid/GridItem";
 import MenuItem from '@material-ui/core/MenuItem';
 import ThemeButton from './../../components/ThemeButton/ThemeButton';
-import {withStyles, createMuiTheme, MuiThemeProvider} from "@material-ui/core/styles";
+import { withStyles, createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import { Button, Typography } from "@material-ui/core";
 import LoginImage from 'assets/img/login-image.png';
 import { connect } from "react-redux";
@@ -41,19 +41,17 @@ class Login extends React.Component {
 
     onLoginClick = (email, password) => {
         this.props.doLogin(email, password).then((resJson) => {
-           this.props.history.push('/agent/ticket')
+            this.props.history.push('/agent/ticket')
         })
     }
 
     render() {
         const { classes } = this.props;
         return (
-         <div className={classes.loginDiv}>
-
-            <GridContainer>
-            <GridItem xs={12} md={5} >
-                <div className={classes.infoDiv}>
-
+            <div className={classes.loginDiv}>
+                <GridContainer>
+                    <GridItem xs={12} md={5} >
+                        <div className={classes.infoDiv}>
                             <TextField
                                 id="txtUsername"
                                 label="Email"
@@ -61,10 +59,9 @@ class Login extends React.Component {
                                 name='txtUsername'
                                 className={classes.textField}
                                 variant="outlined"
-                                value={this.state.username} 
+                                value={this.state.username}
                                 onChange={this.onValueChange}
                             />
-                        
                             <TextField
                                 id="txtPassword"
                                 label="Password"
@@ -72,33 +69,26 @@ class Login extends React.Component {
                                 name='txtPassword'
                                 className={classes.textField}
                                 variant="outlined"
-                                value={this.state.password} 
+                                value={this.state.password}
                                 onChange={this.onValueChange}
                             />
-                        
-                
-                         {/*<Button variant="outlined" component={Link} to="/agent">go to agent</Button>}*/}
-
-                        <div className={classes.infoDiv}>
-                            <MuiThemeProvider theme={theme}>
-                                <Button onClick={() => this.onLoginClick(this.state.email, this.state.password)}  variant="contained" color='primary' style={{width: '45%', height: '25%', marginTop: 15}}>
-                                    <Typography style={{color: '#FFF', fontSize: 20, fontFamily: 'Roboto-Regular'}}>Đăng Nhập</Typography>
-                                </Button>
-                                <Button style={{width: '45%', height: '25%', marginLeft: 10, marginTop: 15}} className={classes.button} variant="contained">
-                                    <Typography style={{color: '#000', fontSize: 20, fontFamily: 'Roboto-Regular'}}>Đăng Ký</Typography>
-                                </Button>
-
-                            </MuiThemeProvider>
+                            <div className={classes.infoDiv}>
+                                <MuiThemeProvider theme={theme}>
+                                    <Button onClick={() => this.onLoginClick(this.state.email, this.state.password)} variant="contained" color='primary' style={{ width: '45%', height: '25%', marginTop: 15 }}>
+                                        <Typography style={{ color: '#FFF', fontSize: 15, fontFamily: 'Roboto-Regular' }}>Đăng Nhập</Typography>
+                                    </Button>
+                                    <Button style={{ width: '45%', height: '25%', marginLeft: 10, marginTop: 15 }} className={classes.button}>
+                                        <Typography style={{ color: '#00bcd4', fontSize: 15,  fontFamily: 'Roboto-Regular' }}>Đăng Ký</Typography>
+                                    </Button>
+                                </MuiThemeProvider>
+                            </div>
                         </div>
-                </div>
+                    </GridItem>
 
-             </GridItem>
-
-            <GridItem xs={12} md={7} >
-                <img src={LoginImage} style={{width: '90%', display: 'block', marginLeft: 'auto',marginRight:'auto'}}/>
-
-            </GridItem>
-            </GridContainer>
+                    <GridItem xs={12} md={7} >
+                        <img src={LoginImage} style={{ width: '90%', display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />
+                    </GridItem>
+                </GridContainer>
 
             </div>
 
@@ -110,7 +100,11 @@ const styles = {
     loginDiv: {
         paddingLeft: "5%",
         paddingRight: "5%",
-        width: '90%'
+        width: '90%',
+        display: 'flex',
+        flexDirection: 'row',
+        jusifyContent: 'center',
+        alignItem: 'center',
     },
     infoDiv: {
         margin: "10px",
@@ -132,13 +126,13 @@ const styles = {
     }
 }
 
-  const theme = createMuiTheme({
+const theme = createMuiTheme({
     palette: {
-      primary: {
-          main: '#00bcd4',
-      },
+        primary: {
+            main: '#00bcd4',
+        },
     },
-  });
+});
 
 const mapStateToProps = state => {
     return {

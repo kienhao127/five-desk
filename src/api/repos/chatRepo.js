@@ -1,7 +1,7 @@
 var db = require('../fn/mysql-db');
 
 exports.getListTopic = function(topic) {
-    var sql = `select * from topic where CompanyID = '${topic.id}' order by LastMessageSendTime desc`;
+    var sql = `select * from topic where CompanyID = '${topic.id}' and isDelete = 0 order by LastMessageSendTime desc`;
 	return db.load(sql);
 }
 

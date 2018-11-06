@@ -1,3 +1,5 @@
+import { func } from "prop-types";
+
 var BASE_URL = 'http://localhost:8888/'
 
 function fetchApi(url, method, data){
@@ -48,4 +50,11 @@ export function getTopicApi(topicID) {
         topicID: topicID
     }
     return fetchApi('chat/getTopic', 'POST', body);
+}
+
+export function getVisitorInfoApi(visitorID){
+    var body = {
+        visitorID: visitorID
+    }
+    return fetchApi('visitor/getVisitorInfo', 'POST', body);
 }
