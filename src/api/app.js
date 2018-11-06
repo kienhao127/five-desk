@@ -1,9 +1,11 @@
 var express = require('express'),
     morgan = require('morgan'),
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser')
+    io = require('socket.io')(server);
 var userCtrl = require('./controllers/userController');
 var chatCtrl = require('./controllers/chatController');
 var visitorCtrl = require('./controllers/visitorController');
+var chatRepo = require('./repos/chatRepo');
 var app = express();
 
 app.use(morgan('dev'));
@@ -36,6 +38,23 @@ app.get('/', (req, res) => {
 app.use('/user', userCtrl);
 app.use('/chat', chatCtrl);
 app.use('/visitor', visitorCtrl);
+
+io.on('connection', function (client) {
+    client.on('send_message', (data) => {
+        io.sockets.emit('send_message', {message: data.Content, sendID: data.SenderID});
+        chatRepo.insertMessage(data)
+                .then(value => {
+                    console.log(value);
+                })
+    })
+
+    client.on('receive_message', (data) => {
+        // chatRepo.getListTopic(data)
+        //         .then(value => {
+        //             console.log(value);
+        //         })
+    })
+})
 
 var port = process.env.port || 8888;
 app.listen(port, () => {
