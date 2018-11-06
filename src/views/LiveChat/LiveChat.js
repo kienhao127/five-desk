@@ -116,15 +116,15 @@ class LiveChat extends React.Component {
   }
 
   handleChange = (event) => {
-    if (event.target != undefined){
+    if (event.target != undefined) {
       var visitor = this.state.visitor
-      if (event.target.id == "email"){
+      if (event.target.id == "email") {
         visitor.Email = event.target.value
       }
-      if (event.target.id == "phoneNumber"){
+      if (event.target.id == "phoneNumber") {
         visitor.PhoneNumber = event.target.value
       }
-      if (event.target.id == "note"){
+      if (event.target.id == "note") {
         visitor.Notes = event.target.value
       }
       this.setState({
@@ -189,11 +189,18 @@ class LiveChat extends React.Component {
               </div>
               <ScrollToBottom className={classes.chat} ref={(ref) => this.messageList = ref} >
                 {this.state.listMessage && this.state.listMessage.map((message, index) => {
+                  var beforeMessage = this.state.listMessage[index - 1];
                   return (
                     isNaN(message.SenderID)
                       ?
-                      <div style={{ clear: 'both' }} key={index}>
-                        <Avatar src={avatar} className={classes.img_y} />
+                      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }} key={index}>
+                        <div className={{ width: 40, height: 40, marginLeft: 5, }} >
+                          {beforeMessage == undefined || (beforeMessage && beforeMessage.SenderID != message.SenderID)
+                            ?
+                            <Avatar src={avatar} className={classes.avatar} />
+                            :
+                            <div className={classes.avatar} />}
+                        </div>
                         <Tooltip title={moment(message.SendTime).calendar()} placement="right">
                           <div className={classes.bubble_y}>
                             <div className={classes.b_you}>
@@ -203,8 +210,7 @@ class LiveChat extends React.Component {
                         </Tooltip>
                       </div>
                       :
-                      <div style={{ clear: 'both' }} key={index}>
-                        <Avatar src={img_me} className={classes.img_m} />
+                      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }} key={index}>
                         <Tooltip title={moment(message.SendTime).calendar()} placement="left">
                           <div className={classes.bubble_m}>
                             <div className={classes.me}>
@@ -239,8 +245,11 @@ class LiveChat extends React.Component {
                 :
                 <div className={classes.chatBottom}>
                   <Typography className={classes.servicerNotify}>
-                    Khách hàng không do bạn phụ trách
-                </Typography>
+                    {this.state.topic && this.state.topic.ServicerID == null
+                      ? 'Khách hàng chưa được ai phụ trách'
+                      : 'Khách hàng đã có người phụ trách'
+                    }
+                  </Typography>
                   {this.state.topic && this.state.topic.ServicerID == null
                     ?
                     <MuiThemeProvider theme={theme}>
@@ -257,7 +266,7 @@ class LiveChat extends React.Component {
           <GridItemChat xs={0} sm={0} md={3}>
             <Hidden smDown implementation="css">
               <div className={classes.right}>
-                <Typography style={{fontFamily: 'Roboto-Regular', fontSize: 20, textAlign: 'center'}}> Thông tin khách hàng </Typography>
+                <Typography style={{ fontFamily: 'Roboto-Regular', fontSize: 20, textAlign: 'center', paddingTop: 10 }}> Thông tin khách hàng </Typography>
                 <TextField
                   disabled
                   id="visitor"
@@ -268,7 +277,7 @@ class LiveChat extends React.Component {
                   margin="normal"
                   variant="outlined"
                 />
-                 <MuiThemeProvider theme={theme}>
+                <MuiThemeProvider theme={theme}>
                   <TextField
                     id="email"
                     label="Email"
@@ -278,28 +287,32 @@ class LiveChat extends React.Component {
                     margin="normal"
                     variant="outlined"
                   />
-                 </MuiThemeProvider>
-                
-                <TextField
-                  id="phoneNumber"
-                  label="Số điện thoại"
-                  className={classes.textField}
-                  value={this.state.visitor ? this.state.visitor.PhoneNumber : ''}
-                  onChange={this.handleChange}
-                  margin="normal"
-                  variant="outlined"
-                />
-                <TextField
-                  multiline
-                  rows="4"
-                  id="note"
-                  label="Ghi chú"
-                  className={classes.textField}
-                  value={this.state.visitor ? this.state.visitor.Notes : ''}
-                  onChange={this.handleChange}
-                  margin="normal"
-                  variant="outlined"
-                />
+                </MuiThemeProvider>
+
+                <MuiThemeProvider theme={theme}>
+                  <TextField
+                    id="phoneNumber"
+                    label="Số điện thoại"
+                    className={classes.textField}
+                    value={this.state.visitor ? this.state.visitor.PhoneNumber : ''}
+                    onChange={this.handleChange}
+                    margin="normal"
+                    variant="outlined"
+                  />
+                </MuiThemeProvider>
+                <MuiThemeProvider theme={theme}>
+                  <TextField
+                    multiline
+                    rows="4"
+                    id="note"
+                    label="Ghi chú"
+                    className={classes.textField}
+                    value={this.state.visitor ? this.state.visitor.Notes : ''}
+                    onChange={this.handleChange}
+                    margin="normal"
+                    variant="outlined"
+                  />
+                </MuiThemeProvider>
                 <MuiThemeProvider theme={theme}>
                   <Button variant="contained" color="primary" className={classes.button} onClick={() => this.onUpdateVisitorInfo(this.state.visitor)}>
                     Cập nhật
@@ -315,14 +328,14 @@ class LiveChat extends React.Component {
 }
 
 const styles = theme => ({
-  grid:{
+  grid: {
     padding: '0 !important',
   },
   servicerNotify: {
     fontFamily: 'Roboto-Regular',
     textAlign: 'center',
     color: '#00bcd4',
-    fontSize: 20,
+    fontSize: 15,
   },
   chatBottom: {
     display: 'flex',
@@ -368,7 +381,6 @@ const styles = theme => ({
     height: '608px',
     display: 'flex',
     flexDirection: 'column',
-    padding: 10
   },
   chat: {
     height: '500px',
@@ -380,19 +392,10 @@ const styles = theme => ({
     width: '40px',
     height: '40px',
   },
-  img_y: {
-    borderRadius: '50%',
-    marginLeft: '10px',
-    display: 'inline-block',
-    marginTop: '23px',
-    marginRight: '-5px',
-  },
-  img_m: {
-    borderRadius: '50%',
-    marginTop: '23px',
-    marginRight: '5px',
-    marginLeft: '-10px',
-    float: 'right',
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
   top: {
     height: '21px',
@@ -408,9 +411,6 @@ const styles = theme => ({
   chatTextField: {
     width: '100%',
   },
-  write: {
-    height: '48px',
-  },
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
@@ -419,34 +419,27 @@ const styles = theme => ({
     fontSize: "16px",
     position: "relative",
     display: "inline-block",
-    marginBottom: "8px",
-    padding: "13px 14px",
-    verticalAlign: "top",
+    padding: "10px",
     borderRadius: "5px",
     border: '1px solid #eaeaeb',
     backgroundColor: "#eaeaeb",
     minWidth: '20%',
     maxWidth: '90%',
-    marginLeft: '15px',
-    marginTop: '20px',
-    wordWrap: 'break-word',
+    marginLeft: '10px',
+    marginTop: '10px',
   },
 
   bubble_m: {
     fontSize: "16px",
     display: "inline-block",
-    marginBottom: "8px",
-    padding: "13px 14px",
-    verticalAlign: "top",
+    padding: "10px",
     borderRadius: "5px",
     border: '1px solid #00b0ff',
     backgroundColor: "#00b0ff",
     minWidth: '20%',
-    maxWidth: '90%',
-    marginLeft: '15px',
-    marginTop: '20px',
-    marginRight: '15px',
-    wordWrap: 'break-word',
+    maxWidth: '80%',
+    marginRight: '10px',
+    marginTop: '10px',
     float: 'right',
   },
 

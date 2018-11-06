@@ -16,3 +16,28 @@ exports.insertCompany = function(name) {
     var sql = `insert into company(CompanyName) values('${name}')`;
     return db.write(sql);
 }
+
+exports.changePassword = function(user){
+    var sql = "UPDATE user SET Password = '" + user.newPassword + "' WHERE UserID = '" + user.userID + "'";
+	return db.load(sql);
+}
+
+exports.updateProfile = function(user){
+    var sql = "UPDATE user SET FirstName = '" + user.firstname + "', LastName = '" + user.lastname + "', PhoneNumber ='" + user.phoneNumber + "' WHERE UserID = '" + user.userID + "'";
+	return db.load(sql);
+}
+
+// exports.addUser = function(user){
+//     var sql = "INSERT INTO user(Email, FirstName, LastName, UserType, IsActive) VALUES('"+ user.email +"', '" + user.firstname +"', '"+ user.lastname +"', '2', '0')";
+//     return db.write(sql);
+// }
+
+exports.getListUser = function(u){
+    var sql = `select * from user where CompanyID = '${u.companyID}' and isDelete = 0`;
+	return db.load(sql);
+}
+
+exports.getUserInfo = function(u) {
+    var sql = `select * from user where UserID = '${u.userID}'`;
+	return db.load(sql);
+}

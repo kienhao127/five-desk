@@ -48,7 +48,6 @@ class User extends React.Component {
   }
 
   componentDidMount() {
-    document.title = "User"
   }
 
   render() {

@@ -11,7 +11,6 @@ import Button from '@material-ui/core/Button';
 import Avatar from "@material-ui/core/Avatar";
 class EditUser extends React.Component {
     componentDidMount(){
-        document.title = "EditUSer"
       }
     handleToggle = () => {
         this.setState(state => ({ open: !state.open }));
