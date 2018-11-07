@@ -63,10 +63,11 @@ export const saveProfile = (profile) => {
     };
 }
 
-export const getListUser = (userID) => {
+export const getListUser = () => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-        getListUserApi(userID)
+        var token = sessionStorage.getItem('token');
+        getListUserApi(token)
             .then((responseJson)=> {
                 console.log(responseJson);
                 resolve(responseJson);

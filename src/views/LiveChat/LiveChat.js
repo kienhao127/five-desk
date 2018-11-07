@@ -31,7 +31,7 @@ import { getVisitorInfo } from "../../store/actions/visitor";
 
 //Socket
 import io from 'socket.io-client';
-import { loadUserFromToken } from "../../store/actions/user";
+import { loadUserFromToken, getListUser } from "../../store/actions/user";
 const socket = io('http://localhost:4000')
 
 moment.locale('vi');
@@ -57,6 +57,7 @@ class LiveChat extends React.Component {
         VisitorName: "User02"
       }],
       listMessage: null,
+      listUser: null,
     };
     socket.on('chat message', (message) => this.onReceiveMessage(message));
   }
@@ -77,12 +78,18 @@ class LiveChat extends React.Component {
 
     this.props.doGetListTopic()
       .then((resJson) => {
-        console.log('resJson');
+        console.log('doGetListTopic');
         console.log(resJson);
         this.setState({
           listTopic: resJson.listTopic,
         })
         this.onTopicClick(resJson.listTopic[0], 0);
+      })
+
+    this.props.doGetListUser()
+      .then((resJson) => {
+        console.log('doGetListUser');
+        console.log(resJson);
       })
   }
 
@@ -167,9 +174,7 @@ class LiveChat extends React.Component {
     return (
       <div className={classes.root}>
         <SkyLight hideOnOverlayClicked ref="listUserDialog">
-          <Button onClick={() => this.refs.listUserDialog.hide()}>
-            Ẩn dialog
-        </Button>
+
         </SkyLight>
         <GridContainer>
           <GridItemChat xs={4} sm={4} md={3} >
@@ -510,6 +515,7 @@ const mapDispatchToProps = dispatch => {
     doGetTopic: (topicID) => dispatch(getTopic(topicID)),
     doGetVisitorInfo: (visitorID) => dispatch(getVisitorInfo(visitorID)),
     loadUserFromToken: () => dispatch(loadUserFromToken()),
+    doGetListUser: () => dispatch(getListUser()),
   };
 };
 
