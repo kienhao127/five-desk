@@ -1,12 +1,15 @@
 var express = require('express'),
     morgan = require('morgan'),
-    bodyParser = require('body-parser')
-    io = require('socket.io')(server);
+    bodyParser = require('body-parser');
+    
 var userCtrl = require('./controllers/userController');
 var chatCtrl = require('./controllers/chatController');
 var visitorCtrl = require('./controllers/visitorController');
 var chatRepo = require('./repos/chatRepo');
 var app = express();
+
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
@@ -39,22 +42,41 @@ app.use('/user', userCtrl);
 app.use('/chat', chatCtrl);
 app.use('/visitor', visitorCtrl);
 
-io.on('connection', function (client) {
-    client.on('send_message', (data) => {
-        io.sockets.emit('send_message', {message: data.Content, sendID: data.SenderID});
-        chatRepo.insertMessage(data)
-                .then(value => {
-                    console.log(value);
-                })
-    })
+io.on('connection', function (socket) {
+    console.log('a user connected');
+    socket.on('disconnect', function(){
+        console.log('user disconnected');
+    });
+    // socket.on('send_message', (data) => {
+    //     io.sockets.emit('send_message', {message: data.Content, sendID: data.SenderID});
+    //     chatRepo.insertMessage(data)
+    //             .then(value => {
+    //                 console.log(value);
+    //             })
+    // })
 
-    client.on('receive_message', (data) => {
+    // socket.on('receive_message', (data) => {
         // chatRepo.getListTopic(data)
         //         .then(value => {
         //             console.log(value);
         //         })
-    })
+    // })
+    socket.on('chat message', function(msg){
+        //Nhận tin nhắn từ client
+        console.log('message: ' + msg);
+        // chatRepo.insertMessage(msg)
+        //     .then(value => {
+        //         console.log(value);
+        //     })
+            
+        //Gửi tin nhắn đến client
+        io.emit('chat message', msg);
+      });
 })
+
+http.listen(4000, function(){
+    console.log('listening on *:4000');
+  });
 
 var port = process.env.port || 8888;
 app.listen(port, () => {

@@ -29,6 +29,10 @@ import 'moment/locale/vi';
 import SkyLight from 'react-skylight';
 import { getVisitorInfo } from "../../store/actions/visitor";
 
+//Socket
+import io from 'socket.io-client';
+const socket = io('http://localhost:4000')
+
 moment.locale('vi');
 const img_me = "https://i.imgur.com/p9bwTYj.png";
 
@@ -52,6 +56,7 @@ class LiveChat extends React.Component {
       }],
       listMessage: null,
     };
+    socket.on('chat message', (message) => this.onReceiveMessage(message));
   }
 
   componentDidMount() {
@@ -109,6 +114,17 @@ class LiveChat extends React.Component {
   onTransferClick = (topic) => {
     //gọi api danh sách user
     this.refs.listUserDialog.show();
+  }
+
+  onSendMessage = () => {
+    console.log('Gửi tin nhắn đi server với nội dung là: message');
+    // console.log(message);
+    socket.emit('chat message', 'message');
+  }
+  
+  onReceiveMessage = (message) => {
+    console.log('Nhận tin nhắn từ server')
+    console.log(message);
   }
 
 
@@ -236,7 +252,7 @@ class LiveChat extends React.Component {
                           <IconButton>
                             <AttachmentIcon />
                           </IconButton>
-                          <IconButton>
+                          <IconButton onClick={this.onSendMessage}>
                             <SendIcon />
                           </IconButton>
                         </InputAdornment>,
