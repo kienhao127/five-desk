@@ -1,9 +1,10 @@
 import { getListTopicApi, getTopicApi } from "../../api/AppApi";
 
-export const getListTopic = (companyID) => {
+export const getListTopic = () => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-        getListTopicApi(companyID)
+        var token = sessionStorage.getItem('token');
+        getListTopicApi(token)
             .then((responseJson)=> {
                 console.log(responseJson);
                 if(responseJson.returnCode === 1) {

@@ -59,7 +59,7 @@ class Login extends React.Component {
                                 name='txtUsername'
                                 className={classes.textField}
                                 variant="outlined"
-                                value={this.state.username}
+                                value={this.state.email}
                                 onChange={this.onValueChange}
                             />
                             <TextField

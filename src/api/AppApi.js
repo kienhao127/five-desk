@@ -17,6 +17,13 @@ function fetchApi(url, method, data){
     }).then(response => response.json());
 }
 
+export function meFromToken(token){
+    var body = {
+        token: token
+    }
+    return fetchApi('user/meFromToken', 'POST', body);
+}
+
 export function loginApi(email, password) {
     var body = {
         email: email,
@@ -38,9 +45,9 @@ export function registerApi(email, password, avatar, firstname, lastname, phone,
     return fetchApi('user/register', 'POST', body);
 }
 
-export function getListTopicApi(companyID) {
+export function getListTopicApi(token) {
     var body = {
-        companyID: companyID
+        token: token
     }
     return fetchApi('chat/getListTopic', 'POST', body);
 }
@@ -57,4 +64,37 @@ export function getVisitorInfoApi(visitorID){
         visitorID: visitorID
     }
     return fetchApi('visitor/getVisitorInfo', 'POST', body);
+}
+
+export function getListUserApi(token){
+    var body = {
+        token: token
+    }
+    return fetchApi('user/getListUser', 'POST', body);
+}
+
+export function getUserInfoApi(userID){
+    var body = {
+        userID: userID
+    }
+    return fetchApi('user/getUserInfo', 'POST', body);
+}
+
+export function updateProfileApi(token, firstname, lastname, phoneNumber){
+    var body = {
+        token: token,
+        firstname: firstname,
+        lastname: lastname,
+        phoneNumber: phoneNumber
+    }
+    return fetchApi('user/updateProfile', 'POST', body);
+}
+
+export function changePasswordApi(token, oldPassword, newPassword){
+    var body = {
+        token: token,
+        oldPassword: oldPassword,
+        newPassword: newPassword
+    }
+    return fetchApi('user/changePassword', 'POST', body);
 }

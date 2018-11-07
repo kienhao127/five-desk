@@ -1,7 +1,32 @@
+
+var utils = require('../utils/Utils');
 var express = require('express');
 var userRepo = require('../repos/userRepo');
-
+var jwt = require('jsonwebtoken');
 var router = express.Router();
+
+
+router.post('/meFromToken', (req, res) => {
+    var token = req.body.token;
+
+    jwt.verify(token, process.env.JWT_SECRET, function(err, user) {
+        if (err) {
+          return res.status(401).json({
+            returnCode: 0,
+            message: 'Please register Log in using a valid email to submit posts'
+          });
+        } else {
+            var newToken = utils.generateToken(user);
+            res.statusCode = 201;
+            res.json({
+                returnCode: 1,
+                message: 'success',
+                user: user,
+                token: newToken
+            })
+        }
+      });
+})
 
 router.post('/login', (req, res) => {
     // console.log(req);
@@ -11,9 +36,11 @@ router.post('/login', (req, res) => {
     }
     userRepo.login(u)
         .then(value => {
+            console.log(value[0]);
             var user = value[0];
             var message = '';
             var returnCode = 0;
+            var token = utils.generateToken(user);
             if(user != null) {
                 message = 'login success';
                 returnCode = 1;
@@ -30,6 +57,7 @@ router.post('/login', (req, res) => {
                 returnCode: returnCode,
                 message: message,
                 user: user,
+                token: token
             })
         })
         .catch(err => {
@@ -83,8 +111,9 @@ router.post('/register', (req, res) => {
 })
 
 router.post('/changePassword', (req, res) => {
+    var user = utils.verifyToken(req.body.token);
     var u = {
-        userID: req.body.userID,
+        userID: user.UserID,
         oldPassword: req.body.oldPassword,
         newPassword: req.body.newPassword
     }
@@ -122,7 +151,7 @@ router.post('/changePassword', (req, res) => {
 
 router.post('/getUserInfo', (req, res) => {
     var u = {
-        userID: req.body.userID,
+        userID: req.body.userID
     }
     userRepo.getUserInfo(u)
     .then(value => {
@@ -141,8 +170,9 @@ router.post('/getUserInfo', (req, res) => {
 })
 
 router.post('/updateProfile', (req, res) => {
+    var user = utils.verifyToken(req.body.token);
     var u = {
-        userID: req.body.userID,
+        userID: user.UserID,
         firstname: req.body.firstname,
         lastname: req.body.lastname,
         phoneNumber: req.body.phoneNumber
@@ -172,9 +202,9 @@ router.post('/updateProfile', (req, res) => {
 })
 
 router.post('/getListUser', (req, res) => {
+    var user = utils.verifyToken(req.body.token);
     var u = {
-        companyID: req.body.companyID
-        // companyID: 1
+        companyID: user.CompanyID
     }
     userRepo.getListUser(u)
         .then(value => {

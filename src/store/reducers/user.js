@@ -5,6 +5,8 @@ const initalState = {
 };
 
 const userReducer = (state = initalState, action) => {
+
+  console.log('action.profile');
   console.log(action.profile);
   switch(action.type) {
     case SAVE_PROFILE:

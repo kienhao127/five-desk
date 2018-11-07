@@ -31,10 +31,12 @@ import { getVisitorInfo } from "../../store/actions/visitor";
 
 //Socket
 import io from 'socket.io-client';
+import { loadUserFromToken } from "../../store/actions/user";
 const socket = io('http://localhost:4000')
 
 moment.locale('vi');
 const img_me = "https://i.imgur.com/p9bwTYj.png";
+var currentUser = null;
 
 class LiveChat extends React.Component {
   constructor(props) {
@@ -59,10 +61,21 @@ class LiveChat extends React.Component {
     socket.on('chat message', (message) => this.onReceiveMessage(message));
   }
 
+  componentWillMount() {
+    this.props.loadUserFromToken()
+    .then((resJson) => {
+      console.log('resJson token');
+      console.log(resJson);
+      if (resJson.returnCode == 0){
+        this.props.history.push('/')
+      }
+    })
+  }
+
   componentDidMount() {
     console.log(this.props.userProfile);
 
-    this.props.doGetListTopic(1)
+    this.props.doGetListTopic()
       .then((resJson) => {
         console.log('resJson');
         console.log(resJson);
@@ -125,10 +138,6 @@ class LiveChat extends React.Component {
   onReceiveMessage = (message) => {
     console.log('Nhận tin nhắn từ server')
     console.log(message);
-  }
-
-
-  componentDidUpdate() {
   }
 
   handleChange = (event) => {
@@ -249,9 +258,9 @@ class LiveChat extends React.Component {
                     InputProps={{
                       endAdornment:
                         <InputAdornment position="end">
-                          <IconButton>
+                          {/* <IconButton>
                             <AttachmentIcon />
-                          </IconButton>
+                          </IconButton> */}
                           <IconButton onClick={this.onSendMessage}>
                             <SendIcon />
                           </IconButton>
@@ -497,9 +506,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    doGetListTopic: (companyID) => dispatch(getListTopic(companyID)),
+    doGetListTopic: () => dispatch(getListTopic()),
     doGetTopic: (topicID) => dispatch(getTopic(topicID)),
     doGetVisitorInfo: (visitorID) => dispatch(getVisitorInfo(visitorID)),
+    loadUserFromToken: () => dispatch(loadUserFromToken()),
   };
 };
 

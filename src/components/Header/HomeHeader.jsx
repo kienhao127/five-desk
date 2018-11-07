@@ -113,7 +113,7 @@ class Header extends React.Component {
 
         <Hidden xsDown implementation="css">
           <div className={classes.root}>
-            <Link to="/Home">
+            <Link to="/home">
               <img src={logo} alt="logo" width='55' height='45'/>
               <div className={classes.LogoTxt}>
               {logoText}
@@ -133,7 +133,7 @@ class Header extends React.Component {
         </Hidden>
 
         <div className={classes.navIconHide}>
-          <Link to="/Home">
+          <Link to="/home">
             <img src={logo} alt="logo" width='55' height='45'/>
             <div className={classes.LogoTxt}>
             {logoText}

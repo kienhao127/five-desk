@@ -1,26 +1,30 @@
 var express = require('express');
 var chatRepo = require('../repos/chatRepo');
-
+var utils = require('../utils/Utils');
 var router = express.Router();
 
 router.post('/getListTopic', (req, res) => {
+    var user = utils.verifyToken(req.body.token);
     var topic = {
-        id: req.body.companyID
+        id: user.CompanyID
     }
     chatRepo.getListTopic(topic)
         .then(value => {
             var listTopic = value;
-            var message = '';
-            var returnCode = 0;
-            
-            console.log('listTopic.length');
-            console.log(listTopic.length);
             res.statusCode = 201; //tam thoi de 201
-            res.json({
-                returnCode: listTopic.length > 0 ? 1 : 0,
-                message: message,
-                listTopic: listTopic,
-            })
+            if (listTopic.length > 0){
+                res.json({
+                    returnCode: 1,
+                    message: 'success',
+                    listTopic: listTopic,
+                })
+            } else {
+                res.json({
+                    returnCode: 0,
+                    message: 'fail',
+                })
+            }
+           
         })
         .catch(err => {
             console.log(err);

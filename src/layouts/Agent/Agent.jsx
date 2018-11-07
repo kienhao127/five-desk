@@ -18,10 +18,12 @@ import dashboardStyle from "assets/jss/material-dashboard-react/layouts/dashboar
 import image from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/logo.png";
 import NewMailTicket from 'views/MailTicket/NewMailTicket';
+import Profile from 'views/User/EditUser';
 
 const switchRoutes = (
   <Switch>
        <Route exact path={'/agent/ticket/new'} component={NewMailTicket} />
+       <Route exact path={'/agent/member/profile'} component={Profile} />
       {agentRoutes.map((prop, key) => {
         if (prop.redirect)
           return <Redirect from={prop.path} to={prop.to} key={key} />;
