@@ -1,4 +1,4 @@
-import { getListTopicApi, getTopicApi } from "../../api/AppApi";
+import { getListTopicApi, getTopicApi, transferTopicApi } from "../../api/AppApi";
 
 export const getListTopic = () => {
     return (dispatch) => {
@@ -7,9 +7,7 @@ export const getListTopic = () => {
         getListTopicApi(token)
             .then((responseJson)=> {
                 console.log(responseJson);
-                if(responseJson.returnCode === 1) {
-                    resolve(responseJson);
-                }
+                resolve(responseJson);
             })
             .catch((error)=>{
                 console.log(error);
@@ -25,9 +23,23 @@ export const getTopic = (topicID) => {
         getTopicApi(topicID)
             .then((responseJson)=> {
                 console.log(responseJson);
-                if(responseJson.returnCode === 1) {
-                    resolve(responseJson);
-                }
+                resolve(responseJson);
+            })
+            .catch((error)=>{
+                console.log(error);
+            });
+        })
+        return promise;
+    }
+}
+
+export const transferTopic = (topicID, servicerID) => {
+    return (dispatch) => {
+        const promise = new Promise((resolve, reject) => {
+        transferTopicApi(topicID, servicerID)
+            .then((responseJson)=> {
+                console.log(responseJson);
+                resolve(responseJson);
             })
             .catch((error)=>{
                 console.log(error);

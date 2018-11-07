@@ -47,27 +47,13 @@ io.on('connection', function (socket) {
     socket.on('disconnect', function(){
         console.log('user disconnected');
     });
-    // socket.on('send_message', (data) => {
-    //     io.sockets.emit('send_message', {message: data.Content, sendID: data.SenderID});
-    //     chatRepo.insertMessage(data)
-    //             .then(value => {
-    //                 console.log(value);
-    //             })
-    // })
-
-    // socket.on('receive_message', (data) => {
-        // chatRepo.getListTopic(data)
-        //         .then(value => {
-        //             console.log(value);
-        //         })
-    // })
     socket.on('chat message', function(msg){
         //Nhận tin nhắn từ client
         console.log('message: ' + msg);
-        // chatRepo.insertMessage(msg)
-        //     .then(value => {
-        //         console.log(value);
-        //     })
+        chatRepo.insertMessage(msg)
+            .then(value => {
+                console.log(value);
+            })
             
         //Gửi tin nhắn đến client
         io.emit('chat message', msg);

@@ -108,6 +108,9 @@ router.post('/register', (req, res) => {
                     res.end('View error log on server console');
                 })
         })
+        .catch((error) => {
+            console.log(error);
+        });
 })
 
 router.post('/changePassword', (req, res) => {

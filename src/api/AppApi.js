@@ -14,7 +14,9 @@ function fetchApi(url, method, data){
         },
         method: method,
         body: JSON.stringify(data)
-    }).then(response => response.json());
+    }).then(response => response.json()).catch((error) => {
+        console.log(error);
+      });
 }
 
 export function meFromToken(token){
@@ -97,4 +99,22 @@ export function changePasswordApi(token, oldPassword, newPassword){
         newPassword: newPassword
     }
     return fetchApi('user/changePassword', 'POST', body);
+}
+
+export function updateVisitorInfoApi(visitorID, email, notes, phoneNumber){
+    var body = {
+        visitorID: visitorID,
+        email: email,
+        notes: notes,
+        phoneNumber: phoneNumber,
+    }
+    return fetchApi('visitor/updateVisitorInfo', 'POST', body);
+}
+
+export function transferTopicApi(topicID, servicerID){
+    var body = {
+        topicID: topicID,
+        servicerID: servicerID,
+    }
+    return fetchApi('chat/transferTopic', 'POST', body);
 }

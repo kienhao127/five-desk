@@ -14,3 +14,8 @@ exports.insertMessage = function(msg) {
     var sql = `insert into message(TopicID, SenderID, RecieverID, Content, SendTime, TypeID) values('${msg.TopicID}', '${msg.SenderID}', '${msg.RecieverID}', '${msg.Content}', '${msg.SendTime}', '${msg.TypeID}')`;
     return db.write(sql);
 }
+
+exports.transferTopic = function(topic){
+    var sql = "UPDATE topic SET ServicerID = '" + topic.servicerID +"' WHERE TopicID = '" + topic.topicID + "'";
+    return db.load(sql);
+}

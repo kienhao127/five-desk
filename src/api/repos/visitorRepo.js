@@ -5,6 +5,11 @@ exports.getVisitorInfo = function(visitor) {
 	return db.load(sql);
 }
 
+exports.updateVisitorInfo = function(visitor) {
+    var sql = "UPDATE visitor SET Email = '" + visitor.email + "', PhoneNumber = '" + visitor.phoneNumber + "', Notes = '" + visitor.notes + "' WHERE VisitorID = '" + visitor.visitorID +"'";
+    return db.load(sql);
+}
+
 // exports.addVisitor = function(visitor){
 //     var sql = "INSERT INTO user(Email, Name) VALUES('"+ visitor.email +"', '" + visitor.firstname + visitor.lastname +"')";
 //     return db.write(sql);

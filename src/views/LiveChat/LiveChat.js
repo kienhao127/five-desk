@@ -20,14 +20,14 @@ import green from '@material-ui/core/colors/green';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { connect } from "react-redux";
-import { getListTopic, getTopic } from "../../store/actions/chat";
+import { getListTopic, getTopic, transferTopic } from "../../store/actions/chat";
 import HyperText from "../../components/HyperLink/HyperLink";
 import ScrollToBottom from 'react-scroll-to-bottom';
 import Tooltip from '@material-ui/core/Tooltip';
 import * as moment from 'moment';
 import 'moment/locale/vi';
 import SkyLight from 'react-skylight';
-import { getVisitorInfo } from "../../store/actions/visitor";
+import { getVisitorInfo, updateVisitorInfo } from "../../store/actions/visitor";
 
 //Socket
 import io from 'socket.io-client';
@@ -58,19 +58,24 @@ class LiveChat extends React.Component {
       }],
       listMessage: null,
       listUser: null,
+      notifyUpdateVisitor: null,
+      content: '',
     };
     socket.on('chat message', (message) => this.onReceiveMessage(message));
   }
 
   componentWillMount() {
     this.props.loadUserFromToken()
-    .then((resJson) => {
-      console.log('resJson token');
-      console.log(resJson);
-      if (resJson.returnCode == 0){
-        this.props.history.push('/')
-      }
-    })
+      .then((resJson) => {
+        console.log('resJson token');
+        console.log(resJson);
+        if (resJson.returnCode == 0) {
+          this.props.history.push('/')
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   componentDidMount() {
@@ -85,12 +90,21 @@ class LiveChat extends React.Component {
         })
         this.onTopicClick(resJson.listTopic[0], 0);
       })
+      .catch((error) => {
+        console.log(error);
+      });
 
     this.props.doGetListUser()
       .then((resJson) => {
         console.log('doGetListUser');
         console.log(resJson);
+        this.setState({
+          listUser: resJson.users,
+        })
       })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   toggleDrawer = (side, open) => () => {
@@ -103,7 +117,9 @@ class LiveChat extends React.Component {
     this.setState({
       listMessage: null,
       topic: topic,
-      selectedVisitor: index
+      selectedVisitor: index,
+      visitor: null,
+      notifyUpdateVisitor: null,
     })
     console.log('TopicID: ' + topic.TopicID)
     this.props.doGetTopic(topic.TopicID)
@@ -113,6 +129,9 @@ class LiveChat extends React.Component {
           listMessage: resJson.topic,
         })
       })
+      .catch((error) => {
+        console.log(error);
+      });
     this.props.doGetVisitorInfo(topic.TopicID)
       .then((resJson) => {
         console.log(resJson);
@@ -120,8 +139,11 @@ class LiveChat extends React.Component {
           visitor: resJson.visitor
         })
       })
+      .catch((error) => {
+        console.log(error);
+      });
 
-    if (topic.ServicerID == 2) {
+    if (topic.ServicerID == this.props.userProfile.UserID) {
       //gọi api update UnreadMessageCount = 0
     }
   }
@@ -129,22 +151,59 @@ class LiveChat extends React.Component {
   onAcceptClick = (topic) => {
     //gọi api update serviverID
     //Chấp nhận tin nhắn
+    this.props.doTransferTopic(topic.TopicID, this.props.userProfile.UserID)
+    .then((resJson) => { 
+      this.props.doGetListTopic()
+      .then((resJson) => {
+        console.log('doGetListTopic');
+        console.log(resJson);
+        this.setState({
+          listTopic: resJson.listTopic,
+        })
+        this.onTopicClick(resJson.listTopic[this.state.selectedVisitor], this.state.selectedVisitor);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    })
   }
 
-  onTransferClick = (topic) => {
-    //gọi api danh sách user
+  onTransferClick = () => {
     this.refs.listUserDialog.show();
   }
 
-  onSendMessage = () => {
-    console.log('Gửi tin nhắn đi server với nội dung là: message');
-    // console.log(message);
-    socket.emit('chat message', 'message');
+  onContentChange = (event) => {
+    this.setState({
+      content: event.target.value,
+    })
   }
-  
+
+  onSendMessage = () => {
+    var message = {
+      TopicID: this.state.topic.TopicID,
+      SenderID: this.props.userProfile.UserID,
+      RecieverID: this.state.visitor.VisitorID,
+      Content: this.state.content,
+      SendTime: new Date().getTime(),
+      TypeID: 1,
+    }
+    this.setState({
+      content: '',
+    })
+    console.log('Gửi tin nhắn đi server với nội dung là: message');
+    socket.emit('chat message', message);
+  }
+
   onReceiveMessage = (message) => {
     console.log('Nhận tin nhắn từ server')
     console.log(message);
+    if (message.TopicID == this.state.topic.TopicID){
+      var listMessage = this.state.listMessage;
+      listMessage.push(message);
+      this.setState({
+        listMessage: listMessage,
+      })
+    }
   }
 
   handleChange = (event) => {
@@ -167,6 +226,43 @@ class LiveChat extends React.Component {
 
   onUpdateVisitorInfo = (visitor) => {
     //gọi api update visitor info
+    this.props.doUpdateVisitorInfo(visitor.VisitorID, visitor.Email, visitor.Notes, visitor.PhoneNumber)
+    .then((resJson) => {
+      console.log(resJson);
+      this.setState({
+        notifyUpdateVisitor: resJson,
+      })
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    setTimeout(this.clearNotify, 3000);
+  }
+
+  clearNotify = () => {
+    this.setState({
+      notifyUpdateVisitor: null,
+    })
+  }
+
+  onUserClick = (user) => {
+    //gọi api chuyển nhượng
+    this.props.doTransferTopic(this.state.topic.TopicID, user.UserID)
+    .then((resJson) => { 
+      this.refs.listUserDialog.hide();
+      this.props.doGetListTopic()
+      .then((resJson) => {
+        console.log('doGetListTopic');
+        console.log(resJson);
+        this.setState({
+          listTopic: resJson.listTopic,
+        })
+        this.onTopicClick(resJson.listTopic[this.state.selectedVisitor], this.state.selectedVisitor);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    })
   }
 
   render() {
@@ -174,8 +270,29 @@ class LiveChat extends React.Component {
     return (
       <div className={classes.root}>
         <SkyLight hideOnOverlayClicked ref="listUserDialog">
-
+          <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Medium', fontSize: 20 }}>Danh sách thành viên</Typography>
+          <List dense={true}>
+            {this.state.listUser && this.state.listUser.map((user, key) => (
+              user.UserID != this.props.userProfile.UserID
+                ?
+                <ListItem
+                  key={key}
+                  role={undefined}
+                  dense
+                  button
+                  onClick={() => this.onUserClick(user)}
+                  className={classes.listItem}>
+                  <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                    <Avatar src={avatar} className={classes.avatar} />
+                    <Typography style={{ marginLeft: 10 }}>{(user.FirstName != null ? user.FirstName : '') + (user.FirstName != null ? ' ' : '') + user.LastName}</Typography>
+                  </div>
+                </ListItem>
+                :
+                null
+            ))}
+          </List>
         </SkyLight>
+        
         <GridContainer>
           <GridItemChat xs={4} sm={4} md={3} >
             <div className={classes.left}>
@@ -206,11 +323,11 @@ class LiveChat extends React.Component {
                 <Typography style={{ fontFamily: 'Roboto-Regular' }}>
                   {this.state.topic ? this.state.topic.VisitorName : null}
                 </Typography>
-                {this.state.topic && this.state.topic.ServicerID == 2
+                {this.state.topic && this.state.topic.ServicerID == this.props.userProfile.UserID
                   ?
                   <MuiThemeProvider theme={theme}>
                     <Tooltip title="Chuyển tin nhắn" placement='top'>
-                      <IconButton variant="contained" color="primary" style={{ marginLeft: 'auto', marginRight: 10, alignItems: 'center', justifyContent: 'center' }} onClick={() => this.onTransferClick(this.state.topic)}>
+                      <IconButton variant="contained" color="primary" style={{ marginLeft: 'auto', marginRight: 10, alignItems: 'center', justifyContent: 'center' }} onClick={() => this.onTransferClick()}>
                         <Transfer style={{ color: '#000' }} />
                       </IconButton>
                     </Tooltip>
@@ -221,7 +338,7 @@ class LiveChat extends React.Component {
                 {this.state.listMessage && this.state.listMessage.map((message, index) => {
                   var beforeMessage = this.state.listMessage[index - 1];
                   return (
-                    isNaN(message.SenderID)
+                    message.SenderID != this.props.userProfile.UserID
                       ?
                       <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }} key={index}>
                         <div className={{ width: 40, height: 40, marginLeft: 5, }} >
@@ -253,11 +370,13 @@ class LiveChat extends React.Component {
                 }
                 )}
               </ScrollToBottom>
-              {this.state.topic && this.state.topic.ServicerID == 2
+              {this.state.topic && this.state.topic.ServicerID == this.props.userProfile.UserID
                 ?
                 <div className={classes.chatBottom}>
                   <TextField
                     id="outlined-bare"
+                    value={this.state.content}
+                    onChange={this.onContentChange}
                     className={classes.chatTextField}
                     variant="outlined"
                     InputProps={{
@@ -343,11 +462,15 @@ class LiveChat extends React.Component {
                     variant="outlined"
                   />
                 </MuiThemeProvider>
+                {this.state.topic && this.state.topic.ServicerID == this.props.userProfile.UserID
+                ?
                 <MuiThemeProvider theme={theme}>
                   <Button variant="contained" color="primary" className={classes.button} onClick={() => this.onUpdateVisitorInfo(this.state.visitor)}>
                     Cập nhật
                   </Button>
                 </MuiThemeProvider>
+                : null}
+                <Typography style={{textAlign: 'center', color: this.state.notifyUpdateVisitor && this.state.notifyUpdateVisitor.returnCode == 1 ? 'green' : 'red'}}>{this.state.notifyUpdateVisitor && this.state.notifyUpdateVisitor.message}</Typography>
               </div>
             </Hidden>
           </GridItemChat>
@@ -516,6 +639,8 @@ const mapDispatchToProps = dispatch => {
     doGetVisitorInfo: (visitorID) => dispatch(getVisitorInfo(visitorID)),
     loadUserFromToken: () => dispatch(loadUserFromToken()),
     doGetListUser: () => dispatch(getListUser()),
+    doUpdateVisitorInfo: (visitorID, email, notes, phoneNumber) => dispatch(updateVisitorInfo(visitorID, email, notes, phoneNumber)),
+    doTransferTopic: (topicID, servicerID) => dispatch(transferTopic(topicID, servicerID)),
   };
 };
 

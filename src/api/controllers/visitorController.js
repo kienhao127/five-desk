@@ -34,4 +34,37 @@ router.post('/getVisitorInfo', (req, res) => {
         })
 })
 
+
+router.post('/updateVisitorInfo', (req, res) => {
+    // console.log(req);
+    var visitor = {
+        visitorID: req.body.visitorID,
+        email: req.body.email,
+        notes: req.body.notes,
+        phoneNumber: req.body.phoneNumber,
+    }
+    visitorRepo.updateVisitorInfo(visitor)
+    .then(value => {
+        console.log(value);
+        if (value.affectedRows > 0){
+            res.statusCode = 201;
+            res.json({
+                returnCode: 1,
+                message: 'Cập nhật thông tin thành công'
+            })
+        } else {
+            res.statusCode = 201;
+            res.json({
+                returnCode: 0,
+                message: 'Cập nhật thông tin thất bại'
+            })
+        }
+    })
+    .catch(err => {
+        console.log(err);
+        res.statusCode = 500;
+        res.end('View error log on server console');
+    })
+})
+
 module.exports = router;

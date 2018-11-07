@@ -42,7 +42,9 @@ class Login extends React.Component {
     onLoginClick = (email, password) => {
         this.props.doLogin(email, password).then((resJson) => {
             this.props.history.push('/agent/ticket')
-        })
+        }).catch((error) => {
+            console.log(error);
+          });
     }
 
     render() {
