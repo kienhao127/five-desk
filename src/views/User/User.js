@@ -12,6 +12,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { Button } from "@material-ui/core";
 import { loadUserFromToken, getListUser } from "../../store/actions/user";
 import { connect } from "react-redux";
+import { Link } from 'react-router-dom'
 
 // images
 import avatar from "assets/img/avatar.png";
@@ -32,8 +33,6 @@ const menuItems = [
   { imgSrc: avatar, name: "Hao Luong", editText: "Chỉnh sửa" },
   { imgSrc: avatar, name: "Luong Hao", editText: "Chỉnh sửa" },
 ];
-
-var realList = [];
 
 const menuItems2 = [
   { imgSrc: avatar, name: "Hao Luong", editText: "Chỉnh sửa" },
@@ -94,12 +93,17 @@ class User extends React.Component {
               <div>
                 <List dense={true}>
                   {this.state.listUser && this.state.listUser.map((user, key) => (
-                    <ListItem key={key} role={undefined} dense button className={classes.listItem}>
+                    <ListItem key={key} role={undefined} dense button className={classes.listItem} component={Link} to="/agent/member/profile/">
                       <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                         <Avatar src={avatar} className={classes.avatar} />
-                        <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 15 }}>{(user.FirstName != null ? user.FirstName : '') + (user.FirstName != null ? ' ' : '') + user.LastName}</Typography>
+                        <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 15 }}>
+                          {(user.FirstName != null ? user.FirstName : '') + (user.FirstName != null ? ' ' : '') + user.LastName}
+                        </Typography>
                         {user.UserID == this.props.userProfile.UserID
-                          ? <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 10, color: 'gray' }}>Chỉnh sửa</Typography>
+                          ?
+                          <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 15, color: 'gray' }}>
+                            Chỉnh sửa
+                          </Typography>
                           : null}
                       </div>
                     </ListItem>
@@ -109,6 +113,7 @@ class User extends React.Component {
             </div>
           </GridItem>
 
+          {/*
           <GridItem xs={6}>
             <div className={classes.gridItem}>
               <div>
@@ -127,7 +132,8 @@ class User extends React.Component {
                 </List>
               </div>
             </div>
-          </GridItem>
+            </GridItem>
+            */}
         </GridContainer>
       </div>
     );
