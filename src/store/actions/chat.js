@@ -1,4 +1,4 @@
-import { getListTopicApi, getTopicApi, transferTopicApi } from "../../api/AppApi";
+import { getListTopicApi, getTopicApi, transferTopicApi, updateUnreadMessageCountApi, seenMessageApi } from "../../api/AppApi";
 
 export const getListTopic = () => {
     return (dispatch) => {
@@ -49,5 +49,36 @@ export const transferTopic = (topicID, servicerID) => {
     }
 }
 
+export const updateUnreadMessageCount = (topicID, unreadCount) => {
+    return (dispatch) => {
+        const promise = new Promise((resolve, reject) => {
+        updateUnreadMessageCountApi(topicID, unreadCount)
+            .then((responseJson)=> {
+                console.log(responseJson);
+                resolve(responseJson);
+            })
+            .catch((error)=>{
+                console.log(error);
+            });
+        })
+        return promise;
+    }
+}
+
+export const seenMessage = (topicID) => {
+    return (dispatch) => {
+        const promise = new Promise((resolve, reject) => {
+        seenMessageApi(topicID)
+            .then((responseJson)=> {
+                console.log(responseJson);
+                resolve(responseJson);
+            })
+            .catch((error)=>{
+                console.log(error);
+            });
+        })
+        return promise;
+    }
+}
 
 

@@ -20,7 +20,7 @@ import green from '@material-ui/core/colors/green';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { connect } from "react-redux";
-import { getListTopic, getTopic, transferTopic } from "../../store/actions/chat";
+import { getListTopic, getTopic, transferTopic, updateUnreadMessageCount, seenMessage } from "../../store/actions/chat";
 import HyperText from "../../components/HyperLink/HyperLink";
 import ScrollToBottom from 'react-scroll-to-bottom';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -44,7 +44,7 @@ class LiveChat extends React.Component {
 
     this.state = {
       right: false,
-      selectedVisitor: 0,
+      selectedVisitorIndex: 0,
       topic: null,
       visitor: null,
       listTopic: [{
@@ -117,10 +117,12 @@ class LiveChat extends React.Component {
     this.setState({
       listMessage: null,
       topic: topic,
-      selectedVisitor: index,
+      selectedVisitorIndex: index,
       visitor: null,
       notifyUpdateVisitor: null,
     })
+
+    //lấy nội dung của topic
     console.log('TopicID: ' + topic.TopicID)
     this.props.doGetTopic(topic.TopicID)
       .then((resJson) => {
@@ -132,6 +134,8 @@ class LiveChat extends React.Component {
       .catch((error) => {
         console.log(error);
       });
+
+    //lấy thông tin khách hàng
     this.props.doGetVisitorInfo(topic.TopicID)
       .then((resJson) => {
         console.log(resJson);
@@ -143,8 +147,39 @@ class LiveChat extends React.Component {
         console.log(error);
       });
 
+    //Nếu topic do mình quản lý
     if (topic.ServicerID == this.props.userProfile.UserID) {
+      //gọi api đã xem tin nhắn
+      this.props.doSeenMessage(topic.TopicID)
+      .then((resJson)=>{
+        console.log('Update seen message');
+        console.log(resJson);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
       //gọi api update UnreadMessageCount = 0
+      this.props.doUpdateUnreadMessageCount(topic.TopicID, 0)
+      .then((resJson)=>{
+        // socket.emit('checkUnreadMessgae', sessionStorage.getItem('token'));
+        console.log('Update unread message count');
+        console.log(resJson);
+        this.props.doGetListTopic()
+          .then((resJson) => {
+            console.log('doGetListTopic');
+            console.log(resJson);
+            this.setState({
+              listTopic: resJson.listTopic,
+            })
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
   }
 
@@ -152,20 +187,25 @@ class LiveChat extends React.Component {
     //gọi api update serviverID
     //Chấp nhận tin nhắn
     this.props.doTransferTopic(topic.TopicID, this.props.userProfile.UserID)
-    .then((resJson) => { 
-      this.props.doGetListTopic()
       .then((resJson) => {
-        console.log('doGetListTopic');
-        console.log(resJson);
-        this.setState({
-          listTopic: resJson.listTopic,
-        })
-        this.onTopicClick(resJson.listTopic[this.state.selectedVisitor], this.state.selectedVisitor);
+        this.props.doGetListTopic()
+          .then((resJson) => {
+            console.log('doGetListTopic');
+            console.log(resJson);
+            this.setState({
+              listTopic: resJson.listTopic,
+            })   
+            var thisTopic = resJson.listTopic.filter(topic => topic.TopicID == this.state.topic.TopicID)[0];
+            var selectedVisitorIndex = resJson.listTopic.indexOf(thisTopic);
+            this.onTopicClick(thisTopic, selectedVisitorIndex);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       })
       .catch((error) => {
         console.log(error);
       });
-    })
   }
 
   onTransferClick = () => {
@@ -180,6 +220,7 @@ class LiveChat extends React.Component {
 
   onSendMessage = () => {
     var message = {
+      token: sessionStorage.getItem('token'),
       TopicID: this.state.topic.TopicID,
       SenderID: this.props.userProfile.UserID,
       RecieverID: this.state.visitor.VisitorID,
@@ -197,13 +238,24 @@ class LiveChat extends React.Component {
   onReceiveMessage = (message) => {
     console.log('Nhận tin nhắn từ server')
     console.log(message);
-    if (message.TopicID == this.state.topic.TopicID){
+    if (message.TopicID == this.state.topic.TopicID) {
       var listMessage = this.state.listMessage;
       listMessage.push(message);
       this.setState({
         listMessage: listMessage,
       })
     }
+    this.props.doGetListTopic()
+      .then((resJson) => {
+        console.log('doGetListTopic');
+        console.log(resJson);
+        this.setState({
+          listTopic: resJson.listTopic,
+        })
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   handleChange = (event) => {
@@ -227,15 +279,15 @@ class LiveChat extends React.Component {
   onUpdateVisitorInfo = (visitor) => {
     //gọi api update visitor info
     this.props.doUpdateVisitorInfo(visitor.VisitorID, visitor.Email, visitor.Notes, visitor.PhoneNumber)
-    .then((resJson) => {
-      console.log(resJson);
-      this.setState({
-        notifyUpdateVisitor: resJson,
+      .then((resJson) => {
+        console.log(resJson);
+        this.setState({
+          notifyUpdateVisitor: resJson,
+        })
       })
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .catch((error) => {
+        console.log(error);
+      });
     setTimeout(this.clearNotify, 3000);
   }
 
@@ -248,21 +300,23 @@ class LiveChat extends React.Component {
   onUserClick = (user) => {
     //gọi api chuyển nhượng
     this.props.doTransferTopic(this.state.topic.TopicID, user.UserID)
-    .then((resJson) => { 
-      this.refs.listUserDialog.hide();
-      this.props.doGetListTopic()
       .then((resJson) => {
-        console.log('doGetListTopic');
-        console.log(resJson);
-        this.setState({
-          listTopic: resJson.listTopic,
-        })
-        this.onTopicClick(resJson.listTopic[this.state.selectedVisitor], this.state.selectedVisitor);
+        this.refs.listUserDialog.hide();
+        this.props.doGetListTopic()
+          .then((resJson) => {
+            console.log('doGetListTopic');
+            console.log(resJson);
+            this.setState({
+              listTopic: resJson.listTopic,
+            })
+            var thisTopic = resJson.listTopic.filter(topic => topic.TopicID == this.state.topic.TopicID)[0];
+            var selectedVisitorIndex = resJson.listTopic.indexOf(thisTopic);
+            this.onTopicClick(thisTopic, selectedVisitorIndex);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       })
-      .catch((error) => {
-        console.log(error);
-      });
-    })
   }
 
   render() {
@@ -292,7 +346,7 @@ class LiveChat extends React.Component {
             ))}
           </List>
         </SkyLight>
-        
+
         <GridContainer>
           <GridItemChat xs={4} sm={4} md={3} >
             <div className={classes.left}>
@@ -303,7 +357,7 @@ class LiveChat extends React.Component {
                     role={undefined}
                     dense
                     button
-                    selected={this.state.selectedVisitor === key ? true : false}
+                    selected={this.state.selectedVisitorIndex === key ? true : false}
                     onClick={() => this.onTopicClick(item, key)}
                     className={classes.listItem}>
                     <Avatar className={classes.img} src={avatar} />
@@ -349,9 +403,9 @@ class LiveChat extends React.Component {
                             <div className={classes.avatar} />}
                         </div>
                         <Tooltip title={moment(message.SendTime).calendar()} placement="right">
-                          <div className={classes.bubble_y}>
+                          <div className={classes.bubble_y} style={{backgroundColor: isNaN(message.SenderID) ? "#eaeaeb'" : '#23ce3f'}}>
                             <div className={classes.b_you}>
-                              <HyperText me={false} content={message.Content} />
+                              <HyperText me={false} content={message.Content}/>
                             </div>
                           </div>
                         </Tooltip>
@@ -373,23 +427,25 @@ class LiveChat extends React.Component {
               {this.state.topic && this.state.topic.ServicerID == this.props.userProfile.UserID
                 ?
                 <div className={classes.chatBottom}>
-                  <TextField
-                    id="outlined-bare"
-                    value={this.state.content}
-                    onChange={this.onContentChange}
-                    className={classes.chatTextField}
-                    variant="outlined"
-                    InputProps={{
-                      endAdornment:
-                        <InputAdornment position="end">
-                          {/* <IconButton>
+                  <MuiThemeProvider theme={theme}>
+                    <TextField
+                      id="outlined-bare"
+                      value={this.state.content}
+                      onChange={this.onContentChange}
+                      className={classes.chatTextField}
+                      variant="outlined"
+                      InputProps={{
+                        endAdornment:
+                          <InputAdornment position="end">
+                            {/* <IconButton>
                             <AttachmentIcon />
                           </IconButton> */}
-                          <IconButton onClick={this.onSendMessage}>
-                            <SendIcon />
-                          </IconButton>
-                        </InputAdornment>,
-                    }} />
+                            <IconButton onClick={this.onSendMessage} disabled={this.state.content == '' ? true : false}>
+                              <SendIcon />
+                            </IconButton>
+                          </InputAdornment>,
+                      }} />
+                  </MuiThemeProvider>
                 </div>
                 :
                 <div className={classes.chatBottom}>
@@ -463,14 +519,14 @@ class LiveChat extends React.Component {
                   />
                 </MuiThemeProvider>
                 {this.state.topic && this.state.topic.ServicerID == this.props.userProfile.UserID
-                ?
-                <MuiThemeProvider theme={theme}>
-                  <Button variant="contained" color="primary" className={classes.button} onClick={() => this.onUpdateVisitorInfo(this.state.visitor)}>
-                    Cập nhật
+                  ?
+                  <MuiThemeProvider theme={theme}>
+                    <Button variant="contained" color="primary" className={classes.button} onClick={() => this.onUpdateVisitorInfo(this.state.visitor)}>
+                      Cập nhật
                   </Button>
-                </MuiThemeProvider>
-                : null}
-                <Typography style={{textAlign: 'center', color: this.state.notifyUpdateVisitor && this.state.notifyUpdateVisitor.returnCode == 1 ? 'green' : 'red'}}>{this.state.notifyUpdateVisitor && this.state.notifyUpdateVisitor.message}</Typography>
+                  </MuiThemeProvider>
+                  : null}
+                <Typography style={{ textAlign: 'center', color: this.state.notifyUpdateVisitor && this.state.notifyUpdateVisitor.returnCode == 1 ? 'green' : 'red' }}>{this.state.notifyUpdateVisitor && this.state.notifyUpdateVisitor.message}</Typography>
               </div>
             </Hidden>
           </GridItemChat>
@@ -536,9 +592,10 @@ const styles = theme => ({
     flexDirection: 'column',
   },
   chat: {
-    height: '500px',
+    height: '490px',
     width: '100%',
-    overflow: 'auto'
+    overflow: 'auto',
+    marginBottom: 10,
   },
   img: {
     borderRadius: '20px',
@@ -575,7 +632,6 @@ const styles = theme => ({
     padding: "10px",
     borderRadius: "5px",
     border: '1px solid #eaeaeb',
-    backgroundColor: "#eaeaeb",
     minWidth: '20%',
     maxWidth: '90%',
     marginLeft: '10px',
@@ -634,6 +690,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    doSeenMessage: (topicID) => dispatch(seenMessage(topicID)),
+    doUpdateUnreadMessageCount: (topicID, unreadCount) => dispatch(updateUnreadMessageCount(topicID, unreadCount)),
     doGetListTopic: () => dispatch(getListTopic()),
     doGetTopic: (topicID) => dispatch(getTopic(topicID)),
     doGetVisitorInfo: (visitorID) => dispatch(getVisitorInfo(visitorID)),

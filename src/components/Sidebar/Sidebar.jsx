@@ -23,28 +23,30 @@ const Sidebar = ({ ...props }) => {
   function activeRoute(routeName) {
     return props.location.pathname.indexOf(routeName) > -1 ? true : false;
   }
-  const { classes, color, logo, image, logoText, routes } = props;
+  const { classes, color, logo, image, logoText, routes, newMessage } = props;
+
+
   var links = (
     <List className={classes.list}>
       <ListItem button className={classes.itemLink + " " + classes.activePro}>
-          <ListItemIcon className={classes.itemIcon}>
-            <Logout/>
-          </ListItemIcon>
-          <ListItemText
-            primary="Đăng xuất"
-            className={classes.itemText}
-            disableTypography={true}
-          />
-        </ListItem>
+        <ListItemIcon className={classes.itemIcon}>
+          <Logout />
+        </ListItemIcon>
+        <ListItemText
+          primary="Đăng xuất"
+          className={classes.itemText}
+          disableTypography={true}
+        />
+      </ListItem>
       {routes.map((prop, key) => {
         if (prop.redirect) return null;
         var activePro = " ";
         var listItemClasses;
-       
+
         listItemClasses = classNames({
           [" " + classes[color]]: activeRoute(prop.path)
         });
-      
+
         const whiteFontClasses = classNames({
           [" " + classes.whiteFont]: activeRoute(prop.path)
         });
@@ -56,18 +58,24 @@ const Sidebar = ({ ...props }) => {
             key={key}
           >
             <ListItem button className={classes.itemLink + listItemClasses}>
-              <ListItemIcon className={classes.itemIcon + whiteFontClasses}>
-                {typeof prop.icon === "string" ? (
-                  <Icon>{prop.icon}</Icon>
-                ) : (
-                  <prop.icon />
-                )}
-              </ListItemIcon>
-              <ListItemText
-                primary={prop.sidebarName}
-                className={classes.itemText + whiteFontClasses}
-                disableTypography={true}
-              />
+              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                <ListItemIcon className={classes.itemIcon + whiteFontClasses}>
+                  {typeof prop.icon === "string" ? (
+                    <Icon>{prop.icon}</Icon>
+                  ) : (
+                      <prop.icon />
+                    )}
+                </ListItemIcon>
+                <ListItemText
+                  primary={prop.sidebarName}
+                  className={classes.itemText + whiteFontClasses}
+                  disableTypography={true}
+                />
+                {newMessage == true && prop.sidebarName == 'Chat'
+                  ?
+                  <div style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: 'red' }} />
+                  : null}
+              </div>
             </ListItem>
           </NavLink>
         );

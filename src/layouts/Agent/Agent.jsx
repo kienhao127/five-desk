@@ -19,6 +19,9 @@ import image from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/logo.png";
 import NewMailTicket from 'views/MailTicket/NewMailTicket';
 import Profile from 'views/User/EditUser';
+//Socket
+import io from 'socket.io-client';
+const socket = io('http://localhost:4000')
 
 const switchRoutes = (
   <Switch>
@@ -36,9 +39,11 @@ class Agent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mobileOpen: false
+      mobileOpen: false,
+      newMessage: false,
     };
     this.resizeFunction = this.resizeFunction.bind(this);
+    socket.on('unread message', (unreadMessageCount) => this.onReceiveMessage(unreadMessageCount));
   }
   handleDrawerToggle = () => {
     this.setState({ mobileOpen: !this.state.mobileOpen });
@@ -48,6 +53,15 @@ class Agent extends React.Component {
       this.setState({ mobileOpen: false });
     }
   }
+
+  onReceiveMessage = (message) => {
+    console.log('Unread message count');
+    console.log(message);
+    this.setState({
+      newMessage: message,
+    })
+  }
+
   componentDidMount() {
     document.title = "FiveDesk - Agent";
 
@@ -79,6 +93,7 @@ class Agent extends React.Component {
           handleDrawerToggle={this.handleDrawerToggle}
           open={this.state.mobileOpen}
           color="blue"
+          newMessage={this.state.newMessage}
           {...rest}
         />
         <div className={classes.mainPanel} ref="mainPanel">

@@ -89,4 +89,61 @@ router.post('/transferTopic', (req, res) => {
         })
 })
 
+router.post('/updateUnreadMessage', (req, res) => {
+    var topic = {
+        topicID: req.body.topicID,
+        unreadCount: req.body.unreadCount,
+    }
+    chatRepo.updateUnreadMessage(topic)
+        .then(value => {
+            console.log(value);
+            if (value.affectedRows > 0) {
+                res.statusCode = 201;
+                res.json({
+                    returnCode: 1,
+                    message: 'Đã xem tin nhắn'
+                })
+            } else {
+                res.statusCode = 201;
+                res.json({
+                    returnCode: 0,
+                    message: 'Cập nhật thất bại'
+                })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.statusCode = 500;
+            res.end('View error log on server console');
+        })
+})
+
+router.post('/seenMessage', (req, res) => {
+    var topic = {
+        topicID: req.body.topicID,
+    }
+    chatRepo.seenMessage(topic)
+        .then(value => {
+            console.log(value);
+            if (value.affectedRows > 0) {
+                res.statusCode = 201;
+                res.json({
+                    returnCode: 1,
+                    message: 'Đã xem tin nhắn'
+                })
+            } else {
+                res.statusCode = 201;
+                res.json({
+                    returnCode: 0,
+                    message: 'Cập nhật thất bại'
+                })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.statusCode = 500;
+            res.end('View error log on server console');
+        })
+})
+
 module.exports = router;

@@ -11,6 +11,8 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+var utils = require('./utils/Utils');
+
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(function (req, res, next) {
@@ -47,6 +49,7 @@ io.on('connection', function (socket) {
     socket.on('disconnect', function(){
         console.log('user disconnected');
     });
+
     socket.on('chat message', function(msg){
         //Nhận tin nhắn từ client
         console.log('message: ' + msg);
@@ -54,10 +57,42 @@ io.on('connection', function (socket) {
             .then(value => {
                 console.log(value);
             })
+            .catch((error)=>{
+                console.log(error);
+            });
             
         //Gửi tin nhắn đến client
         io.emit('chat message', msg);
-      });
+
+        // //Kiểm tra xem còn tin nhắn chưa đọc hay không
+        // var user = utils.verifyToken(msg.token);
+        // chatRepo.countUnreadMessage(user)
+        //     .then(value => {
+        //         io.emit('unread message', value[0].UnreadMessageCount > 0);
+        //     })
+        //     .catch((error)=>{
+        //         console.log(error);
+        //     });
+
+        //cập nhật là số lượng tin nhắn chưa đọc của 1 topic
+        // chatRepo.getUnreadMessageOfTopic(msg.TopicID)
+        //     .then(value => {
+        //         var topic = {
+        //             unreadCount: value[0].UnreadOfTopic,
+        //             topicID: msg.TopicID,
+        //         }
+        //         chatRepo.updateUnreadMessage(topic)
+        //         .then(value => {
+        //             console.log(value);
+        //         })
+        //         .catch(err => {
+        //             console.log(err);
+        //         })
+        //     })
+        //     .catch((error)=>{
+        //         console.log(error);
+        //     });
+        });
 })
 
 http.listen(4000, function(){

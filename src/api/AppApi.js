@@ -118,3 +118,18 @@ export function transferTopicApi(topicID, servicerID){
     }
     return fetchApi('chat/transferTopic', 'POST', body);
 }
+
+export function updateUnreadMessageCountApi(topicID, unreadCount){
+    var body = {
+        topicID: topicID,
+        unreadCount: unreadCount
+    }
+    return fetchApi('chat/updateUnreadMessage', 'POST', body);
+}
+
+export function seenMessageApi(topicID){
+    var body = {
+        topicID: topicID,
+    }
+    return fetchApi('chat/seenMessage', 'POST', body);
+}

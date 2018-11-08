@@ -4,6 +4,7 @@ import classNames from "classnames";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Hidden from "@material-ui/core/Hidden";
 import Avatar from "@material-ui/core/Avatar";
+import Badge from '@material-ui/core/Badge';
 // @material-ui/icons
 import Search from "@material-ui/icons/Search";
 import Message from "@material-ui/icons/Message";
@@ -52,21 +53,7 @@ class HeaderLinks extends React.Component {
             <Search />
           </Button>
         </div>
-        <Button
-          color='#DDD'
-          justIcon={window.innerWidth > 959}
-          simple={!(window.innerWidth > 959)}
-          className={classes.buttonLink}
-          round
-          component={Link} to="/agent/chat"
-        >
-          <Message className={classes.icons}/>
-          <Hidden mdUp implementation="css">
-            <p onClick={this.handleClick} className={classes.linkText}>
-              Tin nhắn
-            </p>
-          </Hidden>
-        </Button>
+
         <Button 
           color={window.innerWidth > 959 ? "transparent" : 'white'}
           justIcon={window.innerWidth > 959}
