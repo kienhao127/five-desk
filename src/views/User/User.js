@@ -10,6 +10,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { ListItemSecondaryAction, Typography } from "@material-ui/core";
 import Avatar from '@material-ui/core/Avatar';
 import { Button } from "@material-ui/core";
+import { loadUserFromToken, getListUser } from "../../store/actions/user";
+import { connect } from "react-redux";
 
 // images
 import avatar from "assets/img/avatar.png";
@@ -31,6 +33,8 @@ const menuItems = [
   { imgSrc: avatar, name: "Luong Hao", editText: "Chỉnh sửa" },
 ];
 
+var realList = [];
+
 const menuItems2 = [
   { imgSrc: avatar, name: "Hao Luong", editText: "Chỉnh sửa" },
   { imgSrc: avatar, name: "Luong Hao", editText: "Chỉnh sửa" }
@@ -42,19 +46,39 @@ class User extends React.Component {
     super(props);
 
     this.state = {
-
+      listUser: null,
     };
 
   }
 
   componentDidMount() {
-    
+    this.props.doGetListUser()
+      .then((resJson) => {
+        console.log('doGetListUser111111');
+        console.log(resJson);
+        //console.log(resJson.users[0].UserID);
+        var i;
+
+        for (i = 0; i < resJson.users.length; i++) {
+          realList.push({ imgSrc: resJson.users[i].Avatar, name: resJson.users[i].FirstName + " " + resJson.users[i].LastName, editText: "Chỉnh sửa" });
+        }
+        console.log(realList);
+        this.setState({
+          listUser: resJson.users,
+        })
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   render() {
     const { classes } = this.props;
     return (
       <div>
+        <Button>
+          a
+        </Button>
         <GridContainer spacing={24}>
           <GridItem xs={6}>
             <div className={classes.gridItem}>
@@ -65,7 +89,7 @@ class User extends React.Component {
               </div>
               <div>
                 <List dense={true}>
-                  {menuItems.map((item, key) => (
+                  {realList.map((item, key) => (
                     <ListItem key={key} role={undefined} dense button className={classes.listItem}>
                       <Avatar alt="Thành viên" src={item.imgSrc} />
                       <ListItemText primary={item.name} secondary={item.editText}></ListItemText>
@@ -114,4 +138,17 @@ const styles = {
 
 }
 
-export default withStyles(styles)(User);
+const mapStateToProps = state => {
+  return {
+    userProfile: state.user.profile,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    loadUserFromToken: () => dispatch(loadUserFromToken()),
+    doGetListUser: () => dispatch(getListUser()),
+  };
+};
+
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(User));

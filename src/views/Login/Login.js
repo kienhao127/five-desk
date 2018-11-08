@@ -44,7 +44,7 @@ class Login extends React.Component {
             this.props.history.push('/agent/ticket')
         }).catch((error) => {
             console.log(error);
-          });
+        });
     }
 
     render() {
@@ -80,7 +80,7 @@ class Login extends React.Component {
                                         <Typography style={{ color: '#FFF', fontSize: 15, fontFamily: 'Roboto-Regular' }}>Đăng Nhập</Typography>
                                     </Button>
                                     <Button style={{ width: '45%', height: '25%', marginLeft: 10, marginTop: 15 }} className={classes.button}>
-                                        <Typography style={{ color: '#00bcd4', fontSize: 15,  fontFamily: 'Roboto-Regular' }}>Đăng Ký</Typography>
+                                        <Typography style={{ color: '#00bcd4', fontSize: 15, fontFamily: 'Roboto-Regular' }}>Đăng Ký</Typography>
                                     </Button>
                                 </MuiThemeProvider>
                             </div>
