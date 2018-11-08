@@ -30,7 +30,7 @@ const agentRoutes = [
     sidebarName: "Thành viên",
     navbarName: "Thành viên",
     icon: Member,
-    component: User
+    component: EditUser
   },
   {
     path: "/agent/reporting",

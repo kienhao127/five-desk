@@ -100,7 +100,9 @@ export const changePassword = (oldPassword, newPassword) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
         var token = sessionStorage.getItem('token');
-        changePasswordApi(token, oldPassword, newPassword)
+		var md5_Old_Password = md5(oldPassword);
+		var md5_New_Password = md5(newPassword);
+        changePasswordApi(token, md5_Old_Password, md5_New_Password)
             .then((responseJson)=> {
                 console.log(responseJson);
                 resolve(responseJson);
