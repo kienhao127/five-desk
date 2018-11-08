@@ -51,18 +51,25 @@ class User extends React.Component {
 
   }
 
+  componentWillMount() {
+    this.props.loadUserFromToken()
+      .then((resJson) => {
+        console.log('resJson token');
+        console.log(resJson);
+        if (resJson.returnCode == 0) {
+          this.props.history.push('/')
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   componentDidMount() {
     this.props.doGetListUser()
       .then((resJson) => {
         console.log('doGetListUser111111');
         console.log(resJson);
-        //console.log(resJson.users[0].UserID);
-        var i;
-
-        for (i = 0; i < resJson.users.length; i++) {
-          realList.push({ imgSrc: resJson.users[i].Avatar, name: resJson.users[i].FirstName + " " + resJson.users[i].LastName, editText: "Chỉnh sửa" });
-        }
-        console.log(realList);
         this.setState({
           listUser: resJson.users,
         })
@@ -76,23 +83,25 @@ class User extends React.Component {
     const { classes } = this.props;
     return (
       <div>
-        <Button>
-          a
-        </Button>
         <GridContainer spacing={24}>
           <GridItem xs={6}>
             <div className={classes.gridItem}>
               <div>
                 <Typography component="h3" variant="2" gutterBottom className={classes.title}>
-                  Thành viên (2/20)
+                  Thành viên ({this.state.listUser == null ? 0 : this.state.listUser.length}/20)
               </Typography>
               </div>
               <div>
                 <List dense={true}>
-                  {realList.map((item, key) => (
+                  {this.state.listUser && this.state.listUser.map((user, key) => (
                     <ListItem key={key} role={undefined} dense button className={classes.listItem}>
-                      <Avatar alt="Thành viên" src={item.imgSrc} />
-                      <ListItemText primary={item.name} secondary={item.editText}></ListItemText>
+                      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                        <Avatar src={avatar} className={classes.avatar} />
+                        <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 15 }}>{(user.FirstName != null ? user.FirstName : '') + (user.FirstName != null ? ' ' : '') + user.LastName}</Typography>
+                        {user.UserID == this.props.userProfile.UserID
+                          ? <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 10, color: 'gray' }}>Chỉnh sửa</Typography>
+                          : null}
+                      </div>
                     </ListItem>
                   ))}
                 </List>
@@ -131,9 +140,10 @@ const styles = {
     height: "85vh",
   },
   title: {
-    fontWeight: "bold",
     color: "#47525E",
     paddingLeft: "20px",
+    fontFamily: 'Roboto-Medium',
+    fonrSize: 20,
   },
 
 }
