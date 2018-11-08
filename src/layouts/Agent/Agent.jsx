@@ -15,23 +15,25 @@ import agentRoutes from "routes/agent.jsx";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/layouts/dashboardStyle.jsx";
 
+import { connect } from "react-redux";
 import image from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/logo.png";
 import NewMailTicket from 'views/MailTicket/NewMailTicket';
 import Profile from 'views/User/EditUser';
 //Socket
 import io from 'socket.io-client';
+import { loadUserFromToken } from "../../store/actions/user";
 const socket = io('http://localhost:4000')
 
 const switchRoutes = (
   <Switch>
-       <Route exact path={'/agent/ticket/new'} component={NewMailTicket} />
-       <Route exact path={'/agent/member/profile/:userID'} component={Profile} />
-      {agentRoutes.map((prop, key) => {
-        if (prop.redirect)
-          return <Redirect from={prop.path} to={prop.to} key={key} />;
-        return <Route path={prop.path} component={prop.component} key={key} />;
-      })}
+    <Route exact path={'/agent/ticket/new'} component={NewMailTicket} />
+    <Route exact path={'/agent/member/profile/:userID'} component={Profile} />
+    {agentRoutes.map((prop, key) => {
+      if (prop.redirect)
+        return <Redirect from={prop.path} to={prop.to} key={key} />;
+      return <Route path={prop.path} component={prop.component} key={key} />;
+    })}
   </Switch>
 );
 
@@ -45,6 +47,23 @@ class Agent extends React.Component {
     this.resizeFunction = this.resizeFunction.bind(this);
     socket.on('unread message', (unreadMessageCount) => this.onReceiveMessage(unreadMessageCount));
   }
+
+  componentWillMount() {
+    this.props.loadUserFromToken()
+      .then((resJson) => {
+        console.log('resJson token');
+        console.log(resJson);
+        if (resJson.returnCode == 0) {
+          this.props.history.push('/')
+        } else {
+          currentUser
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   handleDrawerToggle = () => {
     this.setState({ mobileOpen: !this.state.mobileOpen });
   };
@@ -115,4 +134,17 @@ Agent.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(dashboardStyle)(Agent);
+
+const mapStateToProps = state => {
+  return {
+      userProfile: state.user.profile,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+      loadUserFromToken: () => dispatch(loadUserFromToken()),
+  };
+};
+
+export default withStyles(dashboardStyle)(connect(mapStateToProps, mapDispatchToProps)(Agent));

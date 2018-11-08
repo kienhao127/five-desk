@@ -50,20 +50,6 @@ class User extends React.Component {
 
   }
 
-  componentWillMount() {
-    this.props.loadUserFromToken()
-      .then((resJson) => {
-        console.log('resJson token');
-        console.log(resJson);
-        if (resJson.returnCode == 0) {
-          this.props.history.push('/')
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-
   componentDidMount() {
     this.props.doGetListUser()
       .then((resJson) => {
@@ -162,7 +148,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    loadUserFromToken: () => dispatch(loadUserFromToken()),
     doGetListUser: () => dispatch(getListUser()),
   };
 };

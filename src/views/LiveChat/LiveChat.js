@@ -64,20 +64,6 @@ class LiveChat extends React.Component {
     socket.on('chat message', (message) => this.onReceiveMessage(message));
   }
 
-  componentWillMount() {
-    this.props.loadUserFromToken()
-      .then((resJson) => {
-        console.log('resJson token');
-        console.log(resJson);
-        if (resJson.returnCode == 0) {
-          this.props.history.push('/')
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-
   componentDidMount() {
     console.log(this.props.userProfile);
 
@@ -633,7 +619,7 @@ const styles = theme => ({
     borderRadius: "5px",
     border: '1px solid #eaeaeb',
     minWidth: '20%',
-    maxWidth: '90%',
+    maxWidth: '70%',
     marginLeft: '10px',
     marginTop: '10px',
   },
@@ -646,7 +632,7 @@ const styles = theme => ({
     border: '1px solid #00b0ff',
     backgroundColor: "#00b0ff",
     minWidth: '20%',
-    maxWidth: '80%',
+    maxWidth: '70%',
     marginRight: '10px',
     marginTop: '10px',
     float: 'right',
@@ -695,7 +681,6 @@ const mapDispatchToProps = dispatch => {
     doGetListTopic: () => dispatch(getListTopic()),
     doGetTopic: (topicID) => dispatch(getTopic(topicID)),
     doGetVisitorInfo: (visitorID) => dispatch(getVisitorInfo(visitorID)),
-    loadUserFromToken: () => dispatch(loadUserFromToken()),
     doGetListUser: () => dispatch(getListUser()),
     doUpdateVisitorInfo: (visitorID, email, notes, phoneNumber) => dispatch(updateVisitorInfo(visitorID, email, notes, phoneNumber)),
     doTransferTopic: (topicID, servicerID) => dispatch(transferTopic(topicID, servicerID)),

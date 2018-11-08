@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { updateProfile, changePassword, getUserInfo } from './../../store/actions/user';
+import { updateProfile, changePassword, getUserInfo, loadUserFromToken } from './../../store/actions/user';
 import { connect } from "react-redux";
 import contentImg from './../../assets/img/cover.jpeg';
 import { Link } from "react-router-dom";
@@ -18,6 +18,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
+import { Typography } from "@material-ui/core";
 
 
 function Transition(props) {
@@ -41,45 +42,35 @@ class EditUser extends React.Component {
             openDialog_update: false,
             openDialog_changePassword: false,
             message: "",
-            user: [],
+            user: null,
             userID: this.props.match.params.userID,
+            currentUser: null,
         };
     }
 
-    componentWillMount() {
-
-        if (this.props.userProfile == null)
+    componentDidMount() {
+        this.props.doGetUserInfo(this.state.userID).then((resJson) => {
             this.setState({
-                openDialog_login: true
+                user: resJson.user,
+                FirstName: resJson.user.FirstName,
+                LastName: resJson.user.LastName,
+                CompanyName: resJson.user.CompanyName,
+                Email: resJson.user.Email,
+                Phone: resJson.user.PhoneNumber,
             });
-        else {
-            this.setState({
-                openDialog_login: false
-            });
-            this.props.doGetUserInfo(this.state.userID).then((resJson) => {
-                this.setState({
-                    user:
-                    {
-                        FirstName: resJson.user.FirstName,
-                        LastName: resJson.user.LastName,
-                        CompanyName: resJson.user.CompanyName,
-                        Email: resJson.user.Email,
-                        Phone: resJson.user.PhoneNumber,
-                    }
-                });
 
-            }).catch((error) => {
-                console.log(error);
-            });
-        }
+        }).catch((error) => {
+            console.log(error);
+        });
     }
+
     handleToggle = () => {
         this.setState(state => ({ open: !state.open }));
     };
 
     onValueChange = (event) => {
-        
-        if (event.target.id == "txtFirstName"){
+
+        if (event.target.id == "txtFirstName") {
             this.setState({
                 FirstName: event.target.value
             });
@@ -109,12 +100,12 @@ class EditUser extends React.Component {
 
 
     onUpdateClick = (FirstName, LastName, Phone) => {
-        if(FirstName == "")
-            FirstName = this.state.user.FirstName;
-        if(LastName == "")
-            LastName = this.state.user.LastName;
-        if(Phone == "")
-            Phone = this.state.user.Phone;
+        if (FirstName == "")
+            FirstName = this.state.FirstName;
+        if (LastName == "")
+            LastName = this.state.LastName;
+        if (Phone == "")
+            Phone = this.state.Phone;
         this.props.doupdateProfile(FirstName, LastName, Phone).then((resJson) => {
             this.setState({
                 openDialog_update: true,
@@ -123,14 +114,12 @@ class EditUser extends React.Component {
             if (resJson.returnCode == "1")
                 this.props.doGetUserInfo(this.state.userID).then((resJson) => {
                     this.setState({
-                        user:
-                        {
-                            FirstName: resJson.user.FirstName,
-                            LastName: resJson.user.LastName,
-                            CompanyName: resJson.user.CompanyName,
-                            Email: resJson.user.Email,
-                            Phone: resJson.user.PhoneNumber,
-                        }
+                        user: resJson.user,
+                        FirstName: resJson.user.FirstName,
+                        LastName: resJson.user.LastName,
+                        CompanyName: resJson.user.CompanyName,
+                        Email: resJson.user.Email,
+                        Phone: resJson.user.PhoneNumber,
                     });
                 }).catch((error) => {
                     console.log(error);
@@ -243,12 +232,13 @@ class EditUser extends React.Component {
                         <div className={classes.left}>
                             <img className={classes.img} src={contentImg} />
 
-                            <div className={classes.avH3}>
+                            <div style={{ marginTop: -50, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end' }}>
                                 <Avatar src="https://i.imgur.com/p9bwTYj.png"
                                     className={classes.avatar} />
-                                <h3 className={classes.h3}>{this.state.user.FirstName} {this.state.user.LastName}
-                                    <h5 className={classes.h5}>{this.state.user.Phone}</h5>
-                                </h3>
+                                <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 10 }}>
+                                    <Typography style={{ fontFamily: 'Roboto-Medium', fontSize: 30 }}>{this.state.user ? this.state.user.FirstName : ''} {this.state.user ? this.state.user.LastName : ''}</Typography>
+                                    <Typography style={{ fontFamily: 'Roboto-Regular', fontSize: 15 }}>{this.state.user ? this.state.user.PhoneNumber : ''}</Typography>
+                                </div>
                             </div>
                         </div>
                     </GridItem>
@@ -256,34 +246,40 @@ class EditUser extends React.Component {
                         <div className={classes.right}>
                             <div className={classes.TextField_0}>
                                 <TextField
+                                    disabled={this.state.userID != this.props.userProfile.UserID ? true : false}
                                     id="txtFirstName"
-                                    label={"Họ: " + this.state.user.FirstName}
+                                    label='Họ'
                                     className={classNames(classes.textField_1, classes.dense)}
                                     margin="dense"
                                     variant="outlined"
+                                    value={this.state.FirstName}
                                     onChange={this.onValueChange}
                                 />
                                 <TextField
+                                    disabled={this.state.userID != this.props.userProfile.UserID ? true : false}
                                     id="txtLastName"
-                                    label={'Tên: ' + this.state.user.LastName}
+                                    label='Tên'
                                     className={classNames(classes.textField_1, classes.dense)}
                                     margin="dense"
                                     variant="outlined"
+                                    value={this.state.LastName}
                                     onChange={this.onValueChange}
                                 />
                             </div>
                             <TextField
+                                disabled={this.state.userID != this.props.userProfile.UserID ? true : false}
                                 id="txtPhone"
-                                label={'SDT: ' + this.state.user.Phone}
+                                label='Số điện thoại'
                                 className={classNames(classes.textField_2, classes.dense)}
                                 margin="dense"
                                 variant="outlined"
+                                value={this.state.Phone}
                                 onChange={this.onValueChange}
                             />
                             <TextField
                                 disabled
                                 id="txtTeam"
-                                label={this.state.user.CompanyName}
+                                label={this.state.CompanyName}
                                 className={classNames(classes.textField_2, classes.dense)}
                                 margin="dense"
                                 variant="outlined"
@@ -291,11 +287,12 @@ class EditUser extends React.Component {
                             <TextField
                                 disabled
                                 id="txtEmail"
-                                label={this.state.user.Email}
+                                label={this.state.Email}
                                 className={classes.textField_2}
                                 margin="dense"
                                 variant="outlined"
                             />
+                            {this.state.userID == this.props.userProfile.UserID ?
                             <Button
                                 variant="contained"
                                 color="primary"
@@ -303,7 +300,9 @@ class EditUser extends React.Component {
                                 onClick={() => this.onUpdateClick(this.state.FirstName, this.state.LastName, this.state.Phone)}
                             >
                                 Cập nhật
-                </Button>
+                            </Button>
+                            : null}
+                            {this.state.userID == this.props.userProfile.UserID ?
                             <TextField
                                 id="txtOld_password"
                                 label="Mật khẩu cũ"
@@ -313,6 +312,8 @@ class EditUser extends React.Component {
                                 type="password"
                                 onChange={this.onValueChange}
                             />
+                            : null}
+                            {this.state.userID == this.props.userProfile.UserID ?
                             <TextField
                                 id="txtNew_password"
                                 label="Mật khẩu mới"
@@ -322,6 +323,8 @@ class EditUser extends React.Component {
                                 variant="outlined"
                                 onChange={this.onValueChange}
                             />
+                            : null}
+                            {this.state.userID == this.props.userProfile.UserID ?
                             <TextField
                                 id="txtRetype_password"
                                 label="Nhập lại mật khẩu"
@@ -331,6 +334,8 @@ class EditUser extends React.Component {
                                 variant="outlined"
                                 onChange={this.onValueChange}
                             />
+                            : null}
+                            {this.state.userID == this.props.userProfile.UserID ?
                             <Button
                                 variant="contained"
                                 color="primary"
@@ -338,7 +343,8 @@ class EditUser extends React.Component {
                                 onClick={() => this.onChangePassword(this.state.Old_password, this.state.New_password)}
                             >
                                 Đổi mật khẩu
-                </Button>
+                            </Button> 
+                            : null}
                         </div>
                     </GridItem>
                 </GridContainer>
@@ -357,6 +363,7 @@ const styles = theme => ({
 
     TextField_0: {
         display: 'flex',
+        flexDirection: 'row',
         [theme.breakpoints.up('md')]: {
             width: '99.5%',
         },
@@ -424,47 +431,26 @@ const styles = theme => ({
             display: 'none',
         },
     },
-
     avatar: {
         width: 130,
         height: 130,
 
     },
-
-    h3: {
-        fontFamily: 'roboto-medium',
-        fontSize: 26,
-        [theme.breakpoints.up('md')]: {
-            marginLeft: 141,
-            marginTop: -55,
-        },
-        [theme.breakpoints.down('sm')]: {
-            marginLeft: 141,
-            marginTop: -55,
-        },
-
-    },
-    avH3: {
-        [theme.breakpoints.up('md')]: {
-            marginLeft: '5%',
-            marginTop: '-13%',
-        },
-    },
-    h5: {
-        fontFamily: 'roboto-light',
-        fontSize: 20,
-        [theme.breakpoints.up('md')]: {
-            marginTop: '0%',
-        },
-        [theme.breakpoints.down('sm')]: {
-            marginTop: 0,
-        },
-    },
     right: {
+        display: 'flex',
+        flexDirection: 'column',
+        jutifyContent: 'center',
+        alignItems: 'center',
         marginTop: -9,
         [theme.breakpoints.down('sm')]: {
             width: '95%',
         },
+    },
+    left: {
+        display: 'flex',
+        flexDirection: 'column',
+        jutifyContent: 'center',
+        alignItems: 'center',
     },
     cssbt: {
         backgroundColor: "#47525E",

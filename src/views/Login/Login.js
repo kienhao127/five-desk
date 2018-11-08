@@ -67,7 +67,7 @@ class Login extends React.Component {
                             <TextField
                                 id="txtPassword"
                                 label="Password"
-                                type="text"
+                                type="password"
                                 name='txtPassword'
                                 className={classes.textField}
                                 variant="outlined"

@@ -52,7 +52,7 @@ io.on('connection', function (socket) {
 
     socket.on('chat message', function(msg){
         //Nhận tin nhắn từ client
-        console.log('message: ' + msg);
+        console.log('message: ', msg);
         chatRepo.insertMessage(msg)
             .then(value => {
                 console.log(value);
