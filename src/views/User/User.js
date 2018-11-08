@@ -12,7 +12,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { Button } from "@material-ui/core";
 import { loadUserFromToken, getListUser } from "../../store/actions/user";
 import { connect } from "react-redux";
-import { Link } from 'react-router-dom'
+import {Link} from 'react-router-dom'
 
 // images
 import avatar from "assets/img/avatar.png";
@@ -93,7 +93,7 @@ class User extends React.Component {
               <div>
                 <List dense={true}>
                   {this.state.listUser && this.state.listUser.map((user, key) => (
-                    <ListItem key={key} role={undefined} dense button className={classes.listItem} component={Link} to="/agent/member/profile/">
+                    <ListItem key={key} role={undefined} dense button className={classes.listItem} component={Link}  to={'/agent/member/profile/' + user.UserID}>
                       <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                         <Avatar src={avatar} className={classes.avatar} />
                         <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 15 }}>

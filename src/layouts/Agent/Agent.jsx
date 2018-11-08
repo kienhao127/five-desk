@@ -26,7 +26,7 @@ const socket = io('http://localhost:4000')
 const switchRoutes = (
   <Switch>
        <Route exact path={'/agent/ticket/new'} component={NewMailTicket} />
-       <Route exact path={'/agent/member/profile/'} component={Profile} />
+       <Route exact path={'/agent/member/profile/:userID'} component={Profile} />
       {agentRoutes.map((prop, key) => {
         if (prop.redirect)
           return <Redirect from={prop.path} to={prop.to} key={key} />;
