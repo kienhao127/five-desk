@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { updateProfile,changePassword } from './../../store/actions/user';
+import { updateProfile, changePassword, getUserInfo } from './../../store/actions/user';
 import { connect } from "react-redux";
 import contentImg from './../../assets/img/cover.jpeg';
 import { Link } from "react-router-dom";
@@ -21,18 +21,19 @@ import Slide from '@material-ui/core/Slide';
 
 
 function Transition(props) {
-    return <Slide direction="up" {...props} />;
+    return <Slide direction="down" {...props} />;
 }
-
 class EditUser extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            FirstName: this.props.userProfile != null ? this.props.userProfile.FirstName : "",
-            LastName: this.props.userProfile != null ? this.props.userProfile.LastName : "",
-            Phone: this.props.userProfile != null ? this.props.userProfile.PhoneNumber : "",
+            FirstName: "",
+            LastName: "",
+            Phone: "",
+            CompanyName: "",
+            Email: "",
             Old_password: "",
             New_password: "",
             Retype_password: "",
@@ -40,28 +41,49 @@ class EditUser extends React.Component {
             openDialog_update: false,
             openDialog_changePassword: false,
             message: "",
+            user: [],
+            userID: this.props.match.params.userID,
         };
     }
 
-    componentDidMount() {
+    componentWillMount() {
+
         if (this.props.userProfile == null)
             this.setState({
                 openDialog_login: true
             });
-        else
+        else {
             this.setState({
                 openDialog_login: false
             });
+            this.props.doGetUserInfo(this.state.userID).then((resJson) => {
+                this.setState({
+                    user:
+                    {
+                        FirstName: resJson.user.FirstName,
+                        LastName: resJson.user.LastName,
+                        CompanyName: resJson.user.CompanyName,
+                        Email: resJson.user.Email,
+                        Phone: resJson.user.PhoneNumber,
+                    }
+                });
+
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
     }
     handleToggle = () => {
         this.setState(state => ({ open: !state.open }));
     };
 
     onValueChange = (event) => {
-        if (event.target.id == "txtFirstName")
+        
+        if (event.target.id == "txtFirstName"){
             this.setState({
                 FirstName: event.target.value
-            })
+            });
+        }
         else if (event.target.id == "txtLastName")
             this.setState({
                 LastName: event.target.value
@@ -84,35 +106,56 @@ class EditUser extends React.Component {
             })
     };
 
+
+
     onUpdateClick = (FirstName, LastName, Phone) => {
+        if(FirstName == "")
+            FirstName = this.state.user.FirstName;
+        if(LastName == "")
+            LastName = this.state.user.LastName;
+        if(Phone == "")
+            Phone = this.state.user.Phone;
         this.props.doupdateProfile(FirstName, LastName, Phone).then((resJson) => {
-            this.setState({ 
+            this.setState({
                 openDialog_update: true,
                 message: resJson.message,
             });
-            this.props.userProfile.FirstName = FirstName;
-            this.props.userProfile.LastName = LastName;
-            this.props.userProfile.PhoneNumber = Phone;
+            if (resJson.returnCode == "1")
+                this.props.doGetUserInfo(this.state.userID).then((resJson) => {
+                    this.setState({
+                        user:
+                        {
+                            FirstName: resJson.user.FirstName,
+                            LastName: resJson.user.LastName,
+                            CompanyName: resJson.user.CompanyName,
+                            Email: resJson.user.Email,
+                            Phone: resJson.user.PhoneNumber,
+                        }
+                    });
+                }).catch((error) => {
+                    console.log(error);
+                });
+
         }).catch((error) => {
             console.log(error);
         });
     }
 
-    onChangePassword = (Old_password,New_password) => {
-        if(this.state.New_password !== this.state.Retype_password)
+    onChangePassword = (Old_password, New_password) => {
+        if (this.state.New_password !== this.state.Retype_password)
             this.setState({
                 openDialog_changePassword: true,
                 message: "Nhập lại mật khẩu",
             })
         else
-        this.props.doChangePassword(Old_password,New_password).then((resJson)=>{
+            this.props.doChangePassword(Old_password, New_password).then((resJson) => {
                 this.setState({
                     openDialog_changePassword: true,
                     message: resJson.message,
                 });
-        }).catch((error) => {
-            console.log(error);
-        });
+            }).catch((error) => {
+                console.log(error);
+            });
     }
 
     handleClose = () => {
@@ -203,8 +246,8 @@ class EditUser extends React.Component {
                             <div className={classes.avH3}>
                                 <Avatar src="https://i.imgur.com/p9bwTYj.png"
                                     className={classes.avatar} />
-                                <h3 className={classes.h3}>{this.props.userProfile !== null ? this.props.userProfile.FirstName : ""} {this.props.userProfile !== null ? this.props.userProfile.LastName : ""}
-                                    <h5 className={classes.h5}>{this.props.userProfile !== null ? this.props.userProfile.PhoneNumber : ""}</h5>
+                                <h3 className={classes.h3}>{this.state.user.FirstName} {this.state.user.LastName}
+                                    <h5 className={classes.h5}>{this.state.user.Phone}</h5>
                                 </h3>
                             </div>
                         </div>
@@ -214,8 +257,7 @@ class EditUser extends React.Component {
                             <div className={classes.TextField_0}>
                                 <TextField
                                     id="txtFirstName"
-                                    label="Họ"
-                                    defaultValue={this.props.userProfile !== null ? this.props.userProfile.FirstName : ""}
+                                    label={"Họ: " + this.state.user.FirstName}
                                     className={classNames(classes.textField_1, classes.dense)}
                                     margin="dense"
                                     variant="outlined"
@@ -223,8 +265,7 @@ class EditUser extends React.Component {
                                 />
                                 <TextField
                                     id="txtLastName"
-                                    label="Tên"
-                                    defaultValue={this.props.userProfile !== null ? this.props.userProfile.LastName : ""}
+                                    label={'Tên: ' + this.state.user.LastName}
                                     className={classNames(classes.textField_1, classes.dense)}
                                     margin="dense"
                                     variant="outlined"
@@ -233,8 +274,7 @@ class EditUser extends React.Component {
                             </div>
                             <TextField
                                 id="txtPhone"
-                                label="Số điện thoại"
-                                defaultValue={this.props.userProfile !== null ? this.props.userProfile.PhoneNumber : ""}
+                                label={'SDT: ' + this.state.user.Phone}
                                 className={classNames(classes.textField_2, classes.dense)}
                                 margin="dense"
                                 variant="outlined"
@@ -243,18 +283,15 @@ class EditUser extends React.Component {
                             <TextField
                                 disabled
                                 id="txtTeam"
-                                label="Team"
-                                defaultValue={this.props.userProfile !== null ? this.props.userProfile.CompanyID : ""}
+                                label={this.state.user.CompanyName}
                                 className={classNames(classes.textField_2, classes.dense)}
                                 margin="dense"
                                 variant="outlined"
-                                onChange={this.onValueChange}
                             />
                             <TextField
                                 disabled
                                 id="txtEmail"
-                                label="Email"
-                                defaultValue={this.props.userProfile !== null ? this.props.userProfile.Email : ""}
+                                label={this.state.user.Email}
                                 className={classes.textField_2}
                                 margin="dense"
                                 variant="outlined"
@@ -263,7 +300,7 @@ class EditUser extends React.Component {
                                 variant="contained"
                                 color="primary"
                                 className={classNames(classes.textField_2, classes.cssbt)}
-                                onClick={() => this.onUpdateClick(this.state.FirstName,this.state.LastName,this.state.Phone)}
+                                onClick={() => this.onUpdateClick(this.state.FirstName, this.state.LastName, this.state.Phone)}
                             >
                                 Cập nhật
                 </Button>
@@ -298,7 +335,7 @@ class EditUser extends React.Component {
                                 variant="contained"
                                 color="primary"
                                 className={classNames(classes.textField_2, classes.cssbt)}
-                                onClick={() => this.onChangePassword(this.state.Old_password,this.state.New_password)}
+                                onClick={() => this.onChangePassword(this.state.Old_password, this.state.New_password)}
                             >
                                 Đổi mật khẩu
                 </Button>
@@ -448,6 +485,8 @@ const mapDispatchToProps = dispatch => {
             dispatch(updateProfile(FirstName, LastName, Phone)),
         doChangePassword: (oldPassword, newPassword) =>
             dispatch(changePassword(oldPassword, newPassword)),
+        doGetUserInfo: (UserID) =>
+            dispatch(getUserInfo(UserID)),
     };
 };
 
