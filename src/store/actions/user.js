@@ -80,11 +80,10 @@ export const getListUser = () => {
     }
 }
 
-export const getUserInfo = () => {
+export const getUserInfo = (UserID) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-        var token = sessionStorage.getItem('token');
-        getUserInfoApi(token)
+        getUserInfoApi(UserID)
             .then((responseJson)=> {
                 console.log(responseJson);
                 resolve(responseJson);
