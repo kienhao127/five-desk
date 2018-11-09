@@ -48,22 +48,6 @@ class Agent extends React.Component {
     socket.on('unread message', (unreadMessageCount) => this.onReceiveMessage(unreadMessageCount));
   }
 
-  componentWillMount() {
-    this.props.loadUserFromToken()
-      .then((resJson) => {
-        console.log('resJson token');
-        console.log(resJson);
-        if (resJson.returnCode == 0) {
-          this.props.history.push('/')
-        } else {
-          currentUser
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-
   handleDrawerToggle = () => {
     this.setState({ mobileOpen: !this.state.mobileOpen });
   };
@@ -82,6 +66,19 @@ class Agent extends React.Component {
   }
 
   componentDidMount() {
+    this.props.loadUserFromToken()
+      .then((resJson) => {
+        console.log('resJson token');
+        console.log(resJson);
+        if (resJson.returnCode == 0) {
+          this.props.history.push('/')
+        } else {
+          currentUser
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     document.title = "FiveDesk - Agent";
 
     if (navigator.platform.indexOf("Win") > -1) {

@@ -48,7 +48,7 @@ const toolbarStyles = theme => ({
         className={classNames(classes.root)}
       >
         <div className={classes.title}>
-            <Typography variant="h6" id="tableTitle">
+            <Typography id="tableTitle">
               <div className={classes.tableTitle}>{tableTitle}</div>
               <div className={classes.tableTitleSecondary}>{tableTitleSecondary}</div>
             </Typography>

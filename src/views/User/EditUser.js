@@ -158,197 +158,200 @@ class EditUser extends React.Component {
     render() {
         const { classes } = this.props;
         return (
-            <div className={classes.root}>
-                <Dialog
-                    open={this.state.openDialog_login}
-                    TransitionComponent={Transition}
-                    keepMounted
-                    onClose={this.handleClose}
-                    aria-labelledby="alert-dialog-slide-title"
-                    aria-describedby="alert-dialog-slide-description"
-                >
-                    <DialogTitle id="alert-dialog-slide-title">
-                        {"Yêu cầu đăng nhập"}
-                    </DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-slide-description">
-                            Bạn phải đăng nhập để tiếp tục
+
+            this.props.userProfile != null ?
+                <div className={classes.root}>
+                    <Dialog
+                        open={this.state.openDialog_login}
+                        TransitionComponent={Transition}
+                        keepMounted
+                        onClose={this.handleClose}
+                        aria-labelledby="alert-dialog-slide-title"
+                        aria-describedby="alert-dialog-slide-description"
+                    >
+                        <DialogTitle id="alert-dialog-slide-title">
+                            {"Yêu cầu đăng nhập"}
+                        </DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-slide-description">
+                                Bạn phải đăng nhập để tiếp tục
                         </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Link to="/login" style={{ textDecoration: 'none', color: 'black' }}>
-                            <Button onClick={this.handleClose} color="primary">Xác nhận
+                        </DialogContent>
+                        <DialogActions>
+                            <Link to="/login" style={{ textDecoration: 'none', color: 'black' }}>
+                                <Button onClick={this.handleClose} color="primary">Xác nhận
                             </Button>
-                        </Link>
-                    </DialogActions>
-                </Dialog>
+                            </Link>
+                        </DialogActions>
+                    </Dialog>
 
-                <Dialog
-                    open={this.state.openDialog_update}
-                    TransitionComponent={Transition}
-                    keepMounted
-                    onClose={this.handleClose}
-                    aria-labelledby="alert-dialog-slide-title"
-                    aria-describedby="alert-dialog-slide-description"
-                >
-                    <DialogTitle id="alert-dialog-slide-title">
-                        {"Thông báo"}
-                    </DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-slide-description">
-                            {this.state.message}
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">Xác nhận
+                    <Dialog
+                        open={this.state.openDialog_update}
+                        TransitionComponent={Transition}
+                        keepMounted
+                        onClose={this.handleClose}
+                        aria-labelledby="alert-dialog-slide-title"
+                        aria-describedby="alert-dialog-slide-description"
+                    >
+                        <DialogTitle id="alert-dialog-slide-title">
+                            {"Thông báo"}
+                        </DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-slide-description">
+                                {this.state.message}
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.handleClose} color="primary">Xác nhận
                         </Button>
-                    </DialogActions>
-                </Dialog>
+                        </DialogActions>
+                    </Dialog>
 
-                <Dialog
-                    open={this.state.openDialog_changePassword}
-                    TransitionComponent={Transition}
-                    keepMounted
-                    onClose={this.handleClose}
-                    aria-labelledby="alert-dialog-slide-title"
-                    aria-describedby="alert-dialog-slide-description"
-                >
-                    <DialogTitle id="alert-dialog-slide-title">
-                        {"Thông báo"}
-                    </DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-slide-description">
-                            {this.state.message}
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">Xác nhận
+                    <Dialog
+                        open={this.state.openDialog_changePassword}
+                        TransitionComponent={Transition}
+                        keepMounted
+                        onClose={this.handleClose}
+                        aria-labelledby="alert-dialog-slide-title"
+                        aria-describedby="alert-dialog-slide-description"
+                    >
+                        <DialogTitle id="alert-dialog-slide-title">
+                            {"Thông báo"}
+                        </DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-slide-description">
+                                {this.state.message}
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.handleClose} color="primary">Xác nhận
                         </Button>
-                    </DialogActions>
-                </Dialog>
+                        </DialogActions>
+                    </Dialog>
 
-                <GridContainer>
-                    <GridItem xs={12} sm={12} md={7}>
-                        <div className={classes.left}>
-                            <img className={classes.img} src={contentImg} />
+                    <GridContainer>
+                        <GridItem xs={12} sm={12} md={7}>
+                            <div className={classes.left}>
+                                <img className={classes.img} src={contentImg} />
 
-                            <div style={{ marginTop: -50, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end' }}>
-                                <Avatar src="https://i.imgur.com/p9bwTYj.png"
-                                    className={classes.avatar} />
-                                <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 10 }}>
-                                    <Typography style={{ fontFamily: 'Roboto-Medium', fontSize: 30 }}>{this.state.user ? this.state.user.FirstName : ''} {this.state.user ? this.state.user.LastName : ''}</Typography>
-                                    <Typography style={{ fontFamily: 'Roboto-Regular', fontSize: 15 }}>{this.state.user ? this.state.user.PhoneNumber : ''}</Typography>
+                                <div style={{ marginTop: -50, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end' }}>
+                                    <Avatar src="https://i.imgur.com/p9bwTYj.png"
+                                        className={classes.avatar} />
+                                    <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 10 }}>
+                                        <Typography style={{ fontFamily: 'Roboto-Medium', fontSize: 30 }}>{this.state.user ? this.state.user.FirstName : ''} {this.state.user ? this.state.user.LastName : ''}</Typography>
+                                        <Typography style={{ fontFamily: 'Roboto-Regular', fontSize: 15 }}>{this.state.user ? this.state.user.PhoneNumber : ''}</Typography>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </GridItem>
-                    <GridItem xs={12} sm={12} md={5}>
-                        <div className={classes.right}>
-                            <div className={classes.TextField_0}>
+                        </GridItem>
+                        <GridItem xs={12} sm={12} md={5}>
+                            <div className={classes.right}>
+                                <div className={classes.TextField_0}>
+                                    <TextField
+                                        disabled={this.state.userID != this.props.userProfile.UserID ? true : false}
+                                        id="txtFirstName"
+                                        label='Họ'
+                                        className={classNames(classes.textField_1, classes.dense)}
+                                        margin="dense"
+                                        variant="outlined"
+                                        value={this.state.FirstName}
+                                        onChange={this.onValueChange}
+                                    />
+                                    <TextField
+                                        disabled={this.state.userID != this.props.userProfile.UserID ? true : false}
+                                        id="txtLastName"
+                                        label='Tên'
+                                        className={classNames(classes.textField_1, classes.dense)}
+                                        margin="dense"
+                                        variant="outlined"
+                                        value={this.state.LastName}
+                                        onChange={this.onValueChange}
+                                    />
+                                </div>
                                 <TextField
                                     disabled={this.state.userID != this.props.userProfile.UserID ? true : false}
-                                    id="txtFirstName"
-                                    label='Họ'
-                                    className={classNames(classes.textField_1, classes.dense)}
+                                    id="txtPhone"
+                                    label='Số điện thoại'
+                                    className={classNames(classes.textField_2, classes.dense)}
                                     margin="dense"
                                     variant="outlined"
-                                    value={this.state.FirstName}
+                                    value={this.state.Phone}
                                     onChange={this.onValueChange}
                                 />
                                 <TextField
-                                    disabled={this.state.userID != this.props.userProfile.UserID ? true : false}
-                                    id="txtLastName"
-                                    label='Tên'
-                                    className={classNames(classes.textField_1, classes.dense)}
+                                    disabled
+                                    id="txtTeam"
+                                    label={this.state.CompanyName}
+                                    className={classNames(classes.textField_2, classes.dense)}
                                     margin="dense"
                                     variant="outlined"
-                                    value={this.state.LastName}
-                                    onChange={this.onValueChange}
                                 />
-                            </div>
-                            <TextField
-                                disabled={this.state.userID != this.props.userProfile.UserID ? true : false}
-                                id="txtPhone"
-                                label='Số điện thoại'
-                                className={classNames(classes.textField_2, classes.dense)}
-                                margin="dense"
-                                variant="outlined"
-                                value={this.state.Phone}
-                                onChange={this.onValueChange}
-                            />
-                            <TextField
-                                disabled
-                                id="txtTeam"
-                                label={this.state.CompanyName}
-                                className={classNames(classes.textField_2, classes.dense)}
-                                margin="dense"
-                                variant="outlined"
-                            />
-                            <TextField
-                                disabled
-                                id="txtEmail"
-                                label={this.state.Email}
-                                className={classes.textField_2}
-                                margin="dense"
-                                variant="outlined"
-                            />
-                            {this.state.userID == this.props.userProfile.UserID ?
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                className={classNames(classes.textField_2, classes.cssbt)}
-                                onClick={() => this.onUpdateClick(this.state.FirstName, this.state.LastName, this.state.Phone)}
-                            >
-                                Cập nhật
+                                <TextField
+                                    disabled
+                                    id="txtEmail"
+                                    label={this.state.Email}
+                                    className={classes.textField_2}
+                                    margin="dense"
+                                    variant="outlined"
+                                />
+                                {this.state.userID == this.props.userProfile.UserID ?
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        className={classNames(classes.textField_2, classes.cssbt)}
+                                        onClick={() => this.onUpdateClick(this.state.FirstName, this.state.LastName, this.state.Phone)}
+                                    >
+                                        Cập nhật
                             </Button>
-                            : null}
-                            {this.state.userID == this.props.userProfile.UserID ?
-                            <TextField
-                                id="txtOld_password"
-                                label="Mật khẩu cũ"
-                                className={classNames(classes.textField_3, classes.dense)}
-                                margin="dense"
-                                variant="outlined"
-                                type="password"
-                                onChange={this.onValueChange}
-                            />
-                            : null}
-                            {this.state.userID == this.props.userProfile.UserID ?
-                            <TextField
-                                id="txtNew_password"
-                                label="Mật khẩu mới"
-                                type="password"
-                                className={classNames(classes.textField_2, classes.dense)}
-                                margin="dense"
-                                variant="outlined"
-                                onChange={this.onValueChange}
-                            />
-                            : null}
-                            {this.state.userID == this.props.userProfile.UserID ?
-                            <TextField
-                                id="txtRetype_password"
-                                label="Nhập lại mật khẩu"
-                                className={classNames(classes.textField_2, classes.dense)}
-                                margin="dense"
-                                type="password"
-                                variant="outlined"
-                                onChange={this.onValueChange}
-                            />
-                            : null}
-                            {this.state.userID == this.props.userProfile.UserID ?
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                className={classNames(classes.textField_2, classes.cssbt)}
-                                onClick={() => this.onChangePassword(this.state.Old_password, this.state.New_password)}
-                            >
-                                Đổi mật khẩu
-                            </Button> 
-                            : null}
-                        </div>
-                    </GridItem>
-                </GridContainer>
-            </div>
+                                    : null}
+                                {this.state.userID == this.props.userProfile.UserID ?
+                                    <TextField
+                                        id="txtOld_password"
+                                        label="Mật khẩu cũ"
+                                        className={classNames(classes.textField_3, classes.dense)}
+                                        margin="dense"
+                                        variant="outlined"
+                                        type="password"
+                                        onChange={this.onValueChange}
+                                    />
+                                    : null}
+                                {this.state.userID == this.props.userProfile.UserID ?
+                                    <TextField
+                                        id="txtNew_password"
+                                        label="Mật khẩu mới"
+                                        type="password"
+                                        className={classNames(classes.textField_2, classes.dense)}
+                                        margin="dense"
+                                        variant="outlined"
+                                        onChange={this.onValueChange}
+                                    />
+                                    : null}
+                                {this.state.userID == this.props.userProfile.UserID ?
+                                    <TextField
+                                        id="txtRetype_password"
+                                        label="Nhập lại mật khẩu"
+                                        className={classNames(classes.textField_2, classes.dense)}
+                                        margin="dense"
+                                        type="password"
+                                        variant="outlined"
+                                        onChange={this.onValueChange}
+                                    />
+                                    : null}
+                                {this.state.userID == this.props.userProfile.UserID ?
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        className={classNames(classes.textField_2, classes.cssbt)}
+                                        onClick={() => this.onChangePassword(this.state.Old_password, this.state.New_password)}
+                                    >
+                                        Đổi mật khẩu
+                            </Button>
+                                    : null}
+                            </div>
+                        </GridItem>
+                    </GridContainer>
+                </div>
+                : null
         );
     }
 }

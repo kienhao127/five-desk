@@ -308,6 +308,7 @@ class LiveChat extends React.Component {
   render() {
     const { classes } = this.props;
     return (
+      this.props.userProfile != null ?
       <div className={classes.root}>
         <SkyLight hideOnOverlayClicked ref="listUserDialog">
           <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Medium', fontSize: 20 }}>Danh sách thành viên</Typography>
@@ -518,6 +519,7 @@ class LiveChat extends React.Component {
           </GridItemChat>
         </GridContainer>
       </div>
+      : null
     );
   }
 }
