@@ -126,143 +126,140 @@ onValueChange = (event) => {
 
   render() {
     const { classes } = this.props;
-    if (this.props.userProfile != null){
-      return (
-      
-        <div>
-          <GridContainer spacing={24}>
-           <GridItem xs={24} sm={24} md={10}>
-           <div className={classes.TextField_0} style={{ margin: 10, fontFamily: 'Roboto-Regular', fontSize: 15 }}>
-                  <button type="button" onClick={this.openDialog} style={{ fontFamily: 'Roboto-Bold', fontSize: 20 }}>Thêm +</button>
-                  {
-                      this.state.isDialogOpen &&
-                      <DialogRC
-                          title="Thêm người dùng mới"
-                          modal={true}
-                          width = {500}
-                          height = {330}
-                          onClose={this.handleClose}
-                          >
-                          <div className={classes.TextField_0}>
-                                  <TextField
-                                      id="txtFirstName"
-                                      label='Họ'
-                                      className={classNames(classes.textField_1, classes.dense)}
-                                      margin="dense"
-                                      variant="outlined"
-                                      value={this.state.FirstName}
-                                      onChange={this.onValueChange}
-                                  />
-                                  <TextField
-                                      id="txtLastName"
-                                      label='Tên'
-                                      className={classNames(classes.textField_1, classes.dense)}
-                                      margin="dense"
-                                      variant="outlined"
-                                      value={this.state.LastName}
-                                      onChange={this.onValueChange}
-                                  />
-                              </div>
-                              <TextField
-                                  id="txtEmail"
-                                  label='Email'
-                                  className={classes.textField_2}
-                                  margin="dense"
-                                  variant="outlined"
-                              />
-                              <div className={classes.selectableTextFieldContainer}>
-                                  <TextField
-                                id="select-type"
-                                select
-                                label="Loại thành viên"
-                                className={classes.selectableTextFieldType}
-                                value={this.state.type}
-                                onChange={this.handleChange('type')}
-                                SelectProps={{
-                                    MenuProps: {
-                                    className: classes.menu,
-                                    },
-                                }}
-                                margin="normal"
-                                variant="outlined"
-                                >
-                                {types.map(option => (
-                                    <MenuItem key={option.id} value={option}>
-                                    {option.name}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
+    return (
+      this.props.userProfile != null?
+      <div>
+        <GridContainer spacing={24}>
+         <GridItem xs={24} sm={24} md={10}>
+         <div className={classes.TextField_0} style={{ margin: 10, fontFamily: 'Roboto-Regular', fontSize: 15 }}>
+                <button type="button" onClick={this.openDialog} style={{ fontFamily: 'Roboto-Bold', fontSize: 20 }}>Thêm +</button>
+                {
+                    this.state.isDialogOpen &&
+                    <DialogRC
+                        title="Thêm người dùng mới"
+                        modal={true}
+                        width = {500}
+                        height = {330}
+                        onClose={this.handleClose}
+                        >
+                        <div className={classes.TextField_0}>
+                                <TextField
+                                    id="txtFirstName"
+                                    label='Họ'
+                                    className={classNames(classes.textField_1, classes.dense)}
+                                    margin="dense"
+                                    variant="outlined"
+                                    value={this.state.FirstName}
+                                    onChange={this.onValueChange}
+                                />
+                                <TextField
+                                    id="txtLastName"
+                                    label='Tên'
+                                    className={classNames(classes.textField_1, classes.dense)}
+                                    margin="dense"
+                                    variant="outlined"
+                                    value={this.state.LastName}
+                                    onChange={this.onValueChange}
+                                />
                             </div>
-                              <Button
-                                  variant="contained"
-                                  color="primary"
-                                  className={classNames(classes.button, classes.cssbt)}
-                                  onClick={() => this.onUpdateClick(this.state.FirstName, this.state.LastName, this.state.Phone)}
+                            <TextField
+                                id="txtEmail"
+                                label='Email'
+                                className={classes.textField_2}
+                                margin="dense"
+                                variant="outlined"
+                            />
+                            <div className={classes.selectableTextFieldContainer}>
+                                <TextField
+                              id="select-type"
+                              select
+                              label="Loại thành viên"
+                              className={classes.selectableTextFieldType}
+                              value={this.state.type}
+                              onChange={this.handleChange('type')}
+                              SelectProps={{
+                                  MenuProps: {
+                                  className: classes.menu,
+                                  },
+                              }}
+                              margin="normal"
+                              variant="outlined"
                               >
-                                  Thêm
-                              </Button>
-                              
-                      </DialogRC>
-                  }
+                              {types.map(option => (
+                                  <MenuItem key={option.id} value={option}>
+                                  {option.name}
+                                  </MenuItem>
+                              ))}
+                          </TextField>
+                          </div>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                className={classNames(classes.button, classes.cssbt)}
+                                onClick={() => this.onUpdateClick(this.state.FirstName, this.state.LastName, this.state.Phone)}
+                            >
+                                Thêm
+                            </Button>
+                            
+                    </DialogRC>
+                }
+            </div>
+          </GridItem>
+          <GridItem xs={6}>
+            <div className={classes.gridItem}>
+              <div>
+                <Typography component="h3" variant="2" gutterBottom className={classes.title}>
+                  Thành viên ({this.state.listUser == null ? 0 : this.state.listUser.length}/20)
+              </Typography>
               </div>
-            </GridItem>
-            <GridItem xs={6}>
-              <div className={classes.gridItem}>
-                <div>
-                  <Typography component="h3" variant="2" gutterBottom className={classes.title}>
-                    Thành viên ({this.state.listUser == null ? 0 : this.state.listUser.length}/20)
-                </Typography>
-                </div>
-                <div>
-                  <List dense={true}>
-                    {this.state.listUser && this.state.listUser.map((user, key) => (
-                      <ListItem key={key} role={undefined} dense button className={classes.listItem} component={Link}  to={'/agent/member/profile/' + user.UserID}>
-                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                          <Avatar src={avatar} className={classes.avatar} />
-                          <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 15 }}>
-                            {(user.FirstName != null ? user.FirstName : '') + (user.FirstName != null ? ' ' : '') + user.LastName}
+              <div>
+                <List dense={true}>
+                  {this.state.listUser && this.state.listUser.map((user, key) => (
+                    <ListItem key={key} role={undefined} dense button className={classes.listItem} component={Link}  to={'/agent/member/profile/' + user.UserID}>
+                      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                        <Avatar src={avatar} className={classes.avatar} />
+                        <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 15 }}>
+                          {(user.FirstName != null ? user.FirstName : '') + (user.FirstName != null ? ' ' : '') + user.LastName}
+                        </Typography>
+                        {user.UserID == this.props.userProfile.UserID
+                          ?
+                          <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 15, color: 'gray' }}>
+                            Chỉnh sửa
                           </Typography>
-                          {user.UserID == this.props.userProfile.UserID
-                            ?
-                            <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 15, color: 'gray' }}>
-                              Chỉnh sửa
-                            </Typography>
-                            : null}
-                        </div>
-                      </ListItem>
-                    ))}
-                  </List>
-                </div>
+                          : null}
+                      </div>
+                    </ListItem>
+                  ))}
+                </List>
               </div>
+            </div>
+          </GridItem>
+
+          {/*
+          <GridItem xs={6}>
+            <div className={classes.gridItem}>
+              <div>
+                <Typography component="h3" variant="2" gutterBottom className={classes.title}>
+                  Khách (3)
+              </Typography>
+              </div>
+              <div>
+                <List dense={true}>
+                  {menuItems2.map((item, key) => (
+                    <ListItem key={key} role={undefined} dense button className={classes.listItem}>
+                      <Avatar alt="Khách" src={item.imgSrc} />
+                      <ListItemText primary={item.name} secondary={item.editText}></ListItemText>
+                    </ListItem>
+                  ))}
+                </List>
+              </div>
+            </div>
             </GridItem>
-  
-            {/*
-            <GridItem xs={6}>
-              <div className={classes.gridItem}>
-                <div>
-                  <Typography component="h3" variant="2" gutterBottom className={classes.title}>
-                    Khách (3)
-                </Typography>
-                </div>
-                <div>
-                  <List dense={true}>
-                    {menuItems2.map((item, key) => (
-                      <ListItem key={key} role={undefined} dense button className={classes.listItem}>
-                        <Avatar alt="Khách" src={item.imgSrc} />
-                        <ListItemText primary={item.name} secondary={item.editText}></ListItemText>
-                      </ListItem>
-                    ))}
-                  </List>
-                </div>
-              </div>
-              </GridItem>
-              */}
-          </GridContainer>
-        </div>
-  
-      );
-    }
-   
+            */}
+        </GridContainer>
+      </div>
+      : null
+    );
   }
 }
 
