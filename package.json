@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^3.1.2",
     "@material-ui/icons": "^3.0.1",
+    "blueimp-md5": "^2.10.0",
     "body-parser": "^1.18.3",
     "dotenv": "^6.1.0",
     "express": "^4.16.4",
@@ -15,6 +16,7 @@
     "mysql": "^2.16.0",
     "perfect-scrollbar": "^1.4.0",
     "react": "^16.5.2",
+    "react-dialog": "^1.0.2",
     "react-dom": "^16.5.2",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",

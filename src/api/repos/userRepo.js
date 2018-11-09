@@ -27,10 +27,10 @@ exports.updateProfile = function(user){
 	return db.load(sql);
 }
 
-// exports.addUser = function(user){
-//     var sql = "INSERT INTO user(Email, FirstName, LastName, UserType, IsActive) VALUES('"+ user.email +"', '" + user.firstname +"', '"+ user.lastname +"', '2', '0')";
-//     return db.write(sql);
-// }
+exports.addUser = function(user){
+    var sql = "INSERT INTO user(Email, FirstName, LastName, UserType, IsActive) VALUES('"+ user.email +"', '" + user.firstname +"', '"+ user.lastname +"', '2', '0')";
+    return db.write(sql);
+}
 
 exports.getListUser = function(u){
     var sql = `select * from user where CompanyID = '${u.companyID}' and isDelete = 0`;
