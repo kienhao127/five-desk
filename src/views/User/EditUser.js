@@ -162,30 +162,6 @@ class EditUser extends React.Component {
             this.props.userProfile != null ?
                 <div className={classes.root}>
                     <Dialog
-                        open={this.state.openDialog_login}
-                        TransitionComponent={Transition}
-                        keepMounted
-                        onClose={this.handleClose}
-                        aria-labelledby="alert-dialog-slide-title"
-                        aria-describedby="alert-dialog-slide-description"
-                    >
-                        <DialogTitle id="alert-dialog-slide-title">
-                            {"Yêu cầu đăng nhập"}
-                        </DialogTitle>
-                        <DialogContent>
-                            <DialogContentText id="alert-dialog-slide-description">
-                                Bạn phải đăng nhập để tiếp tục
-                        </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Link to="/login" style={{ textDecoration: 'none', color: 'black' }}>
-                                <Button onClick={this.handleClose} color="primary">Xác nhận
-                            </Button>
-                            </Link>
-                        </DialogActions>
-                    </Dialog>
-
-                    <Dialog
                         open={this.state.openDialog_update}
                         TransitionComponent={Transition}
                         keepMounted

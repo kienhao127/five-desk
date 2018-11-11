@@ -76,13 +76,12 @@ router.post('/register', (req, res) => {
                 avatar: req.body.avatar,
                 firstname: req.body.firstname,
                 lastname: req.body.lastname,
-                phonenumber: req.body.phone,
+                phoneNumber: req.body.phoneNumber,
                 company: value.insertId,
                 isdelete: 0,
                 type: 2,
                 isactive: 0
             }
-            
             userRepo.register(u)
                 .then(value => {
                     var message = '';

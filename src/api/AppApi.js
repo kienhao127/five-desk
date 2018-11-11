@@ -34,14 +34,14 @@ export function loginApi(email, password) {
     return fetchApi('user/login', 'POST', body);
 }
 
-export function registerApi(email, password, avatar, firstname, lastname, phone, company) {
+export function registerApi(email, password, avatar, firstname, lastname, phoneNumber, company) {
     var body = {
         email: email,
         password: password,
         avatar: avatar,
         firstname: firstname,
         lastname: lastname,
-        phonenumber: phone,
+        phoneNumber: phoneNumber,
         company: company
     }
     return fetchApi('user/register', 'POST', body);

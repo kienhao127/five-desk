@@ -7,7 +7,7 @@ exports.login = function(u) {
 
 exports.register = function(u) {
     var sql = `insert into user(Email, Password, Avatar, FirstName, LastName, PhoneNumber, CompanyID, IsDelete, UserType, IsActive)
-                values('${u.email}', '${u.password}', '${u.avatar}', '${u.firstname}', '${u.lastname}', '${u.phonenumber}', '${u.company}', 
+                values('${u.email}', '${u.password}', '${u.avatar}', '${u.firstname}', '${u.lastname}', '${u.phoneNumber}', '${u.company}', 
                 '${u.isdelete}', '${u.type}', '${u.isactive}')`;
     return db.write(sql);
 }

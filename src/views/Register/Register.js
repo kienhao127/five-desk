@@ -2,16 +2,26 @@ import React from "react";
 import ReactDOM from 'react-dom';
 import PropTypes from "prop-types";
 import classNames from "classnames";
-
+import { register } from './../../store/actions/user';
+import { connect } from "react-redux";
 import GridContainer from "./../../components/Grid/GridContainer";
 import GridItem from "./../../components/Grid/GridItem";
 // @material-ui/core
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import ThemeButton from './../../components/ThemeButton/ThemeButton';
-import {withStyles, createMuiTheme, MuiThemeProvider} from "@material-ui/core/styles";
+import { withStyles, createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import { Button, Typography } from "@material-ui/core";
 import RegisterImage from 'assets/img/register-image.png';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
+function Transition(props) {
+    return <Slide direction="down" {...props} />;
+}
 
 class Register extends React.Component {
 
@@ -26,6 +36,8 @@ class Register extends React.Component {
             firstName: "",
             phoneNumber: "",
             companyName: "",
+            openDialog: false,
+            message: "",
         };
     }
 
@@ -56,12 +68,57 @@ class Register extends React.Component {
             })
     }
 
+    onRegister = (email, password, avatar, firstname, lastname, phone, company) => {
+        if(email == "" || password == "" || firstname == "" ||
+        lastname == "" || phone == "" || company == "")
+                this.setState({openDialog: true, message: "Các trường không được để trống"});
+        else{
+            this.props.doregister(email, password, avatar, firstname, lastname, phone, company)
+            .then((resJson) => {
+                if(resJson.returnCode == "1"){
+                    this.setState({openDialog: true, message: "Đăng ký thành công"})
+                    console.log(resJson);
+                }
+                else if(resJson.returnCode == "0")
+                    this.setState({openDialog: true, message: "Đăng ký thất bại"})
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+    }
+
+    handleClose = () => {
+        this.setState({
+            openDialog: false,
+        });
+    }
     render() {
         const { classes } = this.props;
         return (
-            <div style={{width: '50%', display: 'block', marginLeft: 'auto', marginRight: 'auto'}}>
-                <img src={RegisterImage} style={{width: '75%', display: 'block', marginLeft: 'auto', marginRight: 'auto'}}/>
-                <Typography style={{display: 'block', marginLeft: 'auto', marginRight: 'auto', fontSize: '3.5vw', fontFamily: 'Roboto-Medium', textAlign:'center'}}>Bắt đầu kết nối khách hàng!</Typography>
+            <div style={{ width: '50%', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}>
+                <Dialog
+                        open={this.state.openDialog}
+                        TransitionComponent={Transition}
+                        keepMounted
+                        onClose={this.handleClose}
+                        aria-labelledby="alert-dialog-slide-title"
+                        aria-describedby="alert-dialog-slide-description"
+                    >
+                        <DialogTitle id="alert-dialog-slide-title">
+                            {"Thông báo"}
+                        </DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-slide-description">
+                                {this.state.message}
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.handleClose} color="primary">Xác nhận
+                        </Button>
+                        </DialogActions>
+                    </Dialog>
+                <img src={RegisterImage} style={{ width: '75%', display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />
+                <Typography style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto', fontSize: '3.5vw', fontFamily: 'Roboto-Medium', textAlign: 'center' }}>Bắt đầu kết nối khách hàng!</Typography>
                 <GridContainer>
                     <GridItem xs={12} sm={12} md={6} >
                         <div className={classes.selectableTextFieldContainer}>
@@ -72,6 +129,7 @@ class Register extends React.Component {
                                 name='txtFirstName'
                                 className={classes.selectableTextFieldType}
                                 variant="outlined"
+                                onChange={this.onValueChange}
                             />
                             <TextField
                                 id="txtLastName"
@@ -80,6 +138,7 @@ class Register extends React.Component {
                                 name='txtLastName'
                                 className={classes.selectableTextFieldPriority}
                                 variant="outlined"
+                                onChange={this.onValueChange}
                             />
                         </div>
                         <TextField
@@ -89,6 +148,7 @@ class Register extends React.Component {
                             name='txtPhoneNumber'
                             className={classes.textField}
                             variant="outlined"
+                            onChange={this.onValueChange}
                         />
                         <TextField
                             id="txtCompanyName"
@@ -98,6 +158,7 @@ class Register extends React.Component {
                             className={classes.textField}
                             variant="outlined"
                             margin="normal"
+                            onChange={this.onValueChange}
                         />
                     </GridItem>
                     <GridItem xs={12} sm={12} md={6}>
@@ -108,6 +169,7 @@ class Register extends React.Component {
                             name='txtEmail'
                             className={classes.textField}
                             variant="outlined"
+                            onChange={this.onValueChange}
                         />
                         <TextField
                             id="txtPassword"
@@ -116,125 +178,70 @@ class Register extends React.Component {
                             name='txtPassword'
                             className={classes.textField}
                             variant="outlined"
+                            onChange={this.onValueChange}
                         />
                         <MuiThemeProvider theme={theme}>
-                            <Button variant="contained" color='primary' style={{width: '98%', height: '25%', marginLeft: 10, marginTop: 15}}>
-                                <Typography style={{color: '#FFF', fontSize: 20}}>Đăng ký</Typography>
+                            <Button variant="contained" color='primary' style={{ width: '98%', height: '25%', marginLeft: 10, marginTop: 15 }}
+                            onClick={()=> this.onRegister(this.state.username,this.state.password,
+                            null,this.state.firstName,this.state.lastName,this.state.phoneNumber,
+                            this.state.companyName)}
+                            >
+                                <Typography style={{ color: '#FFF', fontSize: 20 }}>Đăng ký</Typography>
                             </Button>
                         </MuiThemeProvider>
                     </GridItem>
                 </GridContainer>
             </div>
-        // <div id="333" className={classes.container}>
-        
-            // <table className={classes.table}>
-                // <tr className={classes.tableRow}>
-                //     <td>
-                //         <TextField className={classes.txt} variant="outlined" label="Email"></TextField>
-                //     </td>
-                //     <td>
-                //         <TextField className={classes.txt} variant="outlined" label="Số điện thoại"></TextField>
-                //     </td>
-                // </tr>
-                // <tr className={classes.tableRow}>
-                //     <td>
-                //         <TextField className={classes.txt} variant="outlined" label="Password"></TextField>
-                //     </td>
-                //     <td>
-                //         <TextField className={classes.txt} variant="outlined" label="Tên công ty"></TextField>
-                //     </td>
-                // </tr>
-                // <tr className={classes.tableRow}>
-                //     <td className={classes.cellHoTen}>
-                //     <TextField className={classes.txtHo} variant="outlined" label="Họ"></TextField>
-                //     <TextField className={classes.txtTen} variant="outlined" label="Tên"></TextField>
-                //     </td>
-                //     <td>
-                //         <Button className={classes.txt + ' ' + classes.button} variant="outlined">Đăng ký</Button>
-                //     </td>
-                // </tr>
-            // </table>
-        // </div>
         );
     }
 }
-
-// const styles = {
-//     container: {
-//         paddingLeft: "20%",
-//         paddingRight: "20%",
-//         height: "500px",
-//     },
-//     table: {
-//         position: "relative",
-//         width: "100%",
-//         height: "50%",
-//     },
-//     txt: {
-//         width: "90%",
-//         left: "5%",
-//     },
-//     tableRow: {
-//         marginBottom: "15%",
-//     },
-//     button: {
-//         height: "56px",
-//         backgroundColor: "#47525e",
-//         color: "#FFFFFF",
-//         fontFamily: "'Times New Roman', Times, serif",
-//         fontSize: "20px",
-//     },
-//     cellHoTen: {
-//         width: "50%",
-//     },
-//     txtHo: {
-//         width: "42.5%",
-//         marginLeft: "5%",
-//         marginRight: "2.5%",
-//     },
-//     txtTen: {
-//         width: "42.5%",
-//         marginLeft: "2.5%",
-//         marginRight: "5%",
-//     }
-// }
 
 const styles = {
     center: {
         display: 'block', marginLeft: 'auto', marginRight: 'auto'
     },
     container: {
-      display: 'flex',
-      flexWrap: 'wrap',
+        display: 'flex',
+        flexWrap: 'wrap',
     },
     textField: {
-      marginTop: '15px',
-      marginLeft: '10px',
-      width: '98%'
+        marginTop: '15px',
+        marginLeft: '10px',
+        width: '98%'
     },
-    selectableTextFieldContainer:{
+    selectableTextFieldContainer: {
         marginTop: '15px',
         paddingLeft: '10px',
         display: 'flex',
         width: '98%'
     },
-    selectableTextFieldType:{
+    selectableTextFieldType: {
         width: '50%',
         marginRight: '5px',
     },
-    selectableTextFieldPriority:{
+    selectableTextFieldPriority: {
         marginLeft: '5px',
         width: '50%',
     },
-  };
+};
 
-  const theme = createMuiTheme({
+const theme = createMuiTheme({
     palette: {
-      primary: {
-          main: '#00bcd4',
-      },
+        primary: {
+            main: '#00bcd4',
+        },
     },
-  });
+});
+const mapStateToProps = state => {
+    return {
+    };
+};
 
+const mapDispatchToProps = dispatch => {
+    return {
+        doregister: (email, password, avatar, firstname, lastname, phone, company) => 
+            dispatch(register(email, password, avatar, firstname, lastname, phone, company))
+    };
+};
 
-export default withStyles(styles)(Register);
+export default withStyles(styles)(connect(mapStateToProps,mapDispatchToProps)(Register));
