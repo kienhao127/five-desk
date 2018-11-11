@@ -77,33 +77,28 @@ class Register extends React.Component {
         }
 
         if (email !== "") {
-            let lastAtPos = email.lastIndexOf('@');
-            let lastDotPos = email.lastIndexOf('.');
-
-            if (!(lastAtPos < lastDotPos && lastAtPos > 0 &&
-                email.indexOf('@@') == -1 && lastDotPos > 2 &&
-                (email.length - lastDotPos) > 2)) {
+            let filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if (!filter.test(email)) {
                 this.setState({ checkEmail: false, openDialog: true, message: "Email không hợp lệ" });
                 return false;
             }
         }
         return true;
-
     }
 
     onRegister = (email, password, avatar, firstname, lastname, phone, company) => {
-        if(this.handleValidation(email, password, firstname, lastname, phone, company))
-        this.props.doregister(email, password, avatar, firstname, lastname, phone, company)
-            .then((resJson) => {
-                if (resJson.returnCode == "1") {
-                    this.setState({ openDialog: true, message: "Đăng ký thành công" })
-                    console.log(resJson);
-                }
-                else if (resJson.returnCode == "0")
-                    this.setState({ openDialog: true, message: "Đăng ký thất bại" })
-            }).catch((error) => {
-                console.log(error);
-            });
+        if (this.handleValidation(email, password, firstname, lastname, phone, company))
+            this.props.doregister(email, password, avatar, firstname, lastname, phone, company)
+                .then((resJson) => {
+                    if (resJson.returnCode == "1") {
+                        this.setState({ openDialog: true, message: "Đăng ký thành công" })
+                        console.log(resJson);
+                    }
+                    else if (resJson.returnCode == "0")
+                        this.setState({ openDialog: true, message: "Đăng ký thất bại" })
+                }).catch((error) => {
+                    console.log(error);
+                });
     }
 
     handleClose = () => {
