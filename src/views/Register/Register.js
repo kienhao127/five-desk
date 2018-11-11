@@ -37,6 +37,7 @@ class Register extends React.Component {
             phoneNumber: "",
             companyName: "",
             openDialog: false,
+            checkEmail: false,
             message: "",
         };
     }
@@ -68,23 +69,41 @@ class Register extends React.Component {
             })
     }
 
+    handleValidation = (email, password, firstname, lastname, phone, company) => {
+        if (email == "" || password == "" || firstname == "" ||
+            lastname == "" || phone == "" || company == "") {
+            this.setState({ openDialog: true, message: "Các trường không được để trống" });
+            return false;
+        }
+
+        if (email !== "") {
+            let lastAtPos = email.lastIndexOf('@');
+            let lastDotPos = email.lastIndexOf('.');
+
+            if (!(lastAtPos < lastDotPos && lastAtPos > 0 &&
+                email.indexOf('@@') == -1 && lastDotPos > 2 &&
+                (email.length - lastDotPos) > 2)) {
+                this.setState({ checkEmail: false, openDialog: true, message: "Email không hợp lệ" });
+                return false;
+            }
+        }
+        return true;
+
+    }
+
     onRegister = (email, password, avatar, firstname, lastname, phone, company) => {
-        if(email == "" || password == "" || firstname == "" ||
-        lastname == "" || phone == "" || company == "")
-                this.setState({openDialog: true, message: "Các trường không được để trống"});
-        else{
-            this.props.doregister(email, password, avatar, firstname, lastname, phone, company)
+        if(this.handleValidation(email, password, firstname, lastname, phone, company))
+        this.props.doregister(email, password, avatar, firstname, lastname, phone, company)
             .then((resJson) => {
-                if(resJson.returnCode == "1"){
-                    this.setState({openDialog: true, message: "Đăng ký thành công"})
+                if (resJson.returnCode == "1") {
+                    this.setState({ openDialog: true, message: "Đăng ký thành công" })
                     console.log(resJson);
                 }
-                else if(resJson.returnCode == "0")
-                    this.setState({openDialog: true, message: "Đăng ký thất bại"})
+                else if (resJson.returnCode == "0")
+                    this.setState({ openDialog: true, message: "Đăng ký thất bại" })
             }).catch((error) => {
                 console.log(error);
             });
-        }
     }
 
     handleClose = () => {
@@ -97,26 +116,26 @@ class Register extends React.Component {
         return (
             <div style={{ width: '50%', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}>
                 <Dialog
-                        open={this.state.openDialog}
-                        TransitionComponent={Transition}
-                        keepMounted
-                        onClose={this.handleClose}
-                        aria-labelledby="alert-dialog-slide-title"
-                        aria-describedby="alert-dialog-slide-description"
-                    >
-                        <DialogTitle id="alert-dialog-slide-title">
-                            {"Thông báo"}
-                        </DialogTitle>
-                        <DialogContent>
-                            <DialogContentText id="alert-dialog-slide-description">
-                                {this.state.message}
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={this.handleClose} color="primary">Xác nhận
+                    open={this.state.openDialog}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={this.handleClose}
+                    aria-labelledby="alert-dialog-slide-title"
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <DialogTitle id="alert-dialog-slide-title">
+                        {"Thông báo"}
+                    </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-slide-description">
+                            {this.state.message}
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleClose} color="primary">Xác nhận
                         </Button>
-                        </DialogActions>
-                    </Dialog>
+                    </DialogActions>
+                </Dialog>
                 <img src={RegisterImage} style={{ width: '75%', display: 'block', marginLeft: 'auto', marginRight: 'auto' }} />
                 <Typography style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto', fontSize: '3.5vw', fontFamily: 'Roboto-Medium', textAlign: 'center' }}>Bắt đầu kết nối khách hàng!</Typography>
                 <GridContainer>
@@ -182,9 +201,9 @@ class Register extends React.Component {
                         />
                         <MuiThemeProvider theme={theme}>
                             <Button variant="contained" color='primary' style={{ width: '98%', height: '25%', marginLeft: 10, marginTop: 15 }}
-                            onClick={()=> this.onRegister(this.state.username,this.state.password,
-                            null,this.state.firstName,this.state.lastName,this.state.phoneNumber,
-                            this.state.companyName)}
+                                onClick={() => this.onRegister(this.state.username, this.state.password,
+                                    null, this.state.firstName, this.state.lastName, this.state.phoneNumber,
+                                    this.state.companyName)}
                             >
                                 <Typography style={{ color: '#FFF', fontSize: 20 }}>Đăng ký</Typography>
                             </Button>
@@ -239,9 +258,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        doregister: (email, password, avatar, firstname, lastname, phone, company) => 
+        doregister: (email, password, avatar, firstname, lastname, phone, company) =>
             dispatch(register(email, password, avatar, firstname, lastname, phone, company))
     };
 };
 
-export default withStyles(styles)(connect(mapStateToProps,mapDispatchToProps)(Register));
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Register));
