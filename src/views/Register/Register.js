@@ -31,6 +31,7 @@ class Register extends React.Component {
         this.state = {
             username: "",
             password: "",
+            rePassword: '',
             email: "",
             lastName: "",
             firstName: "",
@@ -51,6 +52,10 @@ class Register extends React.Component {
             this.setState({
                 password: event.target.value
             })
+        else if (event.target.id == 'txtRePassword')
+            this.setState({
+                rePassword: event.target.value
+            })
         else if (event.target.id == "txtLastName")
             this.setState({
                 lastName: event.target.value
@@ -69,7 +74,7 @@ class Register extends React.Component {
             })
     }
 
-    handleValidation = (email, password, firstname, lastname, phone, company) => {
+    handleValidation = (email, password, rePassword, firstname, lastname, phone, company) => {
         if (email == "" || password == "" || firstname == "" ||
             lastname == "" || phone == "" || company == "") {
             this.setState({ openDialog: true, message: "Các trường không được để trống" });
@@ -83,11 +88,16 @@ class Register extends React.Component {
                 return false;
             }
         }
+
+        if (password != rePassword){
+            this.setState({ openDialog: true, message: "Mật khẩu nhập lại không khớp" });
+            return false;
+        }
         return true;
     }
 
-    onRegister = (email, password, avatar, firstname, lastname, phone, company) => {
-        if (this.handleValidation(email, password, firstname, lastname, phone, company))
+    onRegister = (email, password, rePassword, avatar, firstname, lastname, phone, company) => {
+        if (this.handleValidation(email, password, rePassword, firstname, lastname, phone, company))
             this.props.doregister(email, password, avatar, firstname, lastname, phone, company)
                 .then((resJson) => {
                     if (resJson.returnCode == "1") {
@@ -190,6 +200,15 @@ class Register extends React.Component {
                             label="Mật khẩu"
                             type="password"
                             name='txtPassword'
+                            className={classes.textField}
+                            variant="outlined"
+                            onChange={this.onValueChange}
+                        />
+                        <TextField
+                            id="txtRePassword"
+                            label="Nhập lại mật khẩu"
+                            type="password"
+                            name='txtRePassword'
                             className={classes.textField}
                             variant="outlined"
                             onChange={this.onValueChange}

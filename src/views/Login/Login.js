@@ -7,13 +7,10 @@ import { createBrowserHistory } from 'history';
 import { loginApi } from "../../api/AppApi";
 import GridContainer from "./../../components/Grid/GridContainer";
 import GridItem from "./../../components/Grid/GridItem";
-import MenuItem from '@material-ui/core/MenuItem';
-import ThemeButton from './../../components/ThemeButton/ThemeButton';
 import { withStyles, createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import { Button, Typography } from "@material-ui/core";
 import LoginImage from 'assets/img/login-image.png';
 import { connect } from "react-redux";
-import RegisterView from "./../../views/Register/Register";
 import { login } from "../../store/actions/user";
 const history = createBrowserHistory();
 

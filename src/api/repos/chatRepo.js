@@ -1,5 +1,10 @@
 var db = require('../fn/mysql-db');
 
+exports.insertTopic = function(topic){
+    var sql = `insert into topic(TopicID, VisitorName, UnreadMessageCount, ServicerID, LastMessageSendTime, isDelete, CompanyID) values('${topic.TopicID}', '${topic.VisitorName}', '${topic.UnreadMessageCount}', '${topic.ServicerID}', '${topic.LastMessageSendTime}', '0', '${topic.CompanyID}')`;
+    return db.write(sql);
+}
+
 exports.getListTopic = function(topic) {
     var sql = `select * from topic where CompanyID = '${topic.id}' and isDelete = 0 order by LastMessageSendTime desc`;
 	return db.load(sql);
@@ -10,6 +15,11 @@ exports.getTopic = function(topic) {
 	return db.load(sql);
 }
 
+exports.getTopicInfo = function(topic) {
+    var sql = `select * from topic where TopicID = '${topic.TopicID}'`;
+	return db.load(sql);
+}
+
 exports.insertMessage = function(msg) {
     var sql = `insert into message(TopicID, SenderID, RecieverID, Content, SendTime, TypeID, IsReceived, IsRead) values('${msg.TopicID}', '${msg.SenderID}', '${msg.RecieverID}', '${msg.Content}', '${msg.SendTime}', '${msg.TypeID}', '0', '0')`;
     return db.write(sql);
@@ -17,6 +27,11 @@ exports.insertMessage = function(msg) {
 
 exports.transferTopic = function(topic){
     var sql = "UPDATE topic SET ServicerID = '" + topic.servicerID +"' WHERE TopicID = '" + topic.topicID + "'";
+    return db.load(sql);
+}
+
+exports.updateTopic = function(topic){
+    var sql = "UPDATE topic SET LastMessageSendTime = '" + topic.LastMessageSendTime +"' WHERE TopicID = '" + topic.TopicID + "'";
     return db.load(sql);
 }
 

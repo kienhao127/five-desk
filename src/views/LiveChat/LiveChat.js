@@ -213,6 +213,10 @@ class LiveChat extends React.Component {
       Content: this.state.content,
       SendTime: new Date().getTime(),
       TypeID: 1,
+      LastMassageSendTime: new Date().getTime(),
+      VisitorName: this.state.topic.VisitorName,
+      ServicerID: this.props.userProfile.UserID,
+      CompanyID: this.props.userProfile.CompanyID,
     }
     this.setState({
       content: '',
