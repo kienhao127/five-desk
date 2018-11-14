@@ -14,7 +14,7 @@ import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Button, ClickAwayListener } from "@material-ui/core";
-import { loadUserFromToken, getListUser } from "../../store/actions/user";
+import { loadUserFromToken, getListUser, addUser } from "../../store/actions/user";
 import { connect } from "react-redux";
 import { Link } from 'react-router-dom';
 
@@ -29,11 +29,13 @@ class User extends React.Component {
     this.state = {
       listUser: null,
       isDialogOpen: false,
-      FirstName: "",
-      LastName: "",
-      MemberType: 0,
-      Email: "",
       open: false,
+      email: '',
+      password: '',
+      firstname: '',
+      lastname: '',
+      password: '',
+      rePassword: '',
     };
 
   }
@@ -68,22 +70,55 @@ class User extends React.Component {
 
     if (event.target.id == "txtFirstName") {
       this.setState({
-        FirstName: event.target.value
+        firstname: event.target.value
       });
     }
     else if (event.target.id == "txtLastName")
       this.setState({
-        LastName: event.target.value
+        lastname: event.target.value
       })
     else if (event.target.id == "txtEmail")
       this.setState({
-        Email: event.target.value
+        email: event.target.value
+      })
+      else if (event.target.id == "txtPassword")
+      this.setState({
+        password: event.target.value
+      })
+      else if (event.target.id == "txtRePassword")
+      this.setState({
+        rePassword: event.target.value
       })
   };
 
   onAddUser = () => {
-    this.setState({
-      open: false
+    var user = {
+      email: this.state.email, 
+      password: this.state.password, 
+      firstname: this.state.firstname, 
+      lastname: this.state.lastname, 
+      companyID: this.props.userProfile.CompanyID,
+    }
+    this.props.doAddUser(user)
+    .then(resJson => {
+      console.log(resJson);
+      this.props.doGetListUser()
+      .then((resJson) => {
+        console.log('doGetListUser111111');
+        console.log(resJson);
+        this.setState({
+          listUser: resJson.users,
+        })
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+      this.setState({
+        open: false
+      })
+    })
+    .catch(error => {
+      console.log(error)
     })
   }
 
@@ -127,6 +162,25 @@ class User extends React.Component {
                 style={{width: '100%'}}
                 margin="dense"
                 variant="outlined"
+                onChange={this.onValueChange}
+              />
+              <TextField
+                id="txtPassword"
+                label='Mật khẩu'
+                type='password'
+                style={{width: '100%'}}
+                margin="dense"
+                variant="outlined"
+                onChange={this.onValueChange}
+              />
+              <TextField
+                id="txtRePassword"
+                label='Nhập lại mật khẩu'
+                type='password'
+                style={{width: '100%'}}
+                margin="dense"
+                variant="outlined"
+                onChange={this.onValueChange}
               />
                <MuiThemeProvider theme={theme}>
                 <Button style={{marginTop: 10}} variant="contained" color="primary" onClick={this.onAddUser}>
@@ -150,7 +204,7 @@ class User extends React.Component {
                 </Button>
               </div>
               <div>
-                <List dense={true} style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center'}}>
+                <List dense={true} style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start'}}>
                   {this.state.listUser && this.state.listUser.map((user, key) => (
                     <ListItem key={key} dense button className={classes.listItem} component={Link} to={'/agent/member/profile/' + user.UserID}>
                       <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
@@ -274,6 +328,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    doAddUser: (user) => dispatch(addUser(user)),
     doGetListUser: () => dispatch(getListUser()),
   };
 };

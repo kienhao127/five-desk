@@ -12,6 +12,7 @@ import Message from "@material-ui/icons/Message";
 import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 
+import { connect } from "react-redux";
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.jsx";
 import { Link } from 'react-router-dom'
 
@@ -35,6 +36,7 @@ class HeaderLinks extends React.Component {
     const { classes } = this.props;
     const { open } = this.state;
     return (
+      this.props.userProfile != null ?
       <div>
         <div className={classes.searchWrapper}>
           <CustomInput
@@ -60,7 +62,7 @@ class HeaderLinks extends React.Component {
           simple={!(window.innerWidth > 959)}
           className={classes.buttonLink}
           round
-          component={Link} to="/agent/member/profile"
+          component={Link} to={"/agent/member/profile/" +  this.props.userProfile.UserID}
         >
           <Avatar className={classes.avatar}
               src="https://i.imgur.com/p9bwTYj.png"  />
@@ -70,9 +72,20 @@ class HeaderLinks extends React.Component {
             </p>
           </Hidden>
         </Button>
-      </div>
+      </div> : ''
     );
   }
 }
 
-export default withStyles(headerLinksStyle)(HeaderLinks);
+const mapStateToProps = state => {
+  return {
+      userProfile: state.user.profile,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+  };
+};
+
+export default withStyles(headerLinksStyle)(connect(mapStateToProps, mapDispatchToProps)(HeaderLinks));

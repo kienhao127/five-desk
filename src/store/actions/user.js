@@ -1,7 +1,8 @@
 import { SAVE_PROFILE } from './actiontype';
 import { loginApi, meFromToken, getListUserApi, 
          getUserInfoApi, changePasswordApi, updateProfileApi, 
-         registerApi} from '../../api/AppApi';
+         registerApi,
+         addUserApi} from '../../api/AppApi';
 var md5 = require('md5');
 
 export const login = (email, password) => {
@@ -141,6 +142,24 @@ export const updateProfile = (firstname, lastname, phoneNumber) => {
         const promise = new Promise((resolve, reject) => {
         var token = sessionStorage.getItem('token');
         updateProfileApi(token, firstname, lastname, phoneNumber)
+            .then((responseJson)=> {
+                console.log(responseJson);
+                resolve(responseJson);
+            })
+            .catch((error)=>{
+                console.log(error);
+            });
+        })
+        return promise;
+    }
+}
+
+export const addUser = (user) => {
+    return (dispatch) => {
+        const promise = new Promise((resolve, reject) => {
+        console.log('addUser', user);
+        user.password = md5(user.password);
+        addUserApi(user)
             .then((responseJson)=> {
                 console.log(responseJson);
                 resolve(responseJson);

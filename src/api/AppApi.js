@@ -133,3 +133,14 @@ export function seenMessageApi(topicID){
     }
     return fetchApi('chat/seenMessage', 'POST', body);
 }
+
+export function addUserApi(user){
+    var body = {
+        email: user.email,
+        password: user.password,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        companyID: user.companyID,
+    }
+    return fetchApi('user/addUser', 'POST', body);
+}

@@ -257,7 +257,8 @@ class EditUser extends React.Component {
                                 <TextField
                                     disabled
                                     id="txtTeam"
-                                    label={this.state.CompanyName}
+                                    label="Team"
+                                    value={this.state.CompanyName}
                                     className={classNames(classes.textField_2, classes.dense)}
                                     margin="dense"
                                     variant="outlined"
@@ -265,7 +266,8 @@ class EditUser extends React.Component {
                                 <TextField
                                     disabled
                                     id="txtEmail"
-                                    label={this.state.Email}
+                                    label="Email"
+                                    value={this.state.Email}
                                     className={classes.textField_2}
                                     margin="dense"
                                     variant="outlined"
