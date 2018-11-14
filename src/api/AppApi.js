@@ -1,6 +1,6 @@
 import { func } from "prop-types";
 
-var BASE_URL = 'http://localhost:8888/'
+var BASE_URL = 'https://fivedesk.herokuapp.com/'
 
 function fetchApi(url, method, data){
     var path = BASE_URL + url;
