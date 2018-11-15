@@ -9,14 +9,14 @@ import LiveChat from "views/LiveChat/LiveChat";
 import Reporting from "views/Reporting/Reporting";
 import NewTicket from 'views/MailTicket/NewMailTicket';
 import User from "../views/User/User";
-import EditUser from "../views/User/EditUser";
+import ReplymailTicket from "../views/MailTicket/ReplyMailTicket";
 const agentRoutes = [
   {
     path: "/agent/ticket",
     sidebarName: "Ticket",
     navbarName: "Mail ticket",
     icon: Ticket,
-    component: MailTicket
+    component: ReplymailTicket
   },
   {
     path: "/agent/chat",
