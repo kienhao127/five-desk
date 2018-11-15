@@ -9,8 +9,8 @@ import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import {Typography, Dialog, DialogTitle } from "@material-ui/core";
-import Avatar from '@material-ui/core/Avatar';
+import { Typography, Dialog, DialogTitle , GridList, GridListTile} from "@material-ui/core";
+import Avatar from './../../components/Avatar/Avatar';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Button, ClickAwayListener } from "@material-ui/core";
@@ -81,11 +81,11 @@ class User extends React.Component {
       this.setState({
         email: event.target.value
       })
-      else if (event.target.id == "txtPassword")
+    else if (event.target.id == "txtPassword")
       this.setState({
         password: event.target.value
       })
-      else if (event.target.id == "txtRePassword")
+    else if (event.target.id == "txtRePassword")
       this.setState({
         rePassword: event.target.value
       })
@@ -93,33 +93,33 @@ class User extends React.Component {
 
   onAddUser = () => {
     var user = {
-      email: this.state.email, 
-      password: this.state.password, 
-      firstname: this.state.firstname, 
-      lastname: this.state.lastname, 
+      email: this.state.email,
+      password: this.state.password,
+      firstname: this.state.firstname,
+      lastname: this.state.lastname,
       companyID: this.props.userProfile.CompanyID,
     }
     this.props.doAddUser(user)
-    .then(resJson => {
-      console.log(resJson);
-      this.props.doGetListUser()
-      .then((resJson) => {
-        console.log('doGetListUser111111');
+      .then(resJson => {
         console.log(resJson);
+        this.props.doGetListUser()
+          .then((resJson) => {
+            console.log('doGetListUser111111');
+            console.log(resJson);
+            this.setState({
+              listUser: resJson.users,
+            })
+          })
+          .catch((error) => {
+            console.log(error);
+          });
         this.setState({
-          listUser: resJson.users,
+          open: false
         })
       })
-      .catch((error) => {
-        console.log(error);
-      });
-      this.setState({
-        open: false
+      .catch(error => {
+        console.log(error)
       })
-    })
-    .catch(error => {
-      console.log(error)
-    })
   }
 
   onShowDialog = () => {
@@ -135,12 +135,12 @@ class User extends React.Component {
         <GridContainer>
           <Dialog onClose={this.handleClose} aria-labelledby="simple-dialog-title" open={this.state.open}>
             <DialogTitle id="simple-dialog-title">Thêm thành viên</DialogTitle>
-            <div style={{display: 'flex', padding: 10, flexDirection: 'column', alignItems: 'flex-end'}}>
-              <div style={{display: 'flex', flexDirection: 'row'}}>
+            <div style={{ display: 'flex', padding: 10, flexDirection: 'column', alignItems: 'flex-end' }}>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <TextField
                   id="txtFirstName"
                   label='Họ'
-                  style={{width: '50%', marginRight: 5}}
+                  style={{ width: '50%', marginRight: 5 }}
                   margin="dense"
                   variant="outlined"
                   value={this.state.FirstName}
@@ -149,7 +149,7 @@ class User extends React.Component {
                 <TextField
                   id="txtLastName"
                   label='Tên'
-                  style={{width: '50%', marginLeft: 5}}
+                  style={{ width: '50%', marginLeft: 5 }}
                   margin="dense"
                   variant="outlined"
                   value={this.state.LastName}
@@ -159,7 +159,7 @@ class User extends React.Component {
               <TextField
                 id="txtEmail"
                 label='Email'
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 margin="dense"
                 variant="outlined"
                 onChange={this.onValueChange}
@@ -168,7 +168,7 @@ class User extends React.Component {
                 id="txtPassword"
                 label='Mật khẩu'
                 type='password'
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 margin="dense"
                 variant="outlined"
                 onChange={this.onValueChange}
@@ -177,14 +177,14 @@ class User extends React.Component {
                 id="txtRePassword"
                 label='Nhập lại mật khẩu'
                 type='password'
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 margin="dense"
                 variant="outlined"
                 onChange={this.onValueChange}
               />
-               <MuiThemeProvider theme={theme}>
-                <Button style={{marginTop: 10}} variant="contained" color="primary" onClick={this.onAddUser}>
-                  <Typography style={{fontFamily: 'Roboto-Regular', fontSize: 15, color: '#FFF'}}>
+              <MuiThemeProvider theme={theme}>
+                <Button style={{ marginTop: 10 }} variant="contained" color="primary" onClick={this.onAddUser}>
+                  <Typography style={{ fontFamily: 'Roboto-Regular', fontSize: 15, color: '#FFF' }}>
                     Thêm thành viên
                   </Typography>
                 </Button>
@@ -193,35 +193,35 @@ class User extends React.Component {
           </Dialog>
           <GridItem>
             <div className={classes.gridItem}>
-              <div style={{display:'flex', flexDirection: 'row', alignItems: 'center',}}>
+              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', }}>
                 <Typography component="h3" variant="2" gutterBottom className={classes.title}>
                   Thành viên ({this.state.listUser == null ? 0 : this.state.listUser.length}/20)
                 </Typography>
-                <Button onClick={this.onShowDialog} style={{marginLeft: 10}}>
-                  <Typography style={{color: '#00bcd4'}}>
+                <Button onClick={this.onShowDialog} style={{ marginLeft: 10 }}>
+                  <Typography style={{ color: '#00bcd4' }}>
                     Thêm
                   </Typography>
                 </Button>
               </div>
               <div>
-                <List dense={true} style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start'}}>
-                  {this.state.listUser && this.state.listUser.map((user, key) => (
-                    <ListItem key={key} dense button className={classes.listItem} component={Link} to={'/agent/member/profile/' + user.UserID}>
-                      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                        <Avatar src={avatar} className={classes.avatar} />
-                        <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 15 }}>
-                          {(user.FirstName != null ? user.FirstName : '') + (user.FirstName != null ? ' ' : '') + user.LastName}
+                <GridList cellHeight={60} cols={4} className={classes.gridList}>
+                {this.state.listUser && this.state.listUser.map((user, key) => (
+                  <ListItem key={key} button component={Link} to={'/agent/member/profile/' + user.UserID} className={classes.listItem}>
+                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                      <Avatar content={user.FirstName != null ? user.FirstName : null} colorString={user.Email} />
+                      <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 15 }}>
+                        {(user.FirstName != null ? user.FirstName : '') + (user.FirstName != null ? ' ' : '') + user.LastName}
+                      </Typography>
+                      {user.UserID == this.props.userProfile.UserID
+                        ?
+                        <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 15, color: 'gray' }}>
+                          Chỉnh sửa
                         </Typography>
-                        {user.UserID == this.props.userProfile.UserID
-                          ?
-                          <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 15, color: 'gray' }}>
-                            Chỉnh sửa
-                          </Typography>
-                          : null}
-                      </div>
-                    </ListItem>
+                        : null}
+                    </div>
+                  </ListItem>
                   ))}
-                </List>
+                </GridList>
               </div>
             </div>
           </GridItem>
@@ -245,9 +245,10 @@ const theme = createMuiTheme({
 });
 
 const styles = theme => ({
+  gridList: {
+  },
   listItem: {
-    width: '300px',
-    margin: 10,
+    padding: 10
   },
   gridItem: {
     overflow: "auto",

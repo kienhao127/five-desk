@@ -10,8 +10,8 @@ import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SendIcon from '@material-ui/icons/Send';
 import AttachmentIcon from '@material-ui/icons/Attachment';
-import { IconButton, Typography } from "@material-ui/core";
-import Avatar from "@material-ui/core/Avatar";
+import { IconButton, Typography, Dialog } from "@material-ui/core";
+import Avatar from "./../../components/Avatar/Avatar";
 import avatar from "assets/img/avatar.png";
 import Button from "@material-ui/core/Button";
 import { withStyles, createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
@@ -43,6 +43,7 @@ class LiveChat extends React.Component {
     super(props);
 
     this.state = {
+      open: false,
       right: false,
       selectedVisitorIndex: 0,
       topic: null,
@@ -137,35 +138,35 @@ class LiveChat extends React.Component {
     if (topic.ServicerID == this.props.userProfile.UserID) {
       //gọi api đã xem tin nhắn
       this.props.doSeenMessage(topic.TopicID)
-      .then((resJson)=>{
-        console.log('Update seen message');
-        console.log(resJson);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        .then((resJson) => {
+          console.log('Update seen message');
+          console.log(resJson);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
 
       //gọi api update UnreadMessageCount = 0
       this.props.doUpdateUnreadMessageCount(topic.TopicID, 0)
-      .then((resJson)=>{
-        // socket.emit('checkUnreadMessgae', sessionStorage.getItem('token'));
-        console.log('Update unread message count');
-        console.log(resJson);
-        this.props.doGetListTopic()
-          .then((resJson) => {
-            console.log('doGetListTopic');
-            console.log(resJson);
-            this.setState({
-              listTopic: resJson.listTopic,
+        .then((resJson) => {
+          // socket.emit('checkUnreadMessgae', sessionStorage.getItem('token'));
+          console.log('Update unread message count');
+          console.log(resJson);
+          this.props.doGetListTopic()
+            .then((resJson) => {
+              console.log('doGetListTopic');
+              console.log(resJson);
+              this.setState({
+                listTopic: resJson.listTopic,
+              })
             })
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+            .catch((error) => {
+              console.log(error);
+            });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   }
 
@@ -180,7 +181,7 @@ class LiveChat extends React.Component {
             console.log(resJson);
             this.setState({
               listTopic: resJson.listTopic,
-            })   
+            })
             var thisTopic = resJson.listTopic.filter(topic => topic.TopicID == this.state.topic.TopicID)[0];
             var selectedVisitorIndex = resJson.listTopic.indexOf(thisTopic);
             this.onTopicClick(thisTopic, selectedVisitorIndex);
@@ -195,7 +196,9 @@ class LiveChat extends React.Component {
   }
 
   onTransferClick = () => {
-    this.refs.listUserDialog.show();
+    this.setState({
+      open: true
+    })
   }
 
   onContentChange = (event) => {
@@ -289,9 +292,11 @@ class LiveChat extends React.Component {
 
   onUserClick = (user) => {
     //gọi api chuyển nhượng
+    this.setState({
+      open: false
+    })
     this.props.doTransferTopic(this.state.topic.TopicID, user.UserID)
       .then((resJson) => {
-        this.refs.listUserDialog.hide();
         this.props.doGetListTopic()
           .then((resJson) => {
             console.log('doGetListTopic');
@@ -309,221 +314,222 @@ class LiveChat extends React.Component {
       })
   }
 
+  handleClose = () => {
+    this.setState({
+      open: false
+    })
+  };
+
   render() {
     const { classes } = this.props;
     return (
       this.props.userProfile != null ?
-      <div className={classes.root}>
-        <SkyLight hideOnOverlayClicked ref="listUserDialog">
-          <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Medium', fontSize: 20 }}>Danh sách thành viên</Typography>
-          <List dense={true}>
-            {this.state.listUser && this.state.listUser.map((user, key) => (
-              user.UserID != this.props.userProfile.UserID
-                ?
-                <ListItem
-                  key={key}
-                  role={undefined}
-                  dense
-                  button
-                  onClick={() => this.onUserClick(user)}
-                  className={classes.listItem}>
-                  <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                    <Avatar src={avatar} className={classes.avatar} />
-                    <Typography style={{ marginLeft: 10 }}>{(user.FirstName != null ? user.FirstName : '') + (user.FirstName != null ? ' ' : '') + user.LastName}</Typography>
-                  </div>
-                </ListItem>
-                :
-                null
-            ))}
-          </List>
-        </SkyLight>
-
-        <GridContainer>
-          <GridItemChat xs={4} sm={4} md={3} >
-            <div className={classes.left}>
-              <List dense={true}>
-                {this.state.listTopic && this.state.listTopic.map((item, key) => (
+        <div className={classes.root}>
+          <Dialog fullWidth onClose={this.handleClose} aria-labelledby="simple-dialog-title" open={this.state.open}>
+            <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Medium', fontSize: 20 }}>Danh sách thành viên</Typography>
+            <List dense={true}>
+              {this.state.listUser && this.state.listUser.map((user, key) => (
+                user.UserID != this.props.userProfile.UserID
+                  ?
                   <ListItem
                     key={key}
                     role={undefined}
                     dense
                     button
-                    selected={this.state.selectedVisitorIndex === key ? true : false}
-                    onClick={() => this.onTopicClick(item, key)}
+                    onClick={() => this.onUserClick(user)}
                     className={classes.listItem}>
-                    <Avatar className={classes.img} src={avatar} />
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: '100%' }}>
-                      <Typography style={{ fontFamily: 'Roboto-Regular', fontSize: 15, color: '#000', marginLeft: 10 }}>{item.VisitorName}</Typography>
-                      <Typography style={{ width: 12, height: 12, borderRadius: 6, marginLeft: 'auto', backgroundColor: item.UnreadMessageCount > 0 ? 'red' : 'transparent', marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 10, textAlign: "center", color: '#FFF' }}>{item.UnreadMessageCount > 0 ? item.UnreadMessageCount : null}</Typography>
+                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                      <Avatar content={user.FirstName} colorString={user.Email} />
+                      <Typography style={{ marginLeft: 10 }}>{(user.FirstName != null ? user.FirstName : '') + (user.FirstName != null ? ' ' : '') + user.LastName}</Typography>
                     </div>
                   </ListItem>
-                ))}
-              </List>
-            </div>
-          </GridItemChat>
+                  :
+                  null
+              ))}
+            </List>
+          </Dialog>
 
-          <GridItemChat xs={8} sm={8} md={6} >
-            <div className={classes.center}>
-              <div className={classes.top}>
-                <Typography style={{ fontFamily: 'Roboto-Regular' }}>
-                  {this.state.topic ? this.state.topic.VisitorName : null}
-                </Typography>
-                {this.state.topic && this.state.topic.ServicerID == this.props.userProfile.UserID
-                  ?
-                  <MuiThemeProvider theme={theme}>
-                    <Tooltip title="Chuyển tin nhắn" placement='top'>
-                      <IconButton variant="contained" color="primary" style={{ marginLeft: 'auto', marginRight: 10, alignItems: 'center', justifyContent: 'center' }} onClick={() => this.onTransferClick()}>
-                        <Transfer style={{ color: '#000' }} />
-                      </IconButton>
-                    </Tooltip>
-                  </MuiThemeProvider>
-                  : null}
+          <GridContainer>
+            <GridItemChat xs={4} sm={4} md={3} >
+              <div className={classes.left}>
+                <List dense={true}>
+                  {this.state.listTopic && this.state.listTopic.map((item, key) => (
+                    <ListItem
+                      key={key}
+                      role={undefined}
+                      dense
+                      button
+                      selected={this.state.selectedVisitorIndex === key ? true : false}
+                      onClick={() => this.onTopicClick(item, key)}
+                      className={classes.listItem}>
+                      <div>
+                        <Avatar content={item.VisitorName} colorString={item.VisitorName} />
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: '100%' }}>
+                        <Typography style={{ fontFamily: 'Roboto-Regular', fontSize: 15, color: '#000', marginLeft: 10 }}>{item.VisitorName}</Typography>
+                        <Typography style={{ width: 12, height: 12, borderRadius: 6, marginLeft: 'auto', backgroundColor: item.UnreadMessageCount > 0 ? 'red' : 'transparent', marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 10, textAlign: "center", color: '#FFF' }}>{item.UnreadMessageCount > 0 ? item.UnreadMessageCount : null}</Typography>
+                      </div>
+                    </ListItem>
+                  ))}
+                </List>
               </div>
-              <ScrollToBottom className={classes.chat} ref={(ref) => this.messageList = ref} >
-                {this.state.listMessage && this.state.listMessage.map((message, index) => {
-                  var beforeMessage = this.state.listMessage[index - 1];
-                  return (
-                    message.SenderID != this.props.userProfile.UserID
-                      ?
-                      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }} key={index}>
-                        <div className={{ width: 40, height: 40, marginLeft: 5, }} >
-                          {beforeMessage == undefined || (beforeMessage && beforeMessage.SenderID != message.SenderID)
-                            ?
-                            <Avatar src={avatar} className={classes.avatar} />
-                            :
-                            <div className={classes.avatar} />}
-                        </div>
-                        <Tooltip title={moment(message.SendTime).calendar()} placement="right">
-                          <div className={classes.bubble_y} style={{backgroundColor: isNaN(message.SenderID) ? "#eaeaeb'" : '#23ce3f'}}>
-                            <div className={classes.b_you}>
-                              <HyperText me={false} content={message.Content}/>
-                            </div>
-                          </div>
-                        </Tooltip>
-                      </div>
-                      :
-                      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }} key={index}>
-                        <Tooltip title={moment(message.SendTime).calendar()} placement="left">
-                          <div className={classes.bubble_m}>
-                            <div className={classes.me}>
-                              <HyperText me={true} content={message.Content} />
-                            </div>
-                          </div>
-                        </Tooltip>
-                      </div>
-                  )
-                }
-                )}
-              </ScrollToBottom>
-              {this.state.topic && this.state.topic.ServicerID == this.props.userProfile.UserID
-                ?
-                <div className={classes.chatBottom}>
-                  <MuiThemeProvider theme={theme}>
-                    <TextField
-                      id="outlined-bare"
-                      value={this.state.content}
-                      onChange={this.onContentChange}
-                      className={classes.chatTextField}
-                      variant="outlined"
-                      InputProps={{
-                        endAdornment:
-                          <InputAdornment position="end">
-                            {/* <IconButton>
-                            <AttachmentIcon />
-                          </IconButton> */}
-                            <IconButton onClick={this.onSendMessage} disabled={this.state.content == '' ? true : false}>
-                              <SendIcon />
-                            </IconButton>
-                          </InputAdornment>,
-                      }} />
-                  </MuiThemeProvider>
-                </div>
-                :
-                <div className={classes.chatBottom}>
-                  <Typography className={classes.servicerNotify}>
-                    {this.state.topic && this.state.topic.ServicerID == null
-                      ? 'Khách hàng chưa được ai phụ trách'
-                      : 'Khách hàng đã có người phụ trách'
-                    }
+            </GridItemChat>
+
+            <GridItemChat xs={8} sm={8} md={6} >
+              <div className={classes.center}>
+                <div className={classes.top}>
+                  <Typography style={{ fontFamily: 'Roboto-Regular' }}>
+                    {this.state.topic ? this.state.topic.VisitorName : null}
                   </Typography>
-                  {this.state.topic && this.state.topic.ServicerID == null
+                  {this.state.topic && this.state.topic.ServicerID == this.props.userProfile.UserID
                     ?
                     <MuiThemeProvider theme={theme}>
-                      <Button variant="contained" color="primary" className={classes.button} onClick={() => this.onAcceptClick(this.state.topic)}>
-                        Chấp nhận
-                      </Button>
+                      <Tooltip title="Chuyển tin nhắn" placement='top'>
+                        <IconButton variant="contained" color="primary" style={{ marginLeft: 'auto', marginRight: 10, alignItems: 'center', justifyContent: 'center' }} onClick={() => this.onTransferClick()}>
+                          <Transfer style={{ color: '#000' }} />
+                        </IconButton>
+                      </Tooltip>
                     </MuiThemeProvider>
                     : null}
                 </div>
-              }
-            </div>
-          </GridItemChat>
-
-          <GridItemChat xs={0} sm={0} md={3}>
-            <Hidden smDown implementation="css">
-              <div className={classes.right}>
-                <Typography style={{ fontFamily: 'Roboto-Regular', fontSize: 20, textAlign: 'center', paddingTop: 10 }}> Thông tin khách hàng </Typography>
-                <TextField
-                  disabled
-                  id="visitor"
-                  label="Tên khách hàng"
-                  className={classes.textField}
-                  value={this.state.visitor ? this.state.visitor.Name : ''}
-                  onChange={this.handleChange}
-                  margin="normal"
-                  variant="outlined"
-                />
-                <MuiThemeProvider theme={theme}>
-                  <TextField
-                    id="email"
-                    label="Email"
-                    className={classes.textField}
-                    value={this.state.visitor ? this.state.visitor.Email : ''}
-                    onChange={this.handleChange}
-                    margin="normal"
-                    variant="outlined"
-                  />
-                </MuiThemeProvider>
-
-                <MuiThemeProvider theme={theme}>
-                  <TextField
-                    id="phoneNumber"
-                    label="Số điện thoại"
-                    className={classes.textField}
-                    value={this.state.visitor ? this.state.visitor.PhoneNumber : ''}
-                    onChange={this.handleChange}
-                    margin="normal"
-                    variant="outlined"
-                  />
-                </MuiThemeProvider>
-                <MuiThemeProvider theme={theme}>
-                  <TextField
-                    multiline
-                    rows="4"
-                    id="note"
-                    label="Ghi chú"
-                    className={classes.textField}
-                    value={this.state.visitor ? this.state.visitor.Notes : ''}
-                    onChange={this.handleChange}
-                    margin="normal"
-                    variant="outlined"
-                  />
-                </MuiThemeProvider>
+                <ScrollToBottom className={classes.chat} ref={(ref) => this.messageList = ref} >
+                  {this.state.listMessage && this.state.listMessage.map((message, index) => {
+                    var beforeMessage = this.state.listMessage[index - 1];
+                    return (
+                      message.SenderID != this.props.userProfile.UserID
+                        ?
+                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }} key={index}>
+                          <Tooltip title={moment(message.SendTime).calendar()} placement="right">
+                            <div className={classes.bubble_y} style={{ backgroundColor: isNaN(message.SenderID) ? "#eaeaeb'" : '#23ce3f' }}>
+                              <div className={classes.b_you}>
+                                <HyperText me={false} content={message.Content} />
+                              </div>
+                            </div>
+                          </Tooltip>
+                        </div>
+                        :
+                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }} key={index}>
+                          <Tooltip title={moment(message.SendTime).calendar()} placement="left">
+                            <div className={classes.bubble_m}>
+                              <div className={classes.me}>
+                                <HyperText me={true} content={message.Content} />
+                              </div>
+                            </div>
+                          </Tooltip>
+                        </div>
+                    )
+                  }
+                  )}
+                </ScrollToBottom>
                 {this.state.topic && this.state.topic.ServicerID == this.props.userProfile.UserID
                   ?
-                  <MuiThemeProvider theme={theme}>
-                    <Button variant="contained" color="primary" className={classes.button} onClick={() => this.onUpdateVisitorInfo(this.state.visitor)}>
-                      Cập nhật
-                  </Button>
-                  </MuiThemeProvider>
-                  : null}
-                <Typography style={{ textAlign: 'center', color: this.state.notifyUpdateVisitor && this.state.notifyUpdateVisitor.returnCode == 1 ? 'green' : 'red' }}>{this.state.notifyUpdateVisitor && this.state.notifyUpdateVisitor.message}</Typography>
+                  <div className={classes.chatBottom}>
+                    <MuiThemeProvider theme={theme}>
+                      <TextField
+                        id="outlined-bare"
+                        value={this.state.content}
+                        onChange={this.onContentChange}
+                        className={classes.chatTextField}
+                        variant="outlined"
+                        InputProps={{
+                          endAdornment:
+                            <InputAdornment position="end">
+                              {/* <IconButton>
+                            <AttachmentIcon />
+                          </IconButton> */}
+                              <IconButton onClick={this.onSendMessage} disabled={this.state.content == '' ? true : false}>
+                                <SendIcon />
+                              </IconButton>
+                            </InputAdornment>,
+                        }} />
+                    </MuiThemeProvider>
+                  </div>
+                  :
+                  <div className={classes.chatBottom}>
+                    <Typography className={classes.servicerNotify}>
+                      {this.state.topic && this.state.topic.ServicerID == null
+                        ? 'Khách hàng chưa được ai phụ trách'
+                        : 'Khách hàng đã có người phụ trách'
+                      }
+                    </Typography>
+                    {this.state.topic && this.state.topic.ServicerID == null
+                      ?
+                      <MuiThemeProvider theme={theme}>
+                        <Button variant="contained" color="primary" className={classes.button} onClick={() => this.onAcceptClick(this.state.topic)}>
+                          Chấp nhận
+                      </Button>
+                      </MuiThemeProvider>
+                      : null}
+                  </div>
+                }
               </div>
-            </Hidden>
-          </GridItemChat>
-        </GridContainer>
-      </div>
-      : null
+            </GridItemChat>
+
+            <GridItemChat xs={0} sm={0} md={3}>
+              <Hidden smDown implementation="css">
+                <div className={classes.right}>
+                  <Typography style={{ fontFamily: 'Roboto-Regular', fontSize: 20, textAlign: 'center', paddingTop: 10 }}> Thông tin khách hàng </Typography>
+                  <TextField
+                    disabled
+                    id="visitor"
+                    label="Tên khách hàng"
+                    className={classes.textField}
+                    value={this.state.visitor ? this.state.visitor.Name : ''}
+                    onChange={this.handleChange}
+                    margin="normal"
+                    variant="outlined"
+                  />
+                  <MuiThemeProvider theme={theme}>
+                    <TextField
+                      id="email"
+                      label="Email"
+                      className={classes.textField}
+                      value={this.state.visitor ? this.state.visitor.Email : ''}
+                      onChange={this.handleChange}
+                      margin="normal"
+                      variant="outlined"
+                    />
+                  </MuiThemeProvider>
+
+                  <MuiThemeProvider theme={theme}>
+                    <TextField
+                      id="phoneNumber"
+                      label="Số điện thoại"
+                      className={classes.textField}
+                      value={this.state.visitor ? this.state.visitor.PhoneNumber : ''}
+                      onChange={this.handleChange}
+                      margin="normal"
+                      variant="outlined"
+                    />
+                  </MuiThemeProvider>
+                  <MuiThemeProvider theme={theme}>
+                    <TextField
+                      multiline
+                      rows="4"
+                      id="note"
+                      label="Ghi chú"
+                      className={classes.textField}
+                      value={this.state.visitor ? this.state.visitor.Notes : ''}
+                      onChange={this.handleChange}
+                      margin="normal"
+                      variant="outlined"
+                    />
+                  </MuiThemeProvider>
+                  {this.state.topic && this.state.topic.ServicerID == this.props.userProfile.UserID
+                    ?
+                    <MuiThemeProvider theme={theme}>
+                      <Button variant="contained" color="primary" className={classes.button} onClick={() => this.onUpdateVisitorInfo(this.state.visitor)}>
+                        Cập nhật
+                  </Button>
+                    </MuiThemeProvider>
+                    : null}
+                  <Typography style={{ textAlign: 'center', color: this.state.notifyUpdateVisitor && this.state.notifyUpdateVisitor.returnCode == 1 ? 'green' : 'red' }}>{this.state.notifyUpdateVisitor && this.state.notifyUpdateVisitor.message}</Typography>
+                </div>
+              </Hidden>
+            </GridItemChat>
+          </GridContainer>
+        </div>
+        : null
     );
   }
 }
@@ -593,11 +599,6 @@ const styles = theme => ({
     borderRadius: '20px',
     width: '40px',
     height: '40px',
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
   },
   top: {
     height: '21px',

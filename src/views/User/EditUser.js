@@ -11,7 +11,7 @@ import { withStyles } from '@material-ui/core/styles';
 import GridContainer from "../../components/Grid/GridContainer";
 import GridItem from "../../components/Grid/GridItem";
 import Button from '@material-ui/core/Button';
-import Avatar from "@material-ui/core/Avatar";
+import Avatar from "./../../components/Avatar/Avatar";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -211,8 +211,7 @@ class EditUser extends React.Component {
                                 <img className={classes.img} src={contentImg} />
 
                                 <div style={{ marginTop: -50, display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end' }}>
-                                    <Avatar src="https://i.imgur.com/p9bwTYj.png"
-                                        className={classes.avatar} />
+                                    <Avatar width={130} content={this.props.userProfile.FirstName} colorString={this.props.userProfile.Email} />
                                     <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 10 }}>
                                         <Typography style={{ fontFamily: 'Roboto-Medium', fontSize: 30 }}>{this.state.user ? this.state.user.FirstName : ''} {this.state.user ? this.state.user.LastName : ''}</Typography>
                                         <Typography style={{ fontFamily: 'Roboto-Regular', fontSize: 15 }}>{this.state.user ? this.state.user.PhoneNumber : ''}</Typography>

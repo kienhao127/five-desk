@@ -3,7 +3,7 @@ import classNames from "classnames";
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 import Hidden from "@material-ui/core/Hidden";
-import Avatar from "@material-ui/core/Avatar";
+import Avatar from "./../Avatar/Avatar";
 import Badge from '@material-ui/core/Badge';
 // @material-ui/icons
 import Search from "@material-ui/icons/Search";
@@ -64,13 +64,14 @@ class HeaderLinks extends React.Component {
           round
           component={Link} to={"/agent/member/profile/" +  this.props.userProfile.UserID}
         >
-          <Avatar className={classes.avatar}
-              src="https://i.imgur.com/p9bwTYj.png"  />
+        <div>
+          <Avatar content={this.props.userProfile.FirstName} colorString={this.props.userProfile.Email}/>
           <Hidden mdUp implementation="css">
             <p onClick={this.handleClick} className={classes.linkText}>
               Trang cá nhân
             </p>
           </Hidden>
+          </div>
         </Button>
       </div> : ''
     );
