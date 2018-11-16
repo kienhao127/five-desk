@@ -32,8 +32,8 @@ import { getVisitorInfo, updateVisitorInfo } from "../../store/actions/visitor";
 //Socket
 import io from 'socket.io-client';
 import { loadUserFromToken, getListUser } from "../../store/actions/user";
-const socket = io('https://fivedesk.herokuapp.com/chatsocket')
-// const socket = io('http://localhost:8888/chatsocket')
+const socket = io('https://fivedesk.herokuapp.com')
+// const socket = io('http://localhost:8888')
 
 moment.locale('vi');
 const img_me = "https://i.imgur.com/p9bwTYj.png";
@@ -64,6 +64,9 @@ class LiveChat extends React.Component {
       content: '',
     };
     socket.on('chat message', (message) => this.onReceiveMessage(message));
+    socket.on('time', function(timeString) {
+      console.log('Server time: ' + timeString);
+    });
   }
 
   componentDidMount() {
