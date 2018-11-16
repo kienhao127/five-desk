@@ -23,7 +23,6 @@ import Profile from 'views/User/EditUser';
 //Socket
 import io from 'socket.io-client';
 import { loadUserFromToken } from "../../store/actions/user";
-const socket = io.connect('https://fivedesk.herokuapp.com:4000')
 
 const switchRoutes = (
   <Switch>
@@ -42,10 +41,8 @@ class Agent extends React.Component {
     super(props);
     this.state = {
       mobileOpen: false,
-      newMessage: false,
     };
     this.resizeFunction = this.resizeFunction.bind(this);
-    socket.on('unread message', (unreadMessageCount) => this.onReceiveMessage(unreadMessageCount));
   }
 
   handleDrawerToggle = () => {
@@ -55,14 +52,6 @@ class Agent extends React.Component {
     if (window.innerWidth >= 960) {
       this.setState({ mobileOpen: false });
     }
-  }
-
-  onReceiveMessage = (message) => {
-    console.log('Unread message count');
-    console.log(message);
-    this.setState({
-      newMessage: message,
-    })
   }
 
   componentDidMount() {
