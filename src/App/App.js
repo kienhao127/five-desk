@@ -19,7 +19,7 @@ class App extends React.Component {
             <Switch>
                 <Route path={"/agent"} component={Agent} />
                 <Route path={"/"} component={Home} />
-                <Redirect to="/"/>
+                <Redirect from={"/"} to={"/home"}/>
             </Switch>     
         );
     }

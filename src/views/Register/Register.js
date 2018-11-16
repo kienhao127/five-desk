@@ -97,6 +97,7 @@ class Register extends React.Component {
     }
 
     onRegister = (email, password, rePassword, avatar, firstname, lastname, phone, company) => {
+        console.log(email, password, rePassword, avatar, firstname, lastname, phone, company)
         if (this.handleValidation(email, password, rePassword, firstname, lastname, phone, company))
             this.props.doregister(email, password, avatar, firstname, lastname, phone, company)
                 .then((resJson) => {
@@ -216,7 +217,7 @@ class Register extends React.Component {
                         <MuiThemeProvider theme={theme}>
                             <Button variant="contained" color='primary' style={{ width: '98%', height: '25%', marginLeft: 10, marginTop: 15 }}
                                 onClick={() => this.onRegister(this.state.username, this.state.password,
-                                    null, this.state.firstName, this.state.lastName, this.state.phoneNumber,
+                                    this.state.rePassword, null, this.state.firstName, this.state.lastName, this.state.phoneNumber,
                                     this.state.companyName)}
                             >
                                 <Typography style={{ color: '#FFF', fontSize: 20 }}>Đăng ký</Typography>

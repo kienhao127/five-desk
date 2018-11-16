@@ -23,7 +23,7 @@ import Profile from 'views/User/EditUser';
 //Socket
 import io from 'socket.io-client';
 import { loadUserFromToken } from "../../store/actions/user";
-const socket = io('http://localhost:4000')
+const socket = io.connect('https://fivedesk.herokuapp.com:4000')
 
 const switchRoutes = (
   <Switch>

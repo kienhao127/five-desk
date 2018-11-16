@@ -16,7 +16,7 @@ const agentRoutes = [
     sidebarName: "Ticket",
     navbarName: "Mail ticket",
     icon: Ticket,
-    component: ReplymailTicket
+    component: MailTicket
   },
   {
     path: "/agent/chat",

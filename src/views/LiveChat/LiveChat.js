@@ -32,7 +32,7 @@ import { getVisitorInfo, updateVisitorInfo } from "../../store/actions/visitor";
 //Socket
 import io from 'socket.io-client';
 import { loadUserFromToken, getListUser } from "../../store/actions/user";
-const socket = io('http://localhost:4000')
+const socket = io('https://fivedesk.herokuapp.com:4000/')
 
 moment.locale('vi');
 const img_me = "https://i.imgur.com/p9bwTYj.png";
