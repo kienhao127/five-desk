@@ -145,3 +145,41 @@ export function addUserApi(user){
     }
     return fetchApi('user/addUser', 'POST', body);
 }
+
+//mail
+export function getNotCloseByUserIDApi(userID){
+    var body = {
+        userID: userID
+    }
+    return fetchApi('mail/getNotCloseByUserID', 'POST', body);
+}
+export function getUnassignedTicketApi(){
+    var body = {
+    }
+    return fetchApi('mail/getUnassignedTicket', 'POST', body);
+}
+export function getAllNotCloseApi(){
+    var body = {
+    }
+    return fetchApi('mail/getAllNotClose', 'POST', body);
+}
+export function getNewSticketApi(){
+    var body = {
+    }
+    return fetchApi('mail/getNewSticket', 'POST', body);
+}
+export function getPendingSticketApi(){
+    var body = {
+    }
+    return fetchApi('mail/getPendingSticket', 'POST', body);
+}
+export function getClosedSticketApi(){
+    var body = {
+    }
+    return fetchApi('mail/getClosedSticket', 'POST', body);
+}
+export function getDeletedSticketApi(){
+    var body = {
+    }
+    return fetchApi('mail/getDeletedSticket', 'POST', body);
+}

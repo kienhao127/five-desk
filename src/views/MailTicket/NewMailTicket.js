@@ -9,7 +9,7 @@ import GridItem from "./../../components/Grid/GridItem";
 import TextField from '@material-ui/core/TextField';
 import {withStyles, createMuiTheme, MuiThemeProvider} from "@material-ui/core/styles";
 import MenuItem from '@material-ui/core/MenuItem';
-import { Button, ClickAwayListener, Typography } from "@material-ui/core";
+import { Button, ClickAwayListener } from "@material-ui/core";
 import AttachFile from "@material-ui/icons/AttachFile";
 import ThemeButton from './../../components/ThemeButton/ThemeButton';
 
