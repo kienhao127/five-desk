@@ -82,6 +82,16 @@ class EnhancedTable extends React.Component {
   };
 
   handleClick = (event, id) => {
+    console.log("row id: " + id);
+  };
+
+  handleChangePage = (event, page) => {
+    this.setState({ page });
+  };
+
+  isSelected = id => this.state.selected.indexOf(id) !== -1;
+
+  onSelectedChange = (id) => {
     const { selected } = this.state;
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
@@ -100,14 +110,7 @@ class EnhancedTable extends React.Component {
     }
 
     this.setState({ selected: newSelected });
-  };
-
-  handleChangePage = (event, page) => {
-    this.setState({ page });
-  };
-
-  isSelected = id => this.state.selected.indexOf(id) !== -1;
-
+  }
   render() {
     const { classes, tableHead, tableTitle, tableTitleSecondary, tableData } = this.props;
     const { order, orderBy, selected, rowsPerPage, page } = this.state;
@@ -157,13 +160,11 @@ class EnhancedTable extends React.Component {
                       hover
                       onClick={event => this.handleClick(event, n.id)}
                       role="checkbox"
-                      aria-checked={isSelected}
                       tabIndex={-1}
                       key={n.id}
-                      selected={isSelected}
                     >
                       <TableCell padding="checkbox">
-                        <Checkbox checked={isSelected} color='default' />
+                        <Checkbox checked={isSelected} onChange={() => this.onSelectedChange(n.id)} color='default' />
                       </TableCell>
                       <TableCell padding="none">
                         <StatusLabel status={n.status}/>
