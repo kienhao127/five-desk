@@ -12,6 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { Button, ClickAwayListener } from "@material-ui/core";
 import AttachFile from "@material-ui/icons/AttachFile";
 import ThemeButton from './../../components/ThemeButton/ThemeButton';
+import { sendMail } from "../../store/actions/mail";
 
 const types = [
     { id: 1, name: 'Câu hỏi' },
@@ -28,10 +29,10 @@ const priorities = [
 ]
 
 const statuses = [
-    { id: 1, name: 'Mới'},
-    { id: 2, name: 'Mở'},
-    { id: 3, name: 'Chờ duyệt'},
-    { id: 4, name: 'Đóng'},
+    { id: 1, name: 'Mới' },
+    { id: 2, name: 'Mở' },
+    { id: 3, name: 'Chờ duyệt' },
+    { id: 4, name: 'Đóng' },
 ]
 
 class NewMailTicket extends React.Component {
@@ -40,10 +41,25 @@ class NewMailTicket extends React.Component {
         super(props);
 
         this.state = {
+            token: "",
+            to: "",
             type: types[0],
             priority: priorities[0],
             status: statuses[0],
+            subject: "",
+            content: "",
         };
+    }
+
+    onValueChange = (event) => {
+        if (event.target.id == "subject")
+            this.setState({
+                subject: event.target.value
+            })
+        else if (event.target.id == "outlined-multiline-static")
+            this.setState({
+                content: event.target.value
+            })
     }
 
     handleChange = name => event => {
@@ -51,6 +67,25 @@ class NewMailTicket extends React.Component {
         this.setState({
             [name]: event.target.value,
         })
+    }
+
+    onSendClick = () => {
+        var mail = {
+            token: this.state.token,
+            to: this.props.profileInfo.UserId,
+            subject: this.state.subject,
+            content: this.state.content,
+            type: this.state.type,
+            priority: this.state.priority,
+            status: this.state.status,
+        }
+        this.props.doSendMail(mail)
+            .then(resJson => {
+                console.log(resJson);
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
     componentDidMount() {
@@ -114,7 +149,7 @@ class NewMailTicket extends React.Component {
                         </TextField>
                     </div>
                     <TextField
-                        id="select-type"
+                        id="select-status"
                         select
                         label="Tình trạng"
                         className={classes.textField}
@@ -156,6 +191,7 @@ class NewMailTicket extends React.Component {
                     />
                     <div className={classes.row}>
                         <ThemeButton
+                            onClick={() => this.onSendClick()}
                             width='150px'
                             backgroundColor='#00bcd4'
                             textColor='#FFF'
@@ -226,4 +262,10 @@ const styles = theme => ({
     }
 });
 
-export default withStyles(styles)(NewMailTicket);
+const mapDispatchToProps = dispatch => {
+    return {
+        doSendMail: (mail) => dispatch(sendMail(mail)),
+    };
+};
+
+export default withStyles(styles)(connect(mapDispatchToProps)(NewMailTicket));

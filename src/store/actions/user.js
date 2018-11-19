@@ -1,8 +1,10 @@
 import { SAVE_PROFILE } from './actiontype';
-import { loginApi, meFromToken, getListUserApi, 
-         getUserInfoApi, changePasswordApi, updateProfileApi, 
-         registerApi,
-         addUserApi} from '../../api/AppApi';
+import {
+    loginApi, meFromToken, getListUserApi,
+    getUserInfoApi, changePasswordApi, updateProfileApi,
+    registerApi,
+    addUserApi
+} from '../../api/AppApi';
 var md5 = require('md5');
 
 export const login = (email, password) => {
@@ -39,10 +41,10 @@ export const login = (email, password) => {
 
 export const register = (email, password, avatar, firstname, lastname, phoneNumber, company) => {
     return (dispatch) => {
-        const promise = new Promise((resolve,reject) =>{
+        const promise = new Promise((resolve, reject) => {
             var md5Password = md5(password);
             registerApi(email, md5Password, avatar, firstname, lastname, phoneNumber, company)
-                .then((responseJson) =>{
+                .then((responseJson) => {
                     if (responseJson.returnCode === 1) {
                         resolve(responseJson);
                     }
@@ -88,15 +90,15 @@ export const saveProfile = (profile) => {
 export const getListUser = () => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-        var token = sessionStorage.getItem('token');
-        getListUserApi(token)
-            .then((responseJson)=> {
-                console.log(responseJson);
-                resolve(responseJson);
-            })
-            .catch((error)=>{
-                console.log(error);
-            });
+            var token = sessionStorage.getItem('token');
+            getListUserApi(token)
+                .then((responseJson) => {
+                    console.log(responseJson);
+                    resolve(responseJson);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         })
         return promise;
     }
@@ -105,14 +107,14 @@ export const getListUser = () => {
 export const getUserInfo = (UserID) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-        getUserInfoApi(UserID)
-            .then((responseJson)=> {
-                console.log(responseJson);
-                resolve(responseJson);
-            })
-            .catch((error)=>{
-                console.log(error);
-            });
+            getUserInfoApi(UserID)
+                .then((responseJson) => {
+                    console.log(responseJson);
+                    resolve(responseJson);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         })
         return promise;
     }
@@ -121,17 +123,17 @@ export const getUserInfo = (UserID) => {
 export const changePassword = (oldPassword, newPassword) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-        var token = sessionStorage.getItem('token');
-		var md5_Old_Password = md5(oldPassword);
-		var md5_New_Password = md5(newPassword);
-        changePasswordApi(token, md5_Old_Password, md5_New_Password)
-            .then((responseJson)=> {
-                console.log(responseJson);
-                resolve(responseJson);
-            })
-            .catch((error)=>{
-                console.log(error);
-            });
+            var token = sessionStorage.getItem('token');
+            var md5_Old_Password = md5(oldPassword);
+            var md5_New_Password = md5(newPassword);
+            changePasswordApi(token, md5_Old_Password, md5_New_Password)
+                .then((responseJson) => {
+                    console.log(responseJson);
+                    resolve(responseJson);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         })
         return promise;
     }
@@ -140,15 +142,15 @@ export const changePassword = (oldPassword, newPassword) => {
 export const updateProfile = (firstname, lastname, phoneNumber) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-        var token = sessionStorage.getItem('token');
-        updateProfileApi(token, firstname, lastname, phoneNumber)
-            .then((responseJson)=> {
-                console.log(responseJson);
-                resolve(responseJson);
-            })
-            .catch((error)=>{
-                console.log(error);
-            });
+            var token = sessionStorage.getItem('token');
+            updateProfileApi(token, firstname, lastname, phoneNumber)
+                .then((responseJson) => {
+                    console.log(responseJson);
+                    resolve(responseJson);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         })
         return promise;
     }
@@ -157,16 +159,16 @@ export const updateProfile = (firstname, lastname, phoneNumber) => {
 export const addUser = (user) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-        console.log('addUser', user);
-        user.password = md5(user.password);
-        addUserApi(user)
-            .then((responseJson)=> {
-                console.log(responseJson);
-                resolve(responseJson);
-            })
-            .catch((error)=>{
-                console.log(error);
-            });
+            console.log('addUser', user);
+            user.password = md5(user.password);
+            addUserApi(user)
+                .then((responseJson) => {
+                    console.log(responseJson);
+                    resolve(responseJson);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         })
         return promise;
     }
