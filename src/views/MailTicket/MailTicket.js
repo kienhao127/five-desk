@@ -97,8 +97,10 @@ class MailTicket extends React.Component {
     });
   }
   getListByKey(key, item){
+    var UserId = this.state.userID;
+    var token = sessionStorage.getItem('token');
       if(key == 0){
-        this.props.doGetNotCloseByUserID(this.state.userID).then((resJson) => {
+        this.props.doGetNotCloseByUserID(UserId,token).then((resJson) => {
           tableData = this.convertData('notclose',resJson.mail);
           menuItems[0].number  =  resJson.mail.length;
           this.setStateUpdate(key, item);
@@ -107,7 +109,7 @@ class MailTicket extends React.Component {
           console.log(error);
         }) ; 
       }else if(key == 1){
-        this.props.doGetUnassignedTicket(this.state.userID).then((resJson) => {
+        this.props.doGetUnassignedTicket(UserId,token).then((resJson) => {
           menuItems[1].number  =  resJson.mail.length;
           tableData = this.convertData('unassign',resJson.mail);
           console.log( tableData);
@@ -117,7 +119,7 @@ class MailTicket extends React.Component {
           console.log(error);
         }) ; 
       }else if(key == 2){
-        this.props.doGetAllNotClose(this.state.userID).then((resJson) => {
+        this.props.doGetAllNotClose(UserId,token).then((resJson) => {
           tableData = this.convertData('notclose',resJson.mail);
           menuItems[2].number  =  resJson.mail.length;
           this.setStateUpdate(key, item);
@@ -126,7 +128,7 @@ class MailTicket extends React.Component {
           console.log(error);
         }) ; 
       }else if(key == 3){
-        this.props.doGetNewTicket(this.state.userID).then((resJson) => {
+        this.props.doGetNewTicket(UserId,token).then((resJson) => {
           tableData = this.convertData('new',resJson.mail);
           menuItems[3].number  =  resJson.mail.length;
           this.setStateUpdate(key, item);
@@ -136,7 +138,7 @@ class MailTicket extends React.Component {
           console.log(error);
         }) ;
       }else if(key == 4){
-        this.props.doGetPendingTicket(this.state.userID).then((resJson) => {
+        this.props.doGetPendingTicket(UserId,token).then((resJson) => {
           tableData = this.convertData('pending',resJson.mail);
           menuItems[4].number  =  resJson.mail.length;
           this.setStateUpdate(key, item);
@@ -146,7 +148,7 @@ class MailTicket extends React.Component {
           console.log(error);
         }) ;  
       }else if(key == 5){
-        this.props.doGetClosedSticket(this.state.userID).then((resJson) => {
+        this.props.doGetClosedSticket(UserId,token).then((resJson) => {
           menuItems[5].number  =  resJson.mail.length;
           tableData = this.convertData('close',resJson.mail);
           this.setStateUpdate(key, item);
@@ -156,7 +158,7 @@ class MailTicket extends React.Component {
         }) ; 
       }else if(key == 6){
       }else if(key == 7){
-        this.props.doGetDeletedSticket(this.state.userID).then((resJson) => {
+        this.props.doGetDeletedSticket(UserId,token).then((resJson) => {
           tableData = this.convertData('delete',resJson.mail);
           menuItems[7].number  =  resJson.mail.length;
           this.setStateUpdate(key, item);
@@ -167,7 +169,9 @@ class MailTicket extends React.Component {
       }
   }
   componentDidMount(){
-        this.props.doGetNotCloseByUserID(this.state.userID).then((resJson) => {
+    var UserId = this.state.userID;
+    var token = sessionStorage.getItem('token');
+        this.props.doGetNotCloseByUserID(UserId,token).then((resJson) => {
           console.log('doGetNotCloseByUserID' + resJson);
           tableData = this.convertData('new',resJson.mail);
           menuItems[0].number  =  resJson.mail.length;
@@ -175,39 +179,39 @@ class MailTicket extends React.Component {
         .catch(error => {
           console.log(error);
         }) ; 
-        this.props.doGetUnassignedTicket(this.state.userID).then((resJson) => {
+        this.props.doGetUnassignedTicket(UserId,token).then((resJson) => {
           menuItems[1].number  =  resJson.mail.length;
         })
         .catch(error => {
           console.log(error);
         }) ; 
-        this.props.doGetAllNotClose(this.state.userID).then((resJson) => {
+        this.props.doGetAllNotClose(UserId,token).then((resJson) => {
           menuItems[2].number  =  resJson.mail.length;
         })
         .catch(error => {
           console.log(error);
         }) ; 
-        this.props.doGetNewTicket(this.state.userID).then((resJson) => {
+        this.props.doGetNewTicket(UserId,token).then((resJson) => {
           menuItems[3].number  =  resJson.mail.length;
         })
         
         .catch(error => {
           console.log(error);
         }) ;
-        this.props.doGetPendingTicket(this.state.userID).then((resJson) => {
+        this.props.doGetPendingTicket(UserId,token).then((resJson) => {
           menuItems[4].number  =  resJson.mail.length;
     
         })
         .catch(error => {
           console.log(error);
         }) ;  
-        this.props.doGetClosedSticket(this.state.userID).then((resJson) => {
+        this.props.doGetClosedSticket(UserId,token).then((resJson) => {
           menuItems[5].number  =  resJson.mail.length;
         })
         .catch(error => {
           console.log(error);
         }) ; 
-        this.props.doGetDeletedSticket(this.state.userID).then((resJson) => {
+        this.props.doGetDeletedSticket(UserId,token).then((resJson) => {
           menuItems[7].number  =  resJson.mail.length;
         })
         .catch(error => {
@@ -275,13 +279,13 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    doGetNotCloseByUserID: (UserId) => dispatch(getNotCloseByUserID(UserId)),
-    doGetUnassignedTicket: () => dispatch(getUnassignedTicket()),
-    doGetAllNotClose : () => dispatch(getAllNotClose()),
-    doGetNewTicket: () => dispatch(getNewSticket()),
-    doGetPendingTicket: () => dispatch(getPendingSticket()),
-    doGetClosedSticket: () => dispatch(getClosedSticket()),
-    doGetDeletedSticket: () => dispatch(getDeletedSticket()),
+    doGetNotCloseByUserID: (UserId,token) => dispatch(getNotCloseByUserID(UserId,token)),
+    doGetUnassignedTicket: (UserId,token) => dispatch(getUnassignedTicket(UserId,token)),
+    doGetAllNotClose : (UserId,token) => dispatch(getAllNotClose(UserId,token)),
+    doGetNewTicket: (UserId,token) => dispatch(getNewSticket(UserId,token)),
+    doGetPendingTicket: (UserId,token) => dispatch(getPendingSticket(UserId,token)),
+    doGetClosedSticket: (UserId,token) => dispatch(getClosedSticket(UserId,token)),
+    doGetDeletedSticket: (UserId,token) => dispatch(getDeletedSticket(UserId,token)),
 
   };
 };

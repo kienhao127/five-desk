@@ -147,39 +147,46 @@ export function addUserApi(user) {
 }
 
 //mail
-export function getNotCloseByUserIDApi(userID) {
+export function getNotCloseByUserIDApi(userID,token) {
     var body = {
-        userID: userID
+        token:token
     }
     return fetchApi('mail/getNotCloseByUserID', 'POST', body);
 }
-export function getUnassignedTicketApi() {
+export function getUnassignedTicketApi(userID,token) {
+    console.log('ttttttttttttttttttt'+token);
     var body = {
+        token:token
     }
     return fetchApi('mail/getUnassignedTicket', 'POST', body);
 }
-export function getAllNotCloseApi() {
+export function getAllNotCloseApi(userID,token) {
     var body = {
+        token:token
     }
     return fetchApi('mail/getAllNotClose', 'POST', body);
 }
-export function getNewSticketApi() {
+export function getNewSticketApi(userID,token) {
     var body = {
+        token:token
     }
     return fetchApi('mail/getNewSticket', 'POST', body);
 }
-export function getPendingSticketApi() {
+export function getPendingSticketApi(userID,token) {
     var body = {
+        token:token
     }
     return fetchApi('mail/getPendingSticket', 'POST', body);
 }
-export function getClosedSticketApi() {
+export function getClosedSticketApi(userID,token) {
     var body = {
+        token:token
     }
     return fetchApi('mail/getClosedSticket', 'POST', body);
 }
-export function getDeletedSticketApi() {
+export function getDeletedSticketApi(userID,token) {
     var body = {
+        token:token
     }
     return fetchApi('mail/getDeletedSticket', 'POST', body);
 }

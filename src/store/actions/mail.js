@@ -2,10 +2,10 @@ import { SAVE_PROFILE } from './actiontype';
 import { getNotCloseByUserIDApi, getUnassignedTicketApi, getAllNotCloseApi, getNewSticketApi, getPendingSticketApi, getClosedSticketApi, getDeletedSticketApi, sendMailApi } from '../../api/AppApi';
 
 
-export const getNotCloseByUserID = (UserID) => {
+export const getNotCloseByUserID = (UserId,token) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-            getNotCloseByUserIDApi(UserID)
+            getNotCloseByUserIDApi(UserId,token)
                 .then((responseJson) => {
                     console.log(responseJson);
                     resolve(responseJson);
@@ -18,10 +18,10 @@ export const getNotCloseByUserID = (UserID) => {
     }
 }
 
-export const getUnassignedTicket = () => {
+export const getUnassignedTicket = (UserId,token) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-            getUnassignedTicketApi()
+            getUnassignedTicketApi(UserId,token)
                 .then((responseJson) => {
                     console.log(responseJson);
                     resolve(responseJson);
@@ -33,10 +33,10 @@ export const getUnassignedTicket = () => {
         return promise;
     }
 }
-export const getAllNotClose = () => {
+export const getAllNotClose = (UserId,token) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-            getAllNotCloseApi()
+            getAllNotCloseApi(UserId,token)
                 .then((responseJson) => {
                     console.log(responseJson);
                     resolve(responseJson);
@@ -48,26 +48,10 @@ export const getAllNotClose = () => {
         return promise;
     }
 }
-export const getNewSticket = () => {
+export const getNewSticket = (UserId,token) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-            getNewSticketApi()
-                .then((responseJson) => {
-                    console.log(responseJson);
-                    resolve(responseJson);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        })
-        return promise;
-    }
-}
-
-export const getPendingSticket = () => {
-    return (dispatch) => {
-        const promise = new Promise((resolve, reject) => {
-            getPendingSticketApi()
+            getNewSticketApi(UserId,token)
                 .then((responseJson) => {
                     console.log(responseJson);
                     resolve(responseJson);
@@ -80,10 +64,10 @@ export const getPendingSticket = () => {
     }
 }
 
-export const getClosedSticket = () => {
+export const getPendingSticket = (UserId,token) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-            getClosedSticketApi()
+            getPendingSticketApi(UserId,token)
                 .then((responseJson) => {
                     console.log(responseJson);
                     resolve(responseJson);
@@ -96,10 +80,26 @@ export const getClosedSticket = () => {
     }
 }
 
-export const getDeletedSticket = () => {
+export const getClosedSticket = (UserId,token) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-            getDeletedSticketApi()
+            getClosedSticketApi(UserId,token)
+                .then((responseJson) => {
+                    console.log(responseJson);
+                    resolve(responseJson);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        })
+        return promise;
+    }
+}
+
+export const getDeletedSticket = (UserId,token) => {
+    return (dispatch) => {
+        const promise = new Promise((resolve, reject) => {
+            getDeletedSticketApi(UserId,token)
                 .then((responseJson) => {
                     console.log(responseJson);
                     resolve(responseJson);
