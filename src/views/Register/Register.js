@@ -13,12 +13,8 @@ import ThemeButton from './../../components/ThemeButton/ThemeButton';
 import { withStyles, createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import { Button, Typography } from "@material-ui/core";
 import RegisterImage from 'assets/img/register-image.png';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Slide from '@material-ui/core/Slide';
+import {Slide,DialogContentText,DialogContent, DialogActions, Dialog, DialogTitle} 
+from "@material-ui/core";
 function Transition(props) {
     return <Slide direction="down" {...props} />;
 }
@@ -38,7 +34,6 @@ class Register extends React.Component {
             phoneNumber: "",
             companyName: "",
             openDialog: false,
-            checkEmail: false,
             message: "",
         };
     }
@@ -84,7 +79,7 @@ class Register extends React.Component {
         if (email !== "") {
             let filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
             if (!filter.test(email)) {
-                this.setState({ checkEmail: false, openDialog: true, message: "Email không hợp lệ" });
+                this.setState({openDialog: true, message: "Email không hợp lệ" });
                 return false;
             }
         }

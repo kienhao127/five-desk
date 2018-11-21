@@ -8,11 +8,16 @@ import { loginApi } from "../../api/AppApi";
 import GridContainer from "./../../components/Grid/GridContainer";
 import GridItem from "./../../components/Grid/GridItem";
 import { withStyles, createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
-import { Button, Typography } from "@material-ui/core";
+import {Button, Typography, Slide,DialogContentText,DialogContent, DialogActions, Dialog, DialogTitle} 
+from "@material-ui/core";
 import LoginImage from 'assets/img/login-image.png';
 import { connect } from "react-redux";
 import { login } from "../../store/actions/user";
 const history = createBrowserHistory();
+
+function Transition(props) {
+    return <Slide direction="down" {...props} />;
+}
 
 class Login extends React.Component {
 
@@ -22,6 +27,8 @@ class Login extends React.Component {
         this.state = {
             email: "",
             password: "",
+            openDialog: false,
+            message: "",
         };
     }
 
@@ -36,7 +43,30 @@ class Login extends React.Component {
             })
     }
 
+    handleValidation = (email, password) => {
+        if (email == "" || password == ""){
+            this.setState({ openDialog: true, message: "Email hoặc password không được để trống" });
+            return false;
+        }
+
+        if (email !== "") {
+            let filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if (!filter.test(email)) {
+                this.setState({openDialog: true, message: "Email không hợp lệ" });
+                return false;
+            }
+        }
+        return true;
+    }
+
+    handleClose = () => {
+        this.setState({
+            openDialog: false,
+        });
+    }
+
     onLoginClick = (email, password) => {
+        if(this.handleValidation(email,password))
         this.props.doLogin(email, password).then((resJson) => {
             this.props.history.push('/agent/ticket')
         }).catch((error) => {
@@ -48,6 +78,28 @@ class Login extends React.Component {
         const { classes } = this.props;
         return (
             <div className={classes.loginDiv}>
+                <Dialog
+                    open={this.state.openDialog}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={this.handleClose}
+                    aria-labelledby="alert-dialog-slide-title"
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <DialogTitle id="alert-dialog-slide-title">
+                        {"Thông báo"}
+                    </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-slide-description">
+                            {this.state.message}
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleClose} color="primary">Xác nhận
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+
                 <GridContainer>
                     <GridItem xs={12} md={5} >
                         <div className={classes.infoDiv}>

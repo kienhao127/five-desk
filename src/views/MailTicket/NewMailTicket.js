@@ -7,6 +7,12 @@ import { connect } from "react-redux";
 import GridContainer from "./../../components/Grid/GridContainer";
 import GridItem from "./../../components/Grid/GridItem";
 // @material-ui/core
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import Slide from '@material-ui/core/Slide';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import { withStyles, createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import MenuItem from '@material-ui/core/MenuItem';
@@ -14,6 +20,10 @@ import { Button, ClickAwayListener } from "@material-ui/core";
 import AttachFile from "@material-ui/icons/AttachFile";
 import ThemeButton from './../../components/ThemeButton/ThemeButton';
 import { sendMail } from "../../store/actions/mail";
+
+function Transition(props) {
+    return <Slide direction="down" {...props} />;
+}
 
 const types = [
     { id: 1, name: 'Câu hỏi' },
@@ -49,7 +59,10 @@ class NewMailTicket extends React.Component {
             status: statuses[0],
             subject: "",
             content: "",
+            openDialog: false,
+            message: "",
         };
+
     }
 
     onValueChange = (event) => {
@@ -70,6 +83,20 @@ class NewMailTicket extends React.Component {
         })
     }
 
+    handleValidation = (subject, content) => {
+        if (subject == "" || content == ""){
+            this.setState({ openDialog: true, message: "Chủ đề hoặc nội dung không được để trống" });
+            return false;
+        }
+        return true;
+    }
+
+    handleClose = () => {
+        this.setState({
+            openDialog: false,
+        });
+    }
+
     onSendClick = () => {
         var mail = {
             token: this.state.token,
@@ -80,6 +107,7 @@ class NewMailTicket extends React.Component {
             priority: this.state.priority,
             status: this.state.status,
         }
+        if(this.handleValidation(mail.subject,mail.content))
         this.props.doSendMail(mail)
             .then(resJson => {
                 console.log(resJson);
@@ -96,6 +124,28 @@ class NewMailTicket extends React.Component {
         const { classes } = this.props;
         return (
             <GridContainer>
+                <Dialog
+                    open={this.state.openDialog}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={this.handleClose}
+                    aria-labelledby="alert-dialog-slide-title"
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <DialogTitle id="alert-dialog-slide-title">
+                        {"Thông báo"}
+                    </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-slide-description">
+                            {this.state.message}
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleClose} color="primary">Xác nhận
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+
                 <GridItem xs={12} sm={4} md={4} >
                     <TextField
                         id="requester"
@@ -179,6 +229,7 @@ class NewMailTicket extends React.Component {
                         name='subject'
                         className={classes.rightTextField}
                         variant="outlined"
+                        onChange={this.onValueChange}
                     />
                     <TextField
                         id="outlined-multiline-static"
@@ -189,14 +240,17 @@ class NewMailTicket extends React.Component {
                         className={classes.rightTextField}
                         margin="normal"
                         variant="outlined"
+                        onChange={this.onValueChange}
                     />
                     <div className={classes.row}>
                         <ThemeButton
-                            onClick={() => this.onSendClick()}
+                            oClick={this.onSendClick}
                             width='150px'
                             backgroundColor='#00bcd4'
                             textColor='#FFF'
                             content='Gửi' />
+                        <Button onClick={this.onSendClick} color="primary">Xác nhận
+                        </Button>
                     </div>
                     <hr className={classes.line} />
                 </GridItem>

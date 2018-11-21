@@ -9,7 +9,9 @@ import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import { Typography, Dialog, DialogTitle , GridList, GridListTile} from "@material-ui/core";
+import { Slide,DialogContentText,DialogContent, DialogActions, Typography, 
+Dialog, DialogTitle, GridList, GridListTile } 
+from "@material-ui/core";
 import Avatar from './../../components/Avatar/Avatar';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -20,6 +22,10 @@ import { Link } from 'react-router-dom';
 
 // images
 import avatar from "assets/img/avatar.png";
+
+function Transition(props) {
+  return <Slide direction="down" {...props} />;
+}
 
 class User extends React.Component {
 
@@ -36,6 +42,8 @@ class User extends React.Component {
       lastname: '',
       password: '',
       rePassword: '',
+      openDialog: false,
+      message: "",
     };
 
   }
@@ -66,6 +74,10 @@ class User extends React.Component {
     })
   };
 
+  handleCloseDiaglog = () => {
+    this.setState({ openDialog: false })
+  }
+
   onValueChange = (event) => {
 
     if (event.target.id == "txtFirstName") {
@@ -91,6 +103,22 @@ class User extends React.Component {
       })
   };
 
+  handleValidation = (user) => {
+    if (user.email == "" || user.password == "" || user.firstname == "" ||
+      user.lastname == "") {
+      this.setState({ openDialog: true, message: "Các trường không được để trống" });
+      return false;
+    }
+    if (user.email !== "") {
+      let filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+      if (!filter.test(user.email)) {
+        this.setState({ openDialog: true, message: "Email không hợp lệ" });
+        return false;
+      }
+    }
+    return true;
+  }
+
   onAddUser = () => {
     var user = {
       email: this.state.email,
@@ -99,27 +127,28 @@ class User extends React.Component {
       lastname: this.state.lastname,
       companyID: this.props.userProfile.CompanyID,
     }
-    this.props.doAddUser(user)
-      .then(resJson => {
-        console.log(resJson);
-        this.props.doGetListUser()
-          .then((resJson) => {
-            console.log('doGetListUser111111');
-            console.log(resJson);
-            this.setState({
-              listUser: resJson.users,
+    if (this.handleValidation(user))
+      this.props.doAddUser(user)
+        .then(resJson => {
+          console.log(resJson);
+          this.props.doGetListUser()
+            .then((resJson) => {
+              console.log('doGetListUser111111');
+              console.log(resJson);
+              this.setState({
+                listUser: resJson.users,
+              })
             })
+            .catch((error) => {
+              console.log(error);
+            });
+          this.setState({
+            open: false
           })
-          .catch((error) => {
-            console.log(error);
-          });
-        this.setState({
-          open: false
         })
-      })
-      .catch(error => {
-        console.log(error)
-      })
+        .catch(error => {
+          console.log(error)
+        })
   }
 
   onShowDialog = () => {
@@ -133,6 +162,29 @@ class User extends React.Component {
     return (
       this.props.userProfile != null ?
         <GridContainer>
+
+          <Dialog
+            open={this.state.openDialog}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={this.handleCloseDiaglog}
+            aria-labelledby="alert-dialog-slide-title"
+            aria-describedby="alert-dialog-slide-description"
+          >
+            <DialogTitle id="alert-dialog-slide-title">
+              {"Thông báo"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-slide-description">
+                {this.state.message}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleClose} color="primary">Xác nhận
+              </Button>
+            </DialogActions>
+          </Dialog>
+
           <Dialog onClose={this.handleClose} aria-labelledby="simple-dialog-title" open={this.state.open}>
             <DialogTitle id="simple-dialog-title">Thêm thành viên</DialogTitle>
             <div style={{ display: 'flex', padding: 10, flexDirection: 'column', alignItems: 'flex-end' }}>
@@ -205,21 +257,21 @@ class User extends React.Component {
               </div>
               <div>
                 <GridList cellHeight={60} cols={4} className={classes.gridList}>
-                {this.state.listUser && this.state.listUser.map((user, key) => (
-                  <ListItem key={key} button component={Link} to={'/agent/member/profile/' + user.UserID} className={classes.listItem}>
-                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                      <Avatar content={user.FirstName != null ? user.FirstName : null} colorString={user.Email} />
-                      <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 15 }}>
-                        {(user.FirstName != null ? user.FirstName : '') + (user.FirstName != null ? ' ' : '') + user.LastName}
-                      </Typography>
-                      {user.UserID == this.props.userProfile.UserID
-                        ?
-                        <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 15, color: 'gray' }}>
-                          Chỉnh sửa
+                  {this.state.listUser && this.state.listUser.map((user, key) => (
+                    <ListItem key={key} button component={Link} to={'/agent/member/profile/' + user.UserID} className={classes.listItem}>
+                      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                        <Avatar content={user.FirstName != null ? user.FirstName : null} colorString={user.Email} />
+                        <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 15 }}>
+                          {(user.FirstName != null ? user.FirstName : '') + (user.FirstName != null ? ' ' : '') + user.LastName}
                         </Typography>
-                        : null}
-                    </div>
-                  </ListItem>
+                        {user.UserID == this.props.userProfile.UserID
+                          ?
+                          <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Regular', fontSize: 15, color: 'gray' }}>
+                            Chỉnh sửa
+                        </Typography>
+                          : null}
+                      </div>
+                    </ListItem>
                   ))}
                 </GridList>
               </div>

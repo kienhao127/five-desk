@@ -10,7 +10,9 @@ import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SendIcon from '@material-ui/icons/Send';
 import AttachmentIcon from '@material-ui/icons/Attachment';
-import { IconButton, Typography, Dialog } from "@material-ui/core";
+import {IconButton,Typography, Slide,DialogContentText,DialogContent, DialogActions,
+Dialog, DialogTitle} 
+from "@material-ui/core";
 import Avatar from "./../../components/Avatar/Avatar";
 import avatar from "assets/img/avatar.png";
 import Button from "@material-ui/core/Button";
@@ -39,6 +41,10 @@ moment.locale('vi');
 const img_me = "https://i.imgur.com/p9bwTYj.png";
 var currentUser = null;
 
+function Transition(props) {
+  return <Slide direction="down" {...props} />;
+}
+
 class LiveChat extends React.Component {
   constructor(props) {
     super(props);
@@ -62,9 +68,12 @@ class LiveChat extends React.Component {
       listUser: null,
       notifyUpdateVisitor: null,
       content: '',
+
+      openDialog: false,
+      messageDialog: "",
     };
     socket.on('chat message', (message) => this.onReceiveMessage(message));
-    socket.on('time', function(timeString) {
+    socket.on('time', function (timeString) {
       console.log('Server time: ' + timeString);
     });
   }
@@ -273,19 +282,44 @@ class LiveChat extends React.Component {
     }
   };
 
+  handleValidation = (visitor) => {
+    if (visitor.Email == "" || visitor.PhoneNumber == "" || visitor.Notes == "") {
+      this.setState({ openDialog: true, messageDialog: "Các trường không được để trống" });
+      return false;
+    }
+
+    if (visitor.Email !== "") {
+      let filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+      if (!filter.test(visitor.Email)) {
+        this.setState({ openDialog: true, messageDialog: "Email không hợp lệ" });
+        return false;
+      }
+    }
+    return true;
+  }
+
+  handleClose = () => {
+    this.setState({
+      openDialog: false,
+    });
+  }
+
   onUpdateVisitorInfo = (visitor) => {
-    //gọi api update visitor info
-    this.props.doUpdateVisitorInfo(visitor.VisitorID, visitor.Email, visitor.Notes, visitor.PhoneNumber)
-      .then((resJson) => {
-        console.log(resJson);
-        this.setState({
-          notifyUpdateVisitor: resJson,
+    //validation
+    if (this.handleValidation(visitor)) {
+      //gọi api update visitor info
+      this.props.doUpdateVisitorInfo(visitor.VisitorID, visitor.Email, visitor.Notes, visitor.PhoneNumber)
+        .then((resJson) => {
+          console.log(resJson);
+          this.setState({
+            notifyUpdateVisitor: resJson,
+          })
         })
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    setTimeout(this.clearNotify, 3000);
+        .catch((error) => {
+          console.log(error);
+        });
+      setTimeout(this.clearNotify, 3000);
+    }
   }
 
   clearNotify = () => {
@@ -329,6 +363,29 @@ class LiveChat extends React.Component {
     return (
       this.props.userProfile != null ?
         <div className={classes.root}>
+
+          <Dialog
+            open={this.state.openDialog}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={this.handleClose}
+            aria-labelledby="alert-dialog-slide-title"
+            aria-describedby="alert-dialog-slide-description"
+          >
+            <DialogTitle id="alert-dialog-slide-title">
+              {"Thông báo"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-slide-description">
+                {this.state.messageDialog}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleClose} color="primary">Xác nhận
+                        </Button>
+            </DialogActions>
+          </Dialog>
+
           <Dialog fullWidth onClose={this.handleClose} aria-labelledby="simple-dialog-title" open={this.state.open}>
             <Typography style={{ marginLeft: 10, fontFamily: 'Roboto-Medium', fontSize: 20 }}>Danh sách thành viên</Typography>
             <List dense={true}>
