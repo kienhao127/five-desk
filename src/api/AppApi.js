@@ -147,44 +147,44 @@ export function addUserApi(user) {
 }
 
 //mail
-export function getNotCloseByUserIDApi(userID,token) {
+export function getNotCloseByUserIDApi(token) {
     var body = {
         token:token
     }
     return fetchApi('mail/getNotCloseByUserID', 'POST', body);
 }
-export function getUnassignedTicketApi(userID,token) {
+export function getUnassignedTicketApi(token) {
     console.log('ttttttttttttttttttt'+token);
     var body = {
         token:token
     }
     return fetchApi('mail/getUnassignedTicket', 'POST', body);
 }
-export function getAllNotCloseApi(userID,token) {
+export function getAllNotCloseApi(token) {
     var body = {
         token:token
     }
     return fetchApi('mail/getAllNotClose', 'POST', body);
 }
-export function getNewSticketApi(userID,token) {
+export function getNewSticketApi(token) {
     var body = {
         token:token
     }
     return fetchApi('mail/getNewSticket', 'POST', body);
 }
-export function getPendingSticketApi(userID,token) {
+export function getPendingSticketApi(token) {
     var body = {
         token:token
     }
     return fetchApi('mail/getPendingSticket', 'POST', body);
 }
-export function getClosedSticketApi(userID,token) {
+export function getClosedSticketApi(token) {
     var body = {
         token:token
     }
     return fetchApi('mail/getClosedSticket', 'POST', body);
 }
-export function getDeletedSticketApi(userID,token) {
+export function getDeletedSticketApi(token) {
     var body = {
         token:token
     }
@@ -199,6 +199,52 @@ export function sendMailApi(mail) {
         typeID: mail.typeID,
         priorityID: mail.priorityID,
         statusID: mail.statusID,
+        replyTo: mail.replyTo != undefined ? mail.replyTo : null
     }
     return fetchApi('mail/sendMail', 'POST', body);
+}
+
+export function getMailApi(mailID) {
+    var body = {
+        mailId: mailID,
+    }
+    return fetchApi('mail/getMail', 'POST', body);
+}
+
+export function updateMailStatusApi(mailID, statusID){
+    var body = {
+        mailID: mailID,
+        statusID: statusID,
+    }
+    return fetchApi('mail/updateStatus', 'POST', body);
+}
+
+export function updateMailTypeApi(mailID, typeID){
+    var body = {
+        mailID: mailID,
+        typeID: typeID,
+    }
+    return fetchApi('mail/updateType', 'POST', body);
+}
+
+export function updateMailPriorityApi(mailID, priorityID){
+    var body = {
+        mailID: mailID,
+        priorityID: priorityID,
+    }
+    return fetchApi('mail/updatePriority', 'POST', body);
+}
+
+export function deleteMailApi(listMailID){
+    var body = {
+        listMailID: listMailID,
+    }
+    return fetchApi('mail/deleteMail', 'POST', body);
+}
+
+export function countQuantityMailApi(token){
+    var body = {
+        token: token,
+    }
+    return fetchApi('mail/countQuantityMail', 'POST', body);
 }

@@ -20,14 +20,19 @@ import image from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/logo.png";
 import NewMailTicket from 'views/MailTicket/NewMailTicket';
 import Profile from 'views/User/EditUser';
+import ReplyMailTicket from './../../views/MailTicket/ReplyMailTicket';
 //Socket
 import io from 'socket.io-client';
+const socket = io('https://fivedesk.herokuapp.com')
+
+import { ToastContainer, ToastStore } from 'react-toasts';
 import { loadUserFromToken } from "../../store/actions/user";
 
 const switchRoutes = (
   <Switch>
     <Route exact path={'/agent/ticket/new'} component={NewMailTicket} />
     <Route exact path={'/agent/member/profile/:userID'} component={Profile} />
+    <Route exact path={'/agent/ticket/:mailID'} component={ReplyMailTicket} />
     {agentRoutes.map((prop, key) => {
       if (prop.redirect)
         return <Redirect from={prop.path} to={prop.to} key={key} />;
@@ -43,7 +48,15 @@ class Agent extends React.Component {
       mobileOpen: false,
     };
     this.resizeFunction = this.resizeFunction.bind(this);
+
+    socket.on('incomingMail', this.onReceiveMessage);
   }
+
+  onReceiveMessage = () => {
+    console.log('socket incoming mail');
+    ToastStore.success('Có mail mới!');
+  }
+
 
   handleDrawerToggle = () => {
     this.setState({ mobileOpen: !this.state.mobileOpen });
@@ -90,6 +103,7 @@ class Agent extends React.Component {
     const { classes, ...rest } = this.props;
     return (
       <div className={classes.wrapper}>
+        <ToastContainer position={ToastContainer.POSITION.BOTTOM_LEFT} store={ToastStore} />
         <Sidebar
           routes={agentRoutes}
           logoText={"FIVE DESK"}

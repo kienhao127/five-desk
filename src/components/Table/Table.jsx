@@ -12,6 +12,10 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import StatusLabel from './../StatusLabel/StatusLabel';
+import moment from 'moment';
+import { Link } from 'react-router-dom';
+import { selectedMail } from '../../store/actions/mail.js';
+import { connect } from "react-redux";
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -75,7 +79,9 @@ class EnhancedTable extends React.Component {
 
   handleSelectAllClick = event => {
     if (event.target.checked) {
-      this.setState(state => ({ selected: this.props.tableData.map(n => n.id) }));
+      var selected = this.props.tableData.map(n => n.id);
+      this.setState(state => ({ selected: selected}));
+      this.props.doSelectedMail(selected);
       return;
     }
     this.setState({ selected: [] });
@@ -110,6 +116,8 @@ class EnhancedTable extends React.Component {
     }
 
     this.setState({ selected: newSelected });
+    console.log(newSelected);
+    this.props.doSelectedMail(newSelected);
   }
   render() {
     const { classes, tableHead, tableTitle, tableTitleSecondary, tableData } = this.props;
@@ -158,7 +166,6 @@ class EnhancedTable extends React.Component {
                   return (
                     <TableRow
                       hover
-                      onClick={event => this.handleClick(event, n.id)}
                       role="checkbox"
                       tabIndex={-1}
                       key={n.id}
@@ -166,15 +173,14 @@ class EnhancedTable extends React.Component {
                       <TableCell padding="checkbox">
                         <Checkbox checked={isSelected} onChange={() => this.onSelectedChange(n.id)} color='default' />
                       </TableCell>
-                      <TableCell padding="none">
+                      <TableCell  style={{ textDecoration: 'none' }} button component={Link} to={'/agent/ticket/' + n.id}  padding="none">
                         <StatusLabel status={n.status}/>
                       </TableCell>
-                      <TableCell component="th" scope="row" padding="none">{n.subject}</TableCell>
-                      <TableCell component="th" scope="row" padding="none">{n.requester}</TableCell>
-                      <TableCell component="th" scope="row" padding="none">{n.requestTime}</TableCell>
-                      <TableCell component="th" scope="row" padding="none">{n.type}</TableCell>
-                      <TableCell component="th" scope="row" padding="none">{n.priority}</TableCell>
-                      <TableCell component="th" scope="row" padding="none">{n.assignee}</TableCell>
+                      <TableCell  style={{ textDecoration: 'none' }}  button component={Link} to={'/agent/ticket/' + n.id}>{n.subject}</TableCell>
+                      <TableCell  style={{ textDecoration: 'none' }} button component={Link} to={'/agent/ticket/' + n.id}>{n.requester}</TableCell>
+                      <TableCell  style={{ textDecoration: 'none' }} button component={Link} to={'/agent/ticket/' + n.id}>{moment(n.requestTime).format('DD/MM/YYYY HH:mm')}</TableCell>
+                      <TableCell  style={{ textDecoration: 'none' }} button component={Link} to={'/agent/ticket/' + n.id}>{n.type}</TableCell>
+                      <TableCell  style={{ textDecoration: 'none' }} button component={Link} to={'/agent/ticket/' + n.id}>{n.priority}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -193,4 +199,15 @@ EnhancedTable.propTypes = {
   tableTitle: PropTypes.string.isRequired,
 };
 
-export default withStyles(styles)(EnhancedTable);
+const mapStateToProps = state => {
+  return {
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    doSelectedMail: (selectedMailID) => dispatch(selectedMail(selectedMailID)),
+  };
+};
+
+export default withStyles(styles)(connect( mapStateToProps ,mapDispatchToProps)(EnhancedTable));

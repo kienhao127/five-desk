@@ -1,11 +1,11 @@
-import { SAVE_PROFILE } from './actiontype';
-import { getNotCloseByUserIDApi, getUnassignedTicketApi, getAllNotCloseApi, getNewSticketApi, getPendingSticketApi, getClosedSticketApi, getDeletedSticketApi, sendMailApi } from '../../api/AppApi';
+import { SAVE_PROFILE, SAVE_LISTMAIL_SELECTED } from './actiontype';
+import { getNotCloseByUserIDApi, getUnassignedTicketApi, getAllNotCloseApi, getNewSticketApi, getPendingSticketApi, getClosedSticketApi, getDeletedSticketApi, sendMailApi, getMailApi, updateMailStatusApi, updateMailTypeApi, updateMailPriorityApi, deleteMailApi, countQuantityMailApi } from '../../api/AppApi';
 
 
-export const getNotCloseByUserID = (UserId,token) => {
+export const getNotCloseByUserID = (token) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-            getNotCloseByUserIDApi(UserId,token)
+            getNotCloseByUserIDApi(token)
                 .then((responseJson) => {
                     console.log(responseJson);
                     resolve(responseJson);
@@ -18,10 +18,10 @@ export const getNotCloseByUserID = (UserId,token) => {
     }
 }
 
-export const getUnassignedTicket = (UserId,token) => {
+export const getUnassignedTicket = (token) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-            getUnassignedTicketApi(UserId,token)
+            getUnassignedTicketApi(token)
                 .then((responseJson) => {
                     console.log(responseJson);
                     resolve(responseJson);
@@ -33,10 +33,10 @@ export const getUnassignedTicket = (UserId,token) => {
         return promise;
     }
 }
-export const getAllNotClose = (UserId,token) => {
+export const getAllNotClose = (token) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-            getAllNotCloseApi(UserId,token)
+            getAllNotCloseApi(token)
                 .then((responseJson) => {
                     console.log(responseJson);
                     resolve(responseJson);
@@ -48,26 +48,10 @@ export const getAllNotClose = (UserId,token) => {
         return promise;
     }
 }
-export const getNewSticket = (UserId,token) => {
+export const getNewSticket = (token) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-            getNewSticketApi(UserId,token)
-                .then((responseJson) => {
-                    console.log(responseJson);
-                    resolve(responseJson);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        })
-        return promise;
-    }
-}
-
-export const getPendingSticket = (UserId,token) => {
-    return (dispatch) => {
-        const promise = new Promise((resolve, reject) => {
-            getPendingSticketApi(UserId,token)
+            getNewSticketApi(token)
                 .then((responseJson) => {
                     console.log(responseJson);
                     resolve(responseJson);
@@ -80,10 +64,10 @@ export const getPendingSticket = (UserId,token) => {
     }
 }
 
-export const getClosedSticket = (UserId,token) => {
+export const getPendingSticket = (token) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-            getClosedSticketApi(UserId,token)
+            getPendingSticketApi(token)
                 .then((responseJson) => {
                     console.log(responseJson);
                     resolve(responseJson);
@@ -96,10 +80,26 @@ export const getClosedSticket = (UserId,token) => {
     }
 }
 
-export const getDeletedSticket = (UserId,token) => {
+export const getClosedSticket = (token) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
-            getDeletedSticketApi(UserId,token)
+            getClosedSticketApi(token)
+                .then((responseJson) => {
+                    console.log(responseJson);
+                    resolve(responseJson);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        })
+        return promise;
+    }
+}
+
+export const getDeletedSticket = (token) => {
+    return (dispatch) => {
+        const promise = new Promise((resolve, reject) => {
+            getDeletedSticketApi(token)
                 .then((responseJson) => {
                     console.log(responseJson);
                     resolve(responseJson);
@@ -116,6 +116,118 @@ export const sendMail = (mail) => {
     return (dispatch) => {
         const promise = new Promise((resolve, reject) => {
             sendMailApi(mail)
+                .then((responseJson) => {
+                    console.log(responseJson);
+                    resolve(responseJson);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        })
+        return promise;
+    }
+}
+
+export const getMail = (mailID) => {
+    return (dispatch) => {
+        const promise = new Promise((resolve, reject) => {
+            getMailApi(mailID)
+                .then((responseJson) => {
+                    console.log(responseJson);
+                    resolve(responseJson);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        })
+        return promise;
+    }
+}
+
+export const updateMailStatus = (mailID, statusID) => {
+    return (dispatch) => {
+        const promise = new Promise((resolve, reject) => {
+            updateMailStatusApi(mailID, statusID)
+                .then((responseJson) => {
+                    console.log(responseJson);
+                    resolve(responseJson);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        })
+        return promise;
+    }
+}
+
+
+export const updateMailType = (mailID, typeID) => {
+    return (dispatch) => {
+        const promise = new Promise((resolve, reject) => {
+            updateMailTypeApi(mailID, typeID)
+                .then((responseJson) => {
+                    console.log(responseJson);
+                    resolve(responseJson);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        })
+        return promise;
+    }
+}
+
+
+export const updateMailPriority = (mailID, priorityID) => {
+    return (dispatch) => {
+        const promise = new Promise((resolve, reject) => {
+            updateMailPriorityApi(mailID, priorityID)
+                .then((responseJson) => {
+                    console.log(responseJson);
+                    resolve(responseJson);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        })
+        return promise;
+    }
+}
+
+export const deleteMail = (listMailID) => {
+    return (dispatch) => {
+        const promise = new Promise((resolve, reject) => {
+            deleteMailApi(listMailID)
+                .then((responseJson) => {
+                    console.log(responseJson);
+                    resolve(responseJson);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        })
+        return promise;
+    }
+}
+
+export const selectedMail = (listMailID) => {
+    return (dispatch) => {
+        dispatch(saveSelectedMailID(listMailID));
+    }
+}
+
+export const saveSelectedMailID = (selectedMailID) => {
+    return {
+        type: SAVE_LISTMAIL_SELECTED,
+        selectedMailID: selectedMailID
+    };
+}
+
+
+export const countQuantityMail = (token) => {
+    return (dispatch) => {
+        const promise = new Promise((resolve, reject) => {
+            countQuantityMailApi(token)
                 .then((responseJson) => {
                     console.log(responseJson);
                     resolve(responseJson);

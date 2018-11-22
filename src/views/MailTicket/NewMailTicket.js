@@ -20,6 +20,7 @@ import { Button, ClickAwayListener } from "@material-ui/core";
 import AttachFile from "@material-ui/icons/AttachFile";
 import ThemeButton from './../../components/ThemeButton/ThemeButton';
 import { sendMail } from "../../store/actions/mail";
+import { ToastContainer, ToastStore } from 'react-toasts';
 
 function Transition(props) {
     return <Slide direction="down" {...props} />;
@@ -99,18 +100,22 @@ class NewMailTicket extends React.Component {
 
     onSendClick = () => {
         var mail = {
-            token: this.state.token,
-            to: this.props.profileInfo.UserId,
+            token: sessionStorage.getItem('token'),
+            to: this.state.to,
             subject: this.state.subject,
             content: this.state.content,
-            type: this.state.type,
-            priority: this.state.priority,
-            status: this.state.status,
+            typeID: this.state.type.id,
+            priorityID: this.state.priority.id,
+            statusID: this.state.status.id,
         }
         if(this.handleValidation(mail.subject,mail.content))
         this.props.doSendMail(mail)
             .then(resJson => {
                 console.log(resJson);
+                this.setState({
+                    content: '',
+                })
+                ToastStore.success('Gửi mail thành công!');
             })
             .catch(error => {
                 console.log(error)
@@ -124,6 +129,7 @@ class NewMailTicket extends React.Component {
         const { classes } = this.props;
         return (
             <GridContainer>
+                 <ToastContainer position={ToastContainer.POSITION.BOTTOM_LEFT} store={ToastStore} />
                 <Dialog
                     open={this.state.openDialog}
                     TransitionComponent={Transition}
@@ -154,6 +160,8 @@ class NewMailTicket extends React.Component {
                         name='requester'
                         className={classes.textField}
                         variant="outlined"
+                        value={this.state.to}
+                        onChange={this.handleChange('to')}
                     />
                     <div className={classes.selectableTextFieldContainer}>
                         <TextField
@@ -199,27 +207,6 @@ class NewMailTicket extends React.Component {
                             ))}
                         </TextField>
                     </div>
-                    <TextField
-                        id="select-status"
-                        select
-                        label="Tình trạng"
-                        className={classes.textField}
-                        value={this.state.status}
-                        onChange={this.handleChange('status')}
-                        SelectProps={{
-                            MenuProps: {
-                                className: classes.menu,
-                            },
-                        }}
-                        margin="normal"
-                        variant="outlined"
-                    >
-                        {statuses.map(option => (
-                            <MenuItem key={option.id} value={option}>
-                                {option.name}
-                            </MenuItem>
-                        ))}
-                    </TextField>
                 </GridItem>
                 <GridItem xs={12} sm={8} md={8}>
                     <TextField
@@ -244,13 +231,11 @@ class NewMailTicket extends React.Component {
                     />
                     <div className={classes.row}>
                         <ThemeButton
-                            oClick={this.onSendClick}
+                            onClick={this.onSendClick}
                             width='150px'
                             backgroundColor='#00bcd4'
                             textColor='#FFF'
-                            content='Gửi' />
-                        <Button onClick={this.onSendClick} color="primary">Xác nhận
-                        </Button>
+                            content='Gửi mới' />
                     </div>
                     <hr className={classes.line} />
                 </GridItem>
@@ -323,4 +308,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default withStyles(styles)(connect(mapDispatchToProps)(NewMailTicket));
+export default withStyles(styles)(connect(null, mapDispatchToProps)(NewMailTicket));

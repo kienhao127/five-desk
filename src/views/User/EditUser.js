@@ -34,6 +34,7 @@ class EditUser extends React.Component {
             LastName: "",
             Phone: "",
             CompanyName: "",
+            CompanyEmail: '',
             Email: "",
             Old_password: "",
             New_password: "",
@@ -57,6 +58,7 @@ class EditUser extends React.Component {
                 CompanyName: resJson.user.CompanyName,
                 Email: resJson.user.Email,
                 Phone: resJson.user.PhoneNumber,
+                CompanyEmail: resJson.user.CompanyEmail,
             });
 
         }).catch((error) => {
@@ -264,8 +266,17 @@ class EditUser extends React.Component {
                                 />
                                 <TextField
                                     disabled
+                                    id="txtTeam"
+                                    label="Email team"
+                                    value={this.state.CompanyEmail}
+                                    className={classNames(classes.textField_2, classes.dense)}
+                                    margin="dense"
+                                    variant="outlined"
+                                />
+                                <TextField
+                                    disabled
                                     id="txtEmail"
-                                    label="Email"
+                                    label="Email cá nhân"
                                     value={this.state.Email}
                                     className={classes.textField_2}
                                     margin="dense"

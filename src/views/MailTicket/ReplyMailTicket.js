@@ -7,13 +7,28 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Button, ClickAwayListener, Typography } from "@material-ui/core";
-import AttachFile from "@material-ui/icons/AttachFile";
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import Slide from '@material-ui/core/Slide';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import ThemeButton from './../../components/ThemeButton/ThemeButton';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
-import Avatar from '@material-ui/core/Avatar';
+import Avatar from './../../components/Avatar/Avatar';
 import red from '@material-ui/core/colors/red';
+import { getMail, sendMail, updateMailStatus, updateMailType, updateMailPriority } from "../../store/actions/mail";
+import { getUserInfo } from "../../store/actions/user";
+import { connect } from "react-redux";
+import moment from 'moment';
+import { ToastContainer, ToastStore } from 'react-toasts';
+
+function Transition(props) {
+    return <Slide direction="down" {...props} />;
+}
+
 const priorities = [
     { id: 1, name: 'Thấp' },
     { id: 2, name: 'Trung bình' },
@@ -28,13 +43,41 @@ const types = [
     { id: 4, name: 'Công việc' },
 ]
 
+const statuses = [
+    { id: 1, name: 'Mới' },
+    { id: 2, name: 'Mở' },
+    { id: 3, name: 'Chờ duyệt' },
+    { id: 4, name: 'Đóng' },
+]
+
 class ReplyMailTicket extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            token: "",
+            to: "",
             type: types[0],
             priority: priorities[0],
+            status: statuses[0],
+            subject: "",
+            content: "",
+            openDialog: false,
+            message: "",
+            mailID: this.props.match.params.mailID,
+            listMail: null,
+            rootMail: null,
         }
+    }
+
+    onValueChange = (event) => {
+        if (event.target.id == "subject")
+            this.setState({
+                subject: event.target.value
+            })
+        else if (event.target.id == "outlined-multiline-static")
+            this.setState({
+                content: event.target.value
+            })
     }
 
     handleChange = name => event => {
@@ -42,162 +85,288 @@ class ReplyMailTicket extends React.Component {
         this.setState({
             [name]: event.target.value,
         })
+        if (name == 'status'){
+            this.props.doUpdateMailStatus(this.state.mailID, event.target.value.id)
+            .then(value => {
+                ToastStore.success('Cập nhật tình trạng thành công!');
+            })
+            .catch(error => {
+
+            })
+        }
+        if (name == 'type'){
+            this.props.doUpdateMailType(this.state.mailID, event.target.value.id)
+            .then(value => {
+                ToastStore.success('Cập nhật loại mail thành công!');
+            })
+            .catch(error => {
+
+            })
+        }
+        if (name == 'priority'){
+            this.props.doUpdateMailPriority(this.state.mailID, event.target.value.id)
+            .then(value => {
+                ToastStore.success('Cập nhật độ ưu tiên thành công!');
+            })
+            .catch(error => {
+
+            })
+        }
+    }
+
+    handleValidation = (subject, content) => {
+        if (subject == "" || content == "") {
+            this.setState({ openDialog: true, message: "Chủ đề hoặc nội dung không được để trống" });
+            return false;
+        }
+        return true;
+    }
+
+    handleClose = () => {
+        this.setState({
+            openDialog: false,
+        });
+    }
+
+    onSendClick = () => {
+        var mail = {
+            token: sessionStorage.getItem('token'),
+            to: this.state.rootMail.Request,
+            subject: this.state.rootMail.Subject,
+            content: this.state.content,
+            typeID: this.state.type.id,
+            priorityID: this.state.priority.id,
+            statusID: this.state.status.id,
+            replyTo: this.state.mailID
+        }
+        if (this.handleValidation(mail.subject, mail.content))
+            this.props.doSendMail(mail)
+                .then(resJson => {
+                    console.log(resJson);
+                    this.setState({
+                        content: '',
+                    })
+                    ToastStore.success('Gửi mail thành công!');
+                })
+                .catch(error => {
+                    console.log(error)
+                })
     }
 
 
+    componentDidMount() {
+        this.props.doGetMail(this.state.mailID)
+            .then(resJson => {
+                console.log('doGetMail', resJson);
+                var listMail = resJson.listMail;
+                var rootMail = listMail[listMail.length - 1];
+                this.setState({
+                    rootMail: rootMail,
+                    type: types[rootMail.TypeID - 1],
+                    priority: priorities[rootMail.PriorityId - 1],
+                    status: statuses[rootMail.StatusId - 1],
+                })
+                listMail.map(mail => {
+                    if (mail.MailId[1] != "C") {
+                        this.props.doGetUserInfo(mail.UserID)
+                            .then(resJson => {
+                                console.log('doGetUserInfo', resJson.user);
+                                var user = resJson.user;
+                                mail['Fullname'] = user.FirstName + ' ' + user.LastName;
+                                mail['Email'] = user.Email;
+                                console.log('new maillist', listMail);
+                                this.setState({
+                                    listMail: listMail,
+                                })
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            })
+                    }
+                })
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
     render() {
         const { classes } = this.props;
-        return (
-            <GridContainer>
-                <GridItem xs={12} sm={4} md={4} >
-                    <TextField
-                        id="requester"
-                        label="Người yêu cầu"
-                        type="email"
-                        name='requester'
-                        className={classes.textField}
-                        variant="outlined"
-                    />
-                    <TextField
-                        id="assignee"
-                        label="Thành viên gửi"
-                        type="email"
-                        name='assignee'
-                        className={classes.textField}
-                        variant="outlined"
-                        margin="normal"
-                    />
-                    <TextField
-                        id="ccs"
-                        label="CCs"
-                        type="email"
-                        name='ccs'
-                        className={classes.textField}
-                        variant="outlined"
-                        margin="normal"
-                    />
-                    <div className={classes.selectableTextFieldContainer}>
-                        <TextField
-                            id="select-type"
-                            select
-                            label="Loại"
-                            className={classes.selectableTextFieldType}
-                            value={this.state.type}
-                            onChange={this.handleChange('type')}
-                            SelectProps={{
-                                MenuProps: {
-                                    className: classes.menu,
-                                },
-                            }}
-                            margin="normal"
-                            variant="outlined"
-                        >
-                            {types.map(option => (
-                                <MenuItem key={option.id} value={option}>
-                                    {option.name}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                        <TextField
-                            id="select-priority"
-                            select
-                            label="Độ ưu tiên"
-                            className={classes.selectableTextFieldType}
-                            value={this.state.priority}
-                            onChange={this.handleChange('priority')}
-                            SelectProps={{
-                                MenuProps: {
-                                    className: classes.menu,
-                                },
-                            }}
-                            margin="normal"
-                            variant="outlined"
-                        >
-                            {priorities.map(option => (
-                                <MenuItem key={option.id} value={option}>
-                                    {option.name}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    </div>
+        if (this.state.rootMail == null) { return null } else
+            return (
+                <GridContainer>
 
-                </GridItem>
-
-                <GridItem xs={12} sm={8} md={8}>
-                    <Typography
-                        id="subject"
-                        style={{ fontFamily: 'Roboto-medium', fontSize: 20 }}
-                        className={classes.rightTextField}
+                    <ToastContainer position={ToastContainer.POSITION.BOTTOM_LEFT} store={ToastStore} />
+                    <Dialog
+                        open={this.state.openDialog}
+                        TransitionComponent={Transition}
+                        keepMounted
+                        onClose={this.handleClose}
+                        aria-labelledby="alert-dialog-slide-title"
+                        aria-describedby="alert-dialog-slide-description"
                     >
-                        Tên chủ đề
-                    </Typography>
-                    <TextField
-                        id="outlined-multiline-static"
-                        label="Nội dung"
-                        multiline
-                        rows="12"
-                        defaultValue=""
-                        className={classes.rightTextField}
-                        margin="normal"
-                        variant="outlined"
-                    />
-                    <div className={classes.row}>
-                        <Button color="default" justIcon>
-                            <AttachFile />
+                        <DialogTitle id="alert-dialog-slide-title">
+                            {"Thông báo"}
+                        </DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-slide-description">
+                                {this.state.message}
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.handleClose} color="primary">Xác nhận
                         </Button>
-                        <ThemeButton
-                            width='150px'
-                            backgroundColor='#00bcd4'
-                            textColor='#FFF'
-                            content='Trả lời' />
-                    </div>
-                    <hr className={classes.line} />
+                        </DialogActions>
+                    </Dialog>
 
-                    <Card className={classes.card}>
-                        <CardHeader
-                            avatar={
-                                <Avatar aria-label="Recipe" className={classes.avatar}>
-                                    R
-                                </Avatar>
-                            }
-                            title="Jeff Turpin"
-                            subheader="11/11/2018 05:22 AM"
+                    <GridItem xs={12} sm={4} md={4} >
+                        <TextField
+                            id="requester"
+                            label="Người yêu cầu"
+                            type="email"
+                            name='requester'
+                            className={classes.textField}
+                            variant="outlined"
+                            value={this.state.rootMail.Request}
+                            disabled
+                            onChange={this.handleChange('to')}
                         />
-                        <CardContent>
-                            <Typography component="p">
-                                Hi Hao, <br/>
-                                Thank you for contacting Mailgun support.<br/>
-                                You will now able to delete the domain from the account<br/>
-
-                                Kind Regards<br/>
-                                Jeff | Mailgun support<br/>
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                    
-                    <Card className={classes.card}>
-                        <CardHeader
-                            avatar={
-                                <Avatar aria-label="Recipe" className={classes.avatar}>
-                                    R
-                                </Avatar>
-                            }
-                            title="Hao Luong"
-                            subheader="11/10/2018 11:07 PM"
+                        <div className={classes.selectableTextFieldContainer}>
+                            <TextField
+                                id="select-type"
+                                select
+                                label="Loại"
+                                className={classes.selectableTextFieldType}
+                                value={this.state.type}
+                                onChange={this.handleChange('type')}
+                                SelectProps={{
+                                    MenuProps: {
+                                        className: classes.menu,
+                                    },
+                                }}
+                                margin="normal"
+                                variant="outlined"
+                            >
+                                {types.map(option => (
+                                    <MenuItem key={option.id} value={option}>
+                                        {option.name}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                            <TextField
+                                id="select-priority"
+                                select
+                                label="Độ ưu tiên"
+                                className={classes.selectableTextFieldType}
+                                value={this.state.priority}
+                                onChange={this.handleChange('priority')}
+                                SelectProps={{
+                                    MenuProps: {
+                                        className: classes.menu,
+                                    },
+                                }}
+                                margin="normal"
+                                variant="outlined"
+                            >
+                                {priorities.map(option => (
+                                    <MenuItem key={option.id} value={option}>
+                                        {option.name}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </div>
+                        <TextField
+                            id="select-status"
+                            select
+                            label="Tình trạng"
+                            className={classes.textField}
+                            value={this.state.status}
+                            onChange={this.handleChange('status')}
+                            SelectProps={{
+                                MenuProps: {
+                                    className: classes.menu,
+                                },
+                            }}
+                            margin="normal"
+                            variant="outlined"
+                        >
+                            {statuses.map(option => (
+                                <MenuItem key={option.id} value={option}>
+                                    {option.name}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </GridItem>
+                    <GridItem xs={12} sm={8} md={8}>
+                        <TextField
+                            id="subject"
+                            label="Chủ đề"
+                            type="text"
+                            name='subject'
+                            className={classes.rightTextField}
+                            variant="outlined"
+                            value={this.state.rootMail.Subject}
+                            disabled
+                            onChange={this.onValueChange}
                         />
-                        <CardContent>
-                            <Typography component="p">
-                                I want to add a new domain but i receice an error: One of your Domain is permanetly disable <br/>
-                                When I delete a disable domain is thebestkhtn.tk, I have error: The domain you are trying to delete is disable.<br/>
-                                What I can do to add new domain ?<br/>
-                                Thank you.
-                            </Typography>
-                        </CardContent>
-                    </Card>
+                        <TextField
+                            id="outlined-multiline-static"
+                            label="Nội dung"
+                            multiline
+                            rows="12"
+                            defaultValue=""
+                            className={classes.rightTextField}
+                            margin="normal"
+                            variant="outlined"
+                            onChange={this.onValueChange}
+                        />
+                        <div className={classes.row}>
+                            <ThemeButton
+                                onClick={this.onSendClick}
+                                width='150px'
+                                backgroundColor='#00bcd4'
+                                textColor='#FFF'
+                                content='Gửi' />
+                        </div>
+                        <hr className={classes.line} />
 
-                </GridItem>
-            </GridContainer>
-        )
+                        {this.state.listMail != null ?
+                            this.state.listMail.map((mail, key) => {
+                                return (
+                                    <Card className={classes.card}>
+                                        {mail.MailId[1] != "C"
+                                            ?
+                                            <CardHeader
+                                                avatar={
+                                                    <Avatar content={mail.Fullname} colorString={mail.Email} />
+                                                }
+                                                title={mail.Fullname}
+                                                subheader={moment(mail.UpdateTime).format('DD/MM/YYYY HH:mm')}
+                                            />
+                                            :
+                                            <CardHeader
+                                                avatar={
+                                                    <Avatar content={mail.Request} colorString={mail.Request} />
+                                                }
+                                                title={mail.Request}
+                                                subheader={moment(mail.UpdateTime).format('DD/MM/YYYY HH:mm')}
+                                            />
+                                        }
+                                        <CardContent>
+                                            <Typography component="p">
+                                                {mail.Content}
+                                            </Typography>
+                                        </CardContent>
+                                    </Card>
+                                );
+                            })
+                            : null}
+
+                    </GridItem>
+
+                </GridContainer>
+                
+            )
     }
 }
 
@@ -262,4 +431,15 @@ const styles = {
 
 };
 
-export default withStyles(styles)(ReplyMailTicket);
+const mapDispatchToProps = dispatch => {
+    return {
+        doGetMail: (mailID) => dispatch(getMail(mailID)),
+        doGetUserInfo: (userID) => dispatch(getUserInfo(userID)),
+        doSendMail: (mail) => dispatch(sendMail(mail)),
+        doUpdateMailStatus: (mailID, statusID) => dispatch(updateMailStatus(mailID, statusID)),
+        doUpdateMailType: (mailID, typeID) => dispatch(updateMailType(mailID, typeID)),
+        doUpdateMailPriority: (mailID, priorityID) => dispatch(updateMailPriority(mailID, priorityID))
+    };
+};
+
+export default withStyles(styles)(connect(null, mapDispatchToProps)(ReplyMailTicket));

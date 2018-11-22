@@ -12,227 +12,187 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { ListItemSecondaryAction, Typography } from "@material-ui/core";
-import { getNotCloseByUserID, getUnassignedTicket, getAllNotClose, getNewSticket,getPendingSticket,getClosedSticket,getDeletedSticket} from "../../store/actions/mail";
+import { getNotCloseByUserID, getUnassignedTicket, getAllNotClose, getNewSticket, getPendingSticket, getClosedSticket, getDeletedSticket, deleteMail, selectedMail, countQuantityMail } from "../../store/actions/mail";
 
+import { ToastContainer, ToastStore } from 'react-toasts';
 import NewMailTicket from 'views/MailTicket/NewMailTicket';
 import { get } from "https";
 
-const menuItems = [ 
-  {path: '/yourunsolvedtickets', content: "Ticket chưa giải quyết của bạn", number: 0}, 
-  {path: '/unassignedtickets', content: "Ticket chưa chuyển nhượng", number: 0},
-  {path: '/allunsolvedtickets', content: "Tất cả ticket chưa giải quyết", number: 0},
-  {path: '/newtickets', content: "Ticket mới", number: 0}, 
-  {path: '/pendingtickets', content: "Ticket chờ duyệt", number: 0},
-  {path: '/solvedtickets', content: "Ticket đã hoàn tất", number: 0},
-  {path: '/unsolvedtickets', content: "Ticket chưa hoàn tất", number: 0}, 
-  {path: '/deletedtickets', content: "Ticket đã xóa", number: 0},
-];
+//Socket
+import io from 'socket.io-client';
+const socket = io('https://fivedesk.herokuapp.com')
 
 const tableHead = [
-  { id: 'status', lable: ''},
+  { id: 'status', lable: '' },
   { id: 'subject', label: 'Chủ đề' },
   { id: 'requester', label: 'Người yêu cầu' },
   { id: 'requestTime', label: 'Thời gian' },
-  { id: 'type', label: 'Loại'},
+  { id: 'type', label: 'Loại' },
   { id: 'priority', label: 'Độ ưu tiên' },
-  { id: 'assignee', label: 'Chuyển nhượng' },
 ];
 
-let tableData =[
+let tableData = [
 ]
 
 class MailTicket extends React.Component {
-  
+
   constructor(props) {
     super(props);
 
     this.state = {
       selectedTicketFilterButton: 0,
-      tableTitle: menuItems[0].content,
-      tableTitleSecondary: menuItems[0].number + ' tickets',
-      
+      tableTitle: 'Ticket chưa giải quyết của bạn',
+      tableTitleSecondary: 0 + ' tickets',
+      menuItems: [
+        { content: "Ticket chưa giải quyết của bạn", number: 0 },
+        { content: "Ticket chưa chuyển nhượng", number: 0 },
+        { content: "Tất cả ticket chưa giải quyết", number: 0 },
+        { content: "Ticket mới", number: 0 },
+        { content: "Ticket chờ duyệt", number: 0 },
+        { content: "Ticket đã hoàn tất", number: 0 },
+        { content: "Ticket đã xóa", number: 0 },],
     };
+
+    socket.on('incomingMail', this.onReceiveMessage);
   }
-  getTypeID(TypeID){
-    var typeName = '';
-    if(TypeID == 0){
 
-    }
-    if(TypeID == 1){
-      typeName = 'Câu hỏi'
-    }
-    return typeName;
+  onReceiveMessage = () => {
+    console.log('socket incoming mail');
+    var token = sessionStorage.getItem('token');
+    this.props.doCountQuantityMail(token)
+      .then(resJson => {
+        this.setState({
+          menuItems: resJson.countMail,
+        })
+        this.getListByKey(this.state.selectedTicketFilterButton, this.state.menuItems[this.state.selectedTicketFilterButton])
+      })
+      .catch(error => {
 
+      })
   }
-  getPriorityID(PriorityId){
-    var  PriorityName = '';
-    if(PriorityId == 0){
 
-    }
-    if(PriorityId == 1){
-      PriorityName = 'Bình thường'
-    }
-    return PriorityName;
-
-  }
-  convertData(name, mail){
+  convertData(name, mail) {
     var listItem = [];
     for (var i = 0; i < mail.length; i++) {
-      listItem.push(  {id: 1, status: name, 
-      subject: mail[i].Subject, 
-      requester: mail[i].Request, 
-      requestTime: mail[i].UpdateTime, 
-      type: this.getTypeID(mail[i].TypeID), 
-      priority: this.getPriorityID(mail[i].PriorityId), 
-      assignee:  mail[i].ReplyTo},
-      )
-  }
+      listItem.push({
+        id: mail[i].MailId,
+        subject: mail[i].Subject,
+        requester: mail[i].Request,
+        requestTime: mail[i].UpdateTime,
+        type: mail[i].MailType,
+        priority: mail[i].Priority,
+        status: mail[i].Status
+      })
+    }
     return listItem;
   }
-  setStateUpdate(key, item){
+  setStateUpdate(key, item) {
     this.setState({
       selectedTicketFilterButton: key,
       tableTitle: item.content,
       tableTitleSecondary: item.number + ' tickets',
     });
   }
-  getListByKey(key, item){
+  getListByKey(key, item) {
     var UserId = this.state.userID;
     var token = sessionStorage.getItem('token');
-      if(key == 0){
-        this.props.doGetNotCloseByUserID(UserId,token).then((resJson) => {
-          tableData = this.convertData('notclose',resJson.mail);
-          menuItems[0].number  =  resJson.mail.length;
-          this.setStateUpdate(key, item);
-        })
+    if (key == 0) {
+      this.props.doGetNotCloseByUserID(token).then((resJson) => {
+        tableData = this.convertData('open', resJson.mail);
+        this.setStateUpdate(key, item);
+      })
         .catch(error => {
           console.log(error);
-        }) ; 
-      }else if(key == 1){
-        this.props.doGetUnassignedTicket(UserId,token).then((resJson) => {
-          menuItems[1].number  =  resJson.mail.length;
-          tableData = this.convertData('unassign',resJson.mail);
-          console.log( tableData);
-          this.setStateUpdate(key, item);
-        })
+        });
+    } else if (key == 1) {
+      this.props.doGetUnassignedTicket(token).then((resJson) => {
+        tableData = this.convertData('new', resJson.mail);
+        console.log(tableData);
+        this.setStateUpdate(key, item);
+      })
         .catch(error => {
           console.log(error);
-        }) ; 
-      }else if(key == 2){
-        this.props.doGetAllNotClose(UserId,token).then((resJson) => {
-          tableData = this.convertData('notclose',resJson.mail);
-          menuItems[2].number  =  resJson.mail.length;
-          this.setStateUpdate(key, item);
-        })
+        });
+    } else if (key == 2) {
+      this.props.doGetAllNotClose(token).then((resJson) => {
+        tableData = this.convertData('open', resJson.mail);
+        this.setStateUpdate(key, item);
+      })
         .catch(error => {
           console.log(error);
-        }) ; 
-      }else if(key == 3){
-        this.props.doGetNewTicket(UserId,token).then((resJson) => {
-          tableData = this.convertData('new',resJson.mail);
-          menuItems[3].number  =  resJson.mail.length;
-          this.setStateUpdate(key, item);
-        })
-        
+        });
+    } else if (key == 3) {
+      this.props.doGetNewTicket(token).then((resJson) => {
+        tableData = this.convertData('new', resJson.mail);
+        this.setStateUpdate(key, item);
+      })
+
         .catch(error => {
           console.log(error);
-        }) ;
-      }else if(key == 4){
-        this.props.doGetPendingTicket(UserId,token).then((resJson) => {
-          tableData = this.convertData('pending',resJson.mail);
-          menuItems[4].number  =  resJson.mail.length;
-          this.setStateUpdate(key, item);
-    
-        })
+        });
+    } else if (key == 4) {
+      this.props.doGetPendingTicket(token).then((resJson) => {
+        tableData = this.convertData('pending', resJson.mail);
+        this.setStateUpdate(key, item);
+
+      })
         .catch(error => {
           console.log(error);
-        }) ;  
-      }else if(key == 5){
-        this.props.doGetClosedSticket(UserId,token).then((resJson) => {
-          menuItems[5].number  =  resJson.mail.length;
-          tableData = this.convertData('close',resJson.mail);
-          this.setStateUpdate(key, item);
-        })
+        });
+    } else if (key == 5) {
+      this.props.doGetClosedSticket(token).then((resJson) => {
+        tableData = this.convertData('solved', resJson.mail);
+        this.setStateUpdate(key, item);
+      })
         .catch(error => {
           console.log(error);
-        }) ; 
-      }else if(key == 6){
-      }else if(key == 7){
-        this.props.doGetDeletedSticket(UserId,token).then((resJson) => {
-          tableData = this.convertData('delete',resJson.mail);
-          menuItems[7].number  =  resJson.mail.length;
-          this.setStateUpdate(key, item);
-        })
+        });
+    } else if (key == 6) {
+      this.props.doGetDeletedSticket(token).then((resJson) => {
+        tableData = this.convertData('delete', resJson.mail);
+        this.setStateUpdate(key, item);
+      })
         .catch(error => {
           console.log(error);
-        }) ;
-      }
+        });
+    }
   }
-  componentDidMount(){
-    var UserId = this.state.userID;
+
+  componentDidMount() {
     var token = sessionStorage.getItem('token');
-        this.props.doGetNotCloseByUserID(UserId,token).then((resJson) => {
-          console.log('doGetNotCloseByUserID' + resJson);
-          tableData = this.convertData('new',resJson.mail);
-          menuItems[0].number  =  resJson.mail.length;
+    this.props.doCountQuantityMail(token)
+      .then(resJson => {
+        this.setState({
+          menuItems: resJson.countMail,
+        })
+        this.props.doGetNotCloseByUserID(token)
+        .then((value) => {
+          tableData = this.convertData('open', value.mail);
+          this.setStateUpdate(0, resJson.countMail[0]);
         })
         .catch(error => {
           console.log(error);
-        }) ; 
-        this.props.doGetUnassignedTicket(UserId,token).then((resJson) => {
-          menuItems[1].number  =  resJson.mail.length;
-        })
-        .catch(error => {
-          console.log(error);
-        }) ; 
-        this.props.doGetAllNotClose(UserId,token).then((resJson) => {
-          menuItems[2].number  =  resJson.mail.length;
-        })
-        .catch(error => {
-          console.log(error);
-        }) ; 
-        this.props.doGetNewTicket(UserId,token).then((resJson) => {
-          menuItems[3].number  =  resJson.mail.length;
-        })
-        
-        .catch(error => {
-          console.log(error);
-        }) ;
-        this.props.doGetPendingTicket(UserId,token).then((resJson) => {
-          menuItems[4].number  =  resJson.mail.length;
-    
-        })
-        .catch(error => {
-          console.log(error);
-        }) ;  
-        this.props.doGetClosedSticket(UserId,token).then((resJson) => {
-          menuItems[5].number  =  resJson.mail.length;
-        })
-        .catch(error => {
-          console.log(error);
-        }) ; 
-        this.props.doGetDeletedSticket(UserId,token).then((resJson) => {
-          menuItems[7].number  =  resJson.mail.length;
-        })
-        .catch(error => {
-          console.log(error);
-        }) ;
-      
+        });
+      })
+      .catch(error => {
+
+      })
   }
-  
+
 
   onTicketFilterClick = (key, item) => {
-    this.getListByKey(key,item);
+    this.getListByKey(key, item);
   }
 
- 
+
   render() {
-    const {classes} = this.props;
+    const { classes } = this.props;
     return (
       <GridContainer className={classes.gridContainer}>
+        <ToastContainer position={ToastContainer.POSITION.BOTTOM_LEFT} store={ToastStore} />
         <GridItem xs={12} sm={3} md={3} >
           <List dense={true}>
-            {menuItems.map((item, key) => (
+            {this.state.menuItems.map((item, key) => (
               <ListItem
                 key={key}
                 role={undefined}
@@ -241,14 +201,14 @@ class MailTicket extends React.Component {
                 selected={this.state.selectedTicketFilterButton === key ? true : false}
                 onClick={() => this.onTicketFilterClick(key, item)}
                 className={classes.listItem}>
-                    <ListItemText
-                      primary={item.content}
-                    />
-                    <ListItemSecondaryAction>
-                      <Typography>{item.number}</Typography>
-                    </ListItemSecondaryAction>
-                </ListItem>
-            ))}  
+                <ListItemText
+                  primary={item.content}
+                />
+                <ListItemSecondaryAction>
+                  <Typography>{item.number}</Typography>
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))}
           </List>
         </GridItem>
         <GridItem xs={12} sm={9} md={9} className={classes.tableGridItem}>
@@ -259,13 +219,13 @@ class MailTicket extends React.Component {
             tableData={tableData}
           />
         </GridItem>
-    </GridContainer>
+      </GridContainer>
     );
   }
 }
 
 const styles = {
-  gridContainer:{
+  gridContainer: {
   },
   listItem: {
     margin: ' 0px 15px',
@@ -273,20 +233,20 @@ const styles = {
 };
 const mapStateToProps = state => {
   return {
-      userProfile: state.user.profile,
+    userProfile: state.user.profile,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    doGetNotCloseByUserID: (UserId,token) => dispatch(getNotCloseByUserID(UserId,token)),
-    doGetUnassignedTicket: (UserId,token) => dispatch(getUnassignedTicket(UserId,token)),
-    doGetAllNotClose : (UserId,token) => dispatch(getAllNotClose(UserId,token)),
-    doGetNewTicket: (UserId,token) => dispatch(getNewSticket(UserId,token)),
-    doGetPendingTicket: (UserId,token) => dispatch(getPendingSticket(UserId,token)),
-    doGetClosedSticket: (UserId,token) => dispatch(getClosedSticket(UserId,token)),
-    doGetDeletedSticket: (UserId,token) => dispatch(getDeletedSticket(UserId,token)),
-
+    doGetNotCloseByUserID: (token) => dispatch(getNotCloseByUserID(token)),
+    doGetUnassignedTicket: (token) => dispatch(getUnassignedTicket(token)),
+    doGetAllNotClose: (token) => dispatch(getAllNotClose(token)),
+    doGetNewTicket: (token) => dispatch(getNewSticket(token)),
+    doGetPendingTicket: (token) => dispatch(getPendingSticket(token)),
+    doGetClosedSticket: (token) => dispatch(getClosedSticket(token)),
+    doGetDeletedSticket: (token) => dispatch(getDeletedSticket(token)),
+    doCountQuantityMail: (token) => dispatch(countQuantityMail(token)),
   };
 };
-export default withStyles(styles)(connect( mapStateToProps ,mapDispatchToProps)(MailTicket));
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(MailTicket));
