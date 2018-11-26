@@ -39,9 +39,7 @@ class EditUser extends React.Component {
             Old_password: "",
             New_password: "",
             Retype_password: "",
-            openDialog_login: false,
-            openDialog_update: false,
-            openDialog_changePassword: false,
+            openDialog: false,
             message: "",
             user: null,
             userID: this.props.match.params.userID,
@@ -99,49 +97,51 @@ class EditUser extends React.Component {
             })
     };
 
-
+    handleValidation = (FirstName, LastName, Phone) => {
+        if (FirstName == "" || LastName == "" || Phone == "") {
+            this.setState({ openDialog: true, message: "Thông tin người dùng không được để trống!" });
+            return false;
+        }
+        return true;
+    }
 
     onUpdateClick = (FirstName, LastName, Phone) => {
-        if (FirstName == "")
-            FirstName = this.state.FirstName;
-        if (LastName == "")
-            LastName = this.state.LastName;
-        if (Phone == "")
-            Phone = this.state.Phone;
-        this.props.doupdateProfile(FirstName, LastName, Phone).then((resJson) => {
-            this.setState({
-                openDialog_update: true,
-                message: resJson.message,
-            });
-            if (resJson.returnCode == "1")
-                this.props.doGetUserInfo(this.state.userID).then((resJson) => {
-                    this.setState({
-                        user: resJson.user,
-                        FirstName: resJson.user.FirstName,
-                        LastName: resJson.user.LastName,
-                        CompanyName: resJson.user.CompanyName,
-                        Email: resJson.user.Email,
-                        Phone: resJson.user.PhoneNumber,
-                    });
-                }).catch((error) => {
-                    console.log(error);
+        if (this.handleValidation(FirstName, LastName, Phone)){
+            this.props.doupdateProfile(FirstName, LastName, Phone).then((resJson) => {
+                this.setState({
+                    openDialog: true,
+                    message: resJson.message,
                 });
-
-        }).catch((error) => {
-            console.log(error);
-        });
+                if (resJson.returnCode == "1")
+                    this.props.doGetUserInfo(this.state.userID).then((resJson) => {
+                        this.setState({
+                            user: resJson.user,
+                            FirstName: resJson.user.FirstName,
+                            LastName: resJson.user.LastName,
+                            CompanyName: resJson.user.CompanyName,
+                            Email: resJson.user.Email,
+                            Phone: resJson.user.PhoneNumber,
+                        });
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+    
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
     }
 
     onChangePassword = (Old_password, New_password) => {
         if (this.state.New_password !== this.state.Retype_password)
             this.setState({
-                openDialog_changePassword: true,
+                openDialog: true,
                 message: "Nhập lại mật khẩu",
             })
         else
             this.props.doChangePassword(Old_password, New_password).then((resJson) => {
                 this.setState({
-                    openDialog_changePassword: true,
+                    openDialog: true,
                     message: resJson.message,
                 });
             }).catch((error) => {
@@ -151,9 +151,7 @@ class EditUser extends React.Component {
 
     handleClose = () => {
         this.setState({
-            openDialog_login: false,
-            openDialog_update: false,
-            openDialog_changePassword: false,
+            openDialog: false,
         });
     };
 
@@ -164,29 +162,7 @@ class EditUser extends React.Component {
             this.props.userProfile != null ?
                 <div className={classes.root}>
                     <Dialog
-                        open={this.state.openDialog_update}
-                        TransitionComponent={Transition}
-                        keepMounted
-                        onClose={this.handleClose}
-                        aria-labelledby="alert-dialog-slide-title"
-                        aria-describedby="alert-dialog-slide-description"
-                    >
-                        <DialogTitle id="alert-dialog-slide-title">
-                            {"Thông báo"}
-                        </DialogTitle>
-                        <DialogContent>
-                            <DialogContentText id="alert-dialog-slide-description">
-                                {this.state.message}
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={this.handleClose} color="primary">Xác nhận
-                        </Button>
-                        </DialogActions>
-                    </Dialog>
-
-                    <Dialog
-                        open={this.state.openDialog_changePassword}
+                        open={this.state.openDialog}
                         TransitionComponent={Transition}
                         keepMounted
                         onClose={this.handleClose}
@@ -249,6 +225,7 @@ class EditUser extends React.Component {
                                     disabled={this.state.userID != this.props.userProfile.UserID ? true : false}
                                     id="txtPhone"
                                     label='Số điện thoại'
+                                    type='number'
                                     className={classNames(classes.textField_2, classes.dense)}
                                     margin="dense"
                                     variant="outlined"

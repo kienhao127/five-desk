@@ -84,10 +84,17 @@ class NewMailTicket extends React.Component {
         })
     }
 
-    handleValidation = (subject, content) => {
+    handleValidation = (subject, content, email) => {
         if (subject == "" || content == ""){
             this.setState({ openDialog: true, message: "Chủ đề hoặc nội dung không được để trống" });
             return false;
+        }
+        if (email !== "") {
+            let filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if (!filter.test(email)) {
+                this.setState({openDialog: true, message: "Email người nhận không hợp lệ" });
+                return false;
+            }
         }
         return true;
     }
@@ -108,7 +115,7 @@ class NewMailTicket extends React.Component {
             priorityID: this.state.priority.id,
             statusID: this.state.status.id,
         }
-        if(this.handleValidation(mail.subject,mail.content))
+        if(this.handleValidation(mail.subject,mail.content, mail.to))
         this.props.doSendMail(mail)
             .then(resJson => {
                 console.log(resJson);
@@ -155,7 +162,7 @@ class NewMailTicket extends React.Component {
                 <GridItem xs={12} sm={4} md={4} >
                     <TextField
                         id="requester"
-                        label="Người yêu cầu"
+                        label="Email người nhận"
                         type="email"
                         name='requester'
                         className={classes.textField}

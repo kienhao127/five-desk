@@ -217,6 +217,7 @@ class MailTicket extends React.Component {
             tableTitleSecondary={this.state.tableTitleSecondary}
             tableHead={tableHead}
             tableData={tableData}
+            onDeleteMessage={() => this.onReceiveMessage()}
           />
         </GridItem>
       </GridContainer>

@@ -71,7 +71,7 @@ const Sidebar = ({ ...props }) => {
                   className={classes.itemText + whiteFontClasses}
                   disableTypography={true}
                 />
-                {newMessage == true && prop.sidebarName == 'Chat'
+                {newMessage === true && prop.sidebarName === 'Chat'
                   ?
                   <div style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: 'red' }} />
                   : null}

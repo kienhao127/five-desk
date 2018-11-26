@@ -68,9 +68,20 @@ class Login extends React.Component {
     onLoginClick = (email, password) => {
         if(this.handleValidation(email,password))
         this.props.doLogin(email, password).then((resJson) => {
-            this.props.history.push('/agent/ticket')
+            if (resJson.returnCode == 1){
+                this.props.history.push('/agent/ticket')
+            } else {
+                this.setState({
+                    message: 'Email hoặc mật khẩu không đúng',
+                    openDialog: true,
+                })
+            }
         }).catch((error) => {
             console.log(error);
+            this.setState({
+                message: 'Email hoặc mật khẩu không đúng',
+                openDialog: true,
+            })
         });
     }
 

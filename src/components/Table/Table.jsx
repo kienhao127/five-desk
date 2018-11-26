@@ -119,6 +119,11 @@ class EnhancedTable extends React.Component {
     console.log(newSelected);
     this.props.doSelectedMail(newSelected);
   }
+
+  onDeleteMail = () => {
+    this.props.onDeleteMessage();
+  }
+
   render() {
     const { classes, tableHead, tableTitle, tableTitleSecondary, tableData } = this.props;
     const { order, orderBy, selected, rowsPerPage, page } = this.state;
@@ -129,7 +134,8 @@ class EnhancedTable extends React.Component {
         <TableToolBar 
           numSelected={selected.length} 
           tableTitle={tableTitle}
-          tableTitleSecondary={tableTitleSecondary}>
+          tableTitleSecondary={tableTitleSecondary}
+          onDeleteMessage={() => this.onDeleteMail()}>
           <TablePagination
             className={classes.tablePagination}
             component="div"

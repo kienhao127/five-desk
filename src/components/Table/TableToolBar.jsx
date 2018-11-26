@@ -44,26 +44,28 @@ const toolbarStyles = theme => ({
 });
 
 class TableToolbar extends React.Component {
+  constructor(props) {
+    super(props);
+
+  }
 
   onDeleteMail = () => {
     this.props.doDeleteMail(this.props.selectedMailID)
-    .then(resJson => { 
-      if (resJson.returnCode == 1){
-        ToastStore.success('Xóa mail thành công!');
-      }
-    })
+      .then(resJson => {
+        if (resJson.returnCode === 1) {
+          ToastStore.success('Xóa mail thành công!');
+          this.props.onDeleteMessage();
+        }
+      })
   }
 
   render() {
     const { numSelected, classes, tableTitle, tableTitleSecondary } = this.props;
 
     return (
-      
-      <Toolbar
-        className={classNames(classes.root)}
-      >
 
-                 <ToastContainer position={ToastContainer.POSITION.BOTTOM_LEFT} store={ToastStore} />
+      <Toolbar className={classNames(classes.root)}>
+        <ToastContainer position={ToastContainer.POSITION.BOTTOM_LEFT} store={ToastStore} />
         <div className={classes.title}>
           <Typography id="tableTitle">
             <div className={classes.tableTitle}>{tableTitle}</div>
@@ -80,7 +82,7 @@ class TableToolbar extends React.Component {
                 </IconButton>
               </Tooltip>
               <Tooltip title="Xóa">
-                <IconButton className={classes.button} onClick={this.onDeleteMail}>
+                <IconButton className={classes.button} onClick={() => this.onDeleteMail()}>
                   <DeleteIcon />
                 </IconButton>
               </Tooltip>
@@ -101,7 +103,7 @@ TableToolbar.propTypes = {
 
 const mapStateToProps = state => {
   return {
-      selectedMailID: state.mail.selectedMailID,
+    selectedMailID: state.mail.selectedMailID,
   };
 };
 
@@ -110,4 +112,4 @@ const mapDispatchToProps = dispatch => {
     doDeleteMail: (listMailID) => dispatch(deleteMail(listMailID)),
   };
 };
-export default withStyles(toolbarStyles)(connect( mapStateToProps ,mapDispatchToProps)(TableToolbar));
+export default withStyles(toolbarStyles)(connect(mapStateToProps, mapDispatchToProps)(TableToolbar));

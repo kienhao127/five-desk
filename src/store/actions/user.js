@@ -15,21 +15,21 @@ export const login = (email, password) => {
             loginApi(email, md5Password)
                 .then((responseJson) => {
                     console.log(responseJson);
-                    var token = responseJson.token;
-                    sessionStorage.setItem('token', token);
-                    var user = responseJson.user;
-                    var u = {
-                        Email: user.Email,
-                        FirstName: user.FirstName,
-                        LastName: user.LastName,
-                        UserID: user.UserID.toString(),
-                        PhoneNumber: user.PhoneNumber != null ? user.PhoneNumber.toString() : null,
-                        CompanyID: user.CompanyID,
-                    }
                     if (responseJson.returnCode === 1) {
+                        var token = responseJson.token;
+                        sessionStorage.setItem('token', token);
+                        var user = responseJson.user;
+                        var u = {
+                            Email: user.Email,
+                            FirstName: user.FirstName,
+                            LastName: user.LastName,
+                            UserID: user.UserID.toString(),
+                            PhoneNumber: user.PhoneNumber != null ? user.PhoneNumber.toString() : null,
+                            CompanyID: user.CompanyID,
+                        }
                         dispatch(saveProfile(u));
-                        resolve(responseJson);
                     }
+                    resolve(responseJson);
                 })
                 .catch((error) => {
                     console.log(error);

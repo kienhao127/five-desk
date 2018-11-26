@@ -98,6 +98,7 @@ class Register extends React.Component {
                 .then((resJson) => {
                     if (resJson.returnCode == "1") {
                         this.setState({ openDialog: true, message: "Đăng ký thành công" })
+                        this.props.history.push('/login');
                         console.log(resJson);
                     }
                     else if (resJson.returnCode == "0")
@@ -164,7 +165,7 @@ class Register extends React.Component {
                         <TextField
                             id="txtPhoneNumber"
                             label="Số điện thoại"
-                            type="text"
+                            type='number'
                             name='txtPhoneNumber'
                             className={classes.textField}
                             variant="outlined"
