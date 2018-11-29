@@ -85,6 +85,10 @@ class Login extends React.Component {
         });
     }
 
+    onRegisterClick = () => {
+        this.props.history.push('/register')
+    }
+
     render() {
         const { classes } = this.props;
         return (
@@ -139,7 +143,7 @@ class Login extends React.Component {
                                     <Button onClick={() => this.onLoginClick(this.state.email, this.state.password)} variant="contained" color='primary' style={{ width: '45%', height: '25%', marginTop: 15 }}>
                                         <Typography style={{ color: '#FFF', fontSize: 15, fontFamily: 'Roboto-Regular' }}>Đăng Nhập</Typography>
                                     </Button>
-                                    <Button style={{ width: '45%', height: '25%', marginLeft: 10, marginTop: 15 }} className={classes.button}>
+                                    <Button onClick={this.onRegisterClick} style={{ width: '45%', height: '25%', marginLeft: 10, marginTop: 15 }} className={classes.button}>
                                         <Typography style={{ color: '#00bcd4', fontSize: 15, fontFamily: 'Roboto-Regular' }}>Đăng Ký</Typography>
                                     </Button>
                                 </MuiThemeProvider>

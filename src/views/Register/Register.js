@@ -61,7 +61,7 @@ class Register extends React.Component {
             })
         else if (event.target.id == "txtPhoneNumber")
             this.setState({
-                phoneNumber: event.target.value
+                phoneNumber: event.target.value.replace(/[^0-9]/g, '')
             })
         else if (event.target.id == "txtCompanyName")
             this.setState({
@@ -165,7 +165,7 @@ class Register extends React.Component {
                         <TextField
                             id="txtPhoneNumber"
                             label="Số điện thoại"
-                            type='number'
+                            type='text'
                             name='txtPhoneNumber'
                             className={classes.textField}
                             variant="outlined"

@@ -271,7 +271,7 @@ class LiveChat extends React.Component {
         visitor.Email = event.target.value
       }
       if (event.target.id == "phoneNumber") {
-        visitor.PhoneNumber = event.target.value
+        visitor.PhoneNumber = event.target.value.replace(/[^0-9]/g, '')
       }
       if (event.target.id == "note") {
         visitor.Notes = event.target.value

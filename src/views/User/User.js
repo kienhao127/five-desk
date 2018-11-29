@@ -48,6 +48,16 @@ class User extends React.Component {
 
   }
 
+  clearUserInfo = () => {
+    this.setState({
+      email: '',
+      password: '',
+      firstname: '',
+      lastname: '',
+    })
+  }
+
+
   componentDidMount() {
     this.props.doGetListUser()
       .then((resJson) => {
@@ -162,30 +172,7 @@ class User extends React.Component {
     return (
       this.props.userProfile != null ?
         <GridContainer>
-
-          <Dialog
-            open={this.state.openDialog}
-            TransitionComponent={Transition}
-            keepMounted
-            onClose={this.handleCloseDiaglog}
-            aria-labelledby="alert-dialog-slide-title"
-            aria-describedby="alert-dialog-slide-description"
-          >
-            <DialogTitle id="alert-dialog-slide-title">
-              {"Thông báo"}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-slide-description">
-                {this.state.message}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={this.handleClose} color="primary">Xác nhận
-              </Button>
-            </DialogActions>
-          </Dialog>
-
-          <Dialog onClose={this.handleClose} aria-labelledby="simple-dialog-title" open={this.state.open}>
+          <Dialog style={{zIndex: 5}} onClose={this.handleClose} aria-labelledby="simple-dialog-title" open={this.state.open}>
             <DialogTitle id="simple-dialog-title">Thêm thành viên</DialogTitle>
             <div style={{ display: 'flex', padding: 10, flexDirection: 'column', alignItems: 'flex-end' }}>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -242,6 +229,28 @@ class User extends React.Component {
                 </Button>
               </MuiThemeProvider>
             </div>
+          </Dialog>
+
+          <Dialog
+            open={this.state.openDialog}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={this.handleCloseDiaglog}
+            aria-labelledby="alert-dialog-slide-title"
+            aria-describedby="alert-dialog-slide-description"
+          >
+            <DialogTitle id="alert-dialog-slide-title">
+              {"Thông báo"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-slide-description">
+                {this.state.message}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleCloseDiaglog} color="primary">Xác nhận
+              </Button>
+            </DialogActions>
           </Dialog>
           <GridItem>
             <div className={classes.gridItem}>

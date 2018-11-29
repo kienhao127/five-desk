@@ -81,7 +81,7 @@ class EditUser extends React.Component {
             })
         else if (event.target.id == "txtPhone")
             this.setState({
-                Phone: event.target.value
+                Phone: event.target.value.replace(/[^0-9]/g, '')
             })
         else if (event.target.id == "txtOld_password")
             this.setState({
@@ -225,7 +225,7 @@ class EditUser extends React.Component {
                                     disabled={this.state.userID != this.props.userProfile.UserID ? true : false}
                                     id="txtPhone"
                                     label='Số điện thoại'
-                                    type='number'
+                                    type='text'
                                     className={classNames(classes.textField_2, classes.dense)}
                                     margin="dense"
                                     variant="outlined"
